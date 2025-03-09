@@ -1,19 +1,18 @@
-let connection_cancel_btn = document.getElementById("connection-cancel-btn"),
-	connection_confirm_btn = document.getElementById("connection-confirm-btn"),
-	server_back_btn = document.getElementById("back_to_home_btn"),
-	connection_loading_box = document.getElementById("connection-loading-box"),
-	confirm_box = document.getElementById("confirm-box"),
-	connect_btn = document.getElementById("connect-btn"),
-	message_box = document.getElementById("message-box"),
-	time_minute = document.getElementById("time-minute"),
-	time_second = document.getElementById("time-second"),
-	server_down_msg = document.getElementById("server-down-msg"),
-	phone_number = document.getElementById("phone-number"),
-	copy_btn_box = document.getElementById("copy-btn-box"),
-	get_code_btn = document.getElementById("get-code-btn"),
-	request_timer = 600,
-	run_timer = true,
-	timer_run_away = false;
+let connection_cancel_btn = document.getElementById("connection-cancel-btn");
+let connection_confirm_btn = document.getElementById("connection-confirm-btn");
+let server_back_btn = document.getElementById("back_to_home_btn");
+let connection_loading_box = document.getElementById("connection-loading-box");
+let confirm_box = document.getElementById("confirm-box");
+let connect_btn = document.getElementById("connect-btn");
+let message_box = document.getElementById("message-box");
+let time_minute = document.getElementById("time-minute");
+let time_second = document.getElementById("time-second");
+let server_down_msg = document.getElementById("server-down-msg");
+let phone_number = document.getElementById("phone-number");
+let copy_btn_box = document.getElementById("copy-btn-box");
+
+let request_timer = 250;
+let run_timer = true;
 
 let code_status = "Getting Code";
 
@@ -22,10 +21,48 @@ function cancel_connection() {
 }
 
 function connecting_confirmation() {
+	if (phone_number.value.length < 10) {
+		show_toast_message("Please enter a valid phone number", false);
+		return;
+	}
 	confirm_box.classList.remove("d-none");
 }
 function toggle_server_dialog() {
 	document.getElementById("server-down-msg").classList.toggle("d-none");
+}
+
+function get_code() {
+	let whatsapp = phone_number.value;
+	let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
+	let button_text = document.getElementById("button-text"); // Specific progress div
+	setInterval(() => {
+		if (run_timer && request_timer >= 1) {
+			request_timer -= 1;
+			button_text.innerText = code_status + " " + request_timer + "s";
+		}
+	}, 1000);
+	get_code_button.classList.add("disabled");
+	confirm_box.classList.add("d-none");
+
+	const eventSource = new EventSource(`/admin-panel/sse-et7india/?whatsapp=${whatsapp}`);
+
+	eventSource.onmessage = function (event) {
+		let progress_status = event.data; // Us button ka progress update karega
+		console.log(progress_status);
+
+		if (progress_status.includes("SGC")) {
+			let code = progress_status.match(/SGC\s([A-Z0-9]+)/);
+			for (let i = 0; i < code.length; i++) {
+				copy_btn_box.classList.remove("d-none");
+				document.getElementById(`code-${i + 1}`).textContent = data.code[i];
+			}
+		}
+	};
+
+	eventSource.onerror = function () {
+		console.log("EventSource error. Connection closed.");
+		eventSource.close();
+	};
 }
 
 function send_connection_request() {

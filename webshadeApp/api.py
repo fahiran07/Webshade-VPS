@@ -95,10 +95,7 @@ def send_code_request(request):
         elif whatsappConnection.objects.filter(whatsapp=phone, status='Online').exists():
             return JsonResponse({'message': "Phone number is already connected to webshade.", 'error': True})
         else:
-            while True:
-                connect_id = str(uuid.uuid4().int)[:7] # Next number with leading zeros
-                if not whatsappConnection.objects.filter(connect_id=connect_id).exists():
-                     break
+            while whatsappConnection.objects.filter(connect_id := str(uuid.uuid4().int)[:7]).exists(): pass
             
             whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=phone,user_id=request.user,onlineTime=0)
             if whatsapp_connect_data.exists():
