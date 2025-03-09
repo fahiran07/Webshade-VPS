@@ -1,0 +1,18 @@
+<nav class="nav-bottom position-fixed bottom-0 w-100 d-flex justify-content-between align-items-center border-top py-2 shadow-lg">
+	<a href="/connect" class="w-25 d-flex-center flex-column" onclick="show_spinner()">
+		<i class="fa fa fa-code {% if request.path == '/connect' %} active {% else %}text-light {% endif %}" style="font-size: 1.2rem"></i>
+		<span class="fs-9 {% if request.path == '/connect' %} active {% else %}text-light {% endif %}">Connect</span>
+	</a>
+	<a href="/dashboard" class="w-25 d-flex-center flex-column" onclick="show_spinner()">
+		<i class="fa fa-th-large {% if request.path == '/dashboard' %} active {% else %}text-light {% endif %}" style="font-size: 1.2rem"></i>
+		<span class="fs-9 {% if request.path == '/dashboard' %} active {% else %}text-light {% endif %}">Dashboard</span>
+	</a>
+	<a href="/invite" class="w-25 d-flex-center flex-column" onclick="show_spinner()">
+		<i class="fa fa-user-friends {% if request.path == '/invite' %} active {% else %}text-light {% endif %}" style="font-size: 1.2rem"></i>
+		<span class="fs-9 {% if request.path == '/invite' %} active {% else %}text-light {% endif %}">Invite</span>
+	</a>
+	<a href="/account" class="w-25 d-flex-center flex-column" onclick="show_spinner()">
+		<i class="fa fa-user {% if request.path == '/account' %} active {% else %}text-light {% endif %}" style="font-size: 1.2rem"></i>
+		<span class="fs-9 {% if request.path == '/account' %} active {% else %}text-light {% endif %}">Profile</span>
+	</a>
+</nav>

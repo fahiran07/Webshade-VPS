@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="csrf-token" content="{{ csrf_token }}" />
+		<title>Connect</title>
+		<link rel="stylesheet" href="/assets/webshadeApp/css/style.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/utils.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/connect.css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+	</head>
+	<body class="main-background-color main-bg-back">
+		<div id="upper-box" class="text-light w-100 d-flex-center flex-column py-3">
+			<span>Connect to Whatsapp and Earn Money</span>
+			<div id="invite-box" class="w-95 mx-auto d-flex align-items-center flex-column px-5 py-4">
+				<span id="reward-text" class="fw-bolder">₹{{total_income}}.00</span>
+				<p id="reward-box-description" class="text-center">Your hard-earned rewards! Keep growing and earning.</p>
+				<!-- <p class="text-light d-flex-center mt-4 mb-0">Connect Your Whatsapp Now</p> -->
+				<p id="invite-btn" class="text-light d-flex-center mt-4 mb-0">Connect More</p>
+			</div>
+		</div>
+		<div class="w-95 mx-auto px-2 py-3 rounded-2 main-sub-back-white border mt-0">
+			<div class="w-100 rounded-5 border-danger border-1 border main-color py-2 mb-2 d-flex">
+				<p class="w-15 mb-0 me-2 text-center">+91</p>
+				<input type="text" id="phone-number" class="border-0 bg-none w-85 mb-0 outline-0 main-color fs-7" placeholder="Phone" />
+			</div>
+			<div class="w-100 d-flex-center mt-2">
+				<button id="get-code-btn" class="main-background-color text-light rounded-5 border-0 w-100 fs-8 mb-2" onclick="connecting_confirmation()">
+					Get Code
+					<div class="get_button_spinner" id="get_button_spinner"></div>
+				</button>
+			</div>
+			<p class="text-center w-100 fs-8 mb-1">-- Code will appear here --</p>
+			<div class="d-flex justify-content-evenly text-light mt-3">
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-1" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-2" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-3" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-4" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-5" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-6" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-7" style="height: 2rem; width: 2rem"></p>
+				<p class="rounded-1 border border-1 border-danger text-danger d-flex-center fs-3" id="code-8" style="height: 2rem; width: 2rem"></p>
+			</div>
+
+			<div class="w-100 d-flex-center mb-2 d-none" id="copy-btn-box" onclick="copy_code()">
+				<button class="main-sub-back w-auto fs-8 border-0 text-light px-3 m-0 py-1 rounded-5">Copy</button>
+			</div>
+			<p class="mb-0 fs-8 main-color">Please keep your Whatsapp online to get full payment.</p>
+		</div>
+		<a href="https://t.me/g2carrier" target="_blank" class="main-sub-back-white rounded-1 d-flex justify-content-between w-95 mx-auto py-2">
+			<div class="d-flex-center w-15">
+				<img src="/assets/webshadeApp/images/telegram.webp" alt="" class="hr-5 wr-5 rounded-circle" />
+			</div>
+			<div class="w-85">
+				<p class="main-color fs-8 mb-0">Join Telegram Get ₹10.00</p>
+				<p class="mb-0 fs-9">Join our telegram and get ₹10.00 rupees instantly</p>
+			</div>
+		</a>
+		<div id="reward-system-box" class="main-sub-back-white px-3 w-95">
+			<p class="fst-italic text-center mb-1 w-100 bg-none h-auto main-color">-- Reward System --</p>
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					<p class="text-light shadow p-2 fs-7 rounded-circle d-flex-center mb-2">24hours</p>
+					<p class="mb-0 text-light text-center mb-0 rounded-1" style="width: 75px; height: auto">₹{{reward_data.amount_24}}.00</p>
+				</div>
+				<div>
+					<p class="text-light shadow p-2 fs-7 rounded-circle d-flex-center mb-2">48hours</p>
+					<p class="mb-0 text-light text-center mb-0 rounded-1" style="width: 75px; height: auto">₹{{reward_data.amount_48}}.00</p>
+				</div>
+				<div>
+					<p class="text-light shadow p-2 fs-7 rounded-circle d-flex-center mb-2">72hours+</p>
+					<p class="mb-0 text-light text-center mb-0 rounded-1" style="width: 75px; height: auto">₹{{amount_72_plus}}.00</p>
+				</div>
+			</div>
+		</div>
+		<div class="main-sub-back-white rounded-2 p-2 w-95 mx-auto mt-3 border" style="margin-bottom: 5rem">
+			<p class="w-100 text-center fs-5 fw-light mb-1 main-color">-- How to Scan QR Code --</p>
+			<div class="w-100 d-flex-center">
+				<p class="text-center fs-7 text-light main-background-color py-1 px-3 d-flex-center w-40 rounded-2">WhatsApp</p>
+			</div>
+			<div class="mb-5 main-color">
+				<span>Step 1:</span>
+				<div class="d-flex">
+					<img src="/assets/webshadeApp/images/step 1.webp" alt="" height="300" />
+					<p class="ms-2 mb-0 fs-7">Click on 'Linked devices'</p>
+				</div>
+				<br />
+				<span>Step 2:</span>
+				<div class="d-flex">
+					<img src="/assets/webshadeApp/images/step 2.webp" alt="" height="300" />
+					<p class="ms-2 mb-0 fs-7">Click on 'Link a device'</p>
+				</div>
+				<br />
+				<span>Step 3:</span>
+				<div class="d-flex">
+					<img src="/assets/webshadeApp/images/step 3.webp" alt="" height="300" />
+					<p class="ms-2 mb-0 fs-7">Click on 'Link with phone number instead'</p>
+				</div>
+				<span>Step 4:</span>
+				<div class="d-flex">
+					<img src="/assets/webshadeApp/images/step 4.webp" alt="" height="300" />
+					<p class="ms-2 mb-0 fs-7">Here enter the the code copied from webshade</p>
+				</div>
+			</div>
+		</div>
+		<section id="confirm-box" class="position-absolute top-0 vh-100 vw-100 d-flex-center z-index-3 d-none" style="background-color: rgba(0, 0, 0, 0.679)">
+			<div class="w-85 d-flex-center flex-column text-light rounded-2 pt-3" style="background-color: #fd2a14">
+				<img src="/assets/webshadeApp/images/webshade-logo.webp" alt="" class="rounded-circle hr-6 wr-6 border mb-3" />
+				<p class="px-3">Are you sure want to connect with webshade?</p>
+				<div class="d-flex d-flex-center w-100">
+					<button class="w-50 py-3 text-light bg-none border-end-0 border-start-0 border-bottom-0" onclick="cancel_connection()">Cancel</button>
+					<button class="w-50 py-3 text-light bg-none border-end-0 border-bottom-0" id="connection-confirm-btn" onclick="send_connection_request()">Confirm</button>
+				</div>
+			</div>
+		</section>
+		<section id="server-down-msg" class="position-fixed top-0 vh-100 vw-100 d-flex-center z-index-3 d-none" style="background-color: rgba(0, 0, 0, 0.679)">
+			<div class="w-85 d-flex-center flex-column text-light rounded-2 pt-3" style="background-color: #fd2a14">
+				<img src="/assets/webshadeApp/images/server-down.webp" alt="" class="rounded-circle hr-7 wr-7 mb-3 p-1" />
+				<p class="w-100 text-center">SERVER DOWN</p>
+				<p class="px-3 text-center fs-7">Hi! Our servers are undergoing some maintenance right now. We’ll be back up and running shortly. Thanks for your understanding and patience!</p>
+				<div class="d-flex d-flex-center w-100">
+					<button class="w-100 py-3 text-light bg-none border-end-0 border-bottom-0 border-start-0 border-light" id="back_to_home_btn" onclick="toggle_server_dialog()">Back</button>
+				</div>
+			</div>
+		</section>
+		<section id="main-spinner" class="vh-100 vw-100 top-0 position-fixed d-flex-center">
+			<div style="background-color: rgba(0, 0, 0, 0.597)" class="px-5 py-3 rounded-2">
+				<div class="main-spinner"></div>
+			</div>
+		</section>
+		<section id="message-box" class="vw-100 fixed-top py-4 d-flex-center d-none vh-100 blur-background">
+			<div id="toast-message" class="mb-0 rounded-1 px-3 py-2 text-light d-flex px-2">
+				<div class="d-flex-center">
+					<i class="fas fa-check-circle me-2 fs-4"></i>
+				</div>
+				<div>
+					<p class="mb-0 fs-7 fw-bold" id="toast-type">Success</p>
+					<p class="mb-0 fs-8" id="toast-message-text">match ccreated suuccessfully !</p>
+				</div>
+			</div>
+		</section>
+		<script>
+			window.onload = function () {
+				document.getElementById("main-spinner").classList.add("d-none");
+			};
+		</script>
+		{% include "webshadeApp/footer.html" %}
+		<script src="/assets/webshadeApp/js/connect.js"></script>
+		<script src="/assets/webshadeApp/js/script.js"></script>
+	</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="csrf-token" content="{{ csrf_token }}" />
+		<title>Invite</title>
+		<link rel="stylesheet" href="/assets/webshadeApp/css/style.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/utils.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/invite.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/spinner.css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+	</head>
+	<body>
+		<header class="main-background-color hr-7 w-100 d-flex-center border-bottom">
+			<span class="text-light fs-4">Invite</span>
+		</header>
+		<div id="top-box">
+			<p class="text-light fst-italic fw-bold fs-3 text-center pt-3">
+				<span>Invite Friends</span>
+				<br />
+				<span>Earn Cash</span>
+			</p>
+			<div id="invite-box" class="w-95 mx-auto d-flex align-items-center flex-column px-5 py-4">
+				<span id="reward-text" class="fw-bolder">10%</span>
+				<p id="reward-box-description" class="text-center">Invite friends to get a cash reward of 10% of your friend's income.</p>
+				<p id="invite-btn" class="text-light d-flex-center mt-3 mb-0" onclick="invite_link_box()">Invite Friends</p>
+			</div>
+			<div id="invitaion-detail-box" class="d-flex-center flex-column p-3 w-95 mx-auto">
+				<span class="fst-italic">Invitation Information</span>
+				<div class="w-100 mt-3">
+					<div class="w-100 fs-7 d-flex">
+						<p class="w-50 mb-0 text-dark text-center">Level Size ></p>
+						<p class="w-50 text-dark mb-0 text-center">Commisions ></p>
+					</div>
+					<div class="w-100 fs-7 d-flex mt-2">
+						<p class="w-50 mb-0 text-center"><span>{{total_refer}} </span>Friends</p>
+						<p class="w-50 mb-0 text-center">Rs ₹<span>{{user_data.commision}}.00</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="step-box" class="mt-4 d-flex-center flex-column w-95 mx-auto" style="margin-bottom: 5rem">
+			<span class="fst-italic">-- Get Cash in three simple steps --</span>
+			<div class="d-flex justify-content-between w-100 px-2 mt-3">
+				<div class="w-30 d-flex-center flex-column">
+					<p class="mb-0 rounded-circle p-1 d-flex-center">
+						<img src="/assets/webshadeApp/images/share.webp" alt="" class="hr-4 wr-4" />
+					</p>
+					<span class="text-light text-dark fs-8 text-center mt-1">Share with friends</span>
+				</div>
+				<div class="w-30 d-flex-center flex-column">
+					<p class="mb-0 rounded-circle p-1 d-flex-center">
+						<img src="/assets/webshadeApp/images/profile.webp" alt="" class="hr-4 wr-4" />
+					</p>
+					<span class="text-light text-dark fs-8 mt-1">Registro</span>
+				</div>
+				<div class="w-30 d-flex-center flex-column">
+					<p class="mb-0 rounded-circle p-1 d-flex-center">
+						<img src="/assets/webshadeApp/images/doller.webp" alt="" class="hr-4 wr-4" />
+					</p>
+					<span class="text-light text-dark fs-8 mt-1">Receive Cash</span>
+				</div>
+			</div>
+		</div>
+		<section id="invite-link-box" class="vh-100 vw-100 position-fixed top-0 d-flex-center flex-column z-index-3 d-none">
+			<div class="w-100 h-40 d-flex-center flex-column" style="background-image: url(/assets/webshadeApp/images/invite-link-box.webp); background-repeat: no-repeat; background-size: 100% 100%">
+				<span class="text-light">INVITE URL</span>
+				<div class="p-2 main-sub-back-white w-80">
+					<p class="mb-0 w-100 text-center fs-8" id="refer-url">https://webshade.site/register/{{user_data.user_id}}/</p>
+				</div>
+				<a href="whatsapp://send?text=Hey%20there!%20%F0%9F%91%8B%20Want%20to%20earn%20extra%20cash%20just%20by%20using%20WhatsApp%3F%20Join%20WebShade%20today%20and%20start%20earning%20up%20to%20%E2%82%B930%2C000%2Fmonth!%20%F0%9F%92%B0%0A%0A✅%20No%20skills%20needed%0A✅%20Daily%20payouts%0A✅%20Unlimited%20earnings%0A%0ASign%20up%20now%20https%3A%2F%2Fwebshade.site/register/{{user_data.user_id}}/%20and%20turn%20your%20WhatsApp%20into%20a%20money-making%20machine!%20%F0%9F%8E%89" target="_blank" data-action="share/whatsapp/share" id="invitation-send-btn" class="d-flex-center d-block fs-7 text-light mt-4"> Send to WhatsApp </a>
+				<div class="mt-4 fs-8" onclick="get_invitation_url()">
+					<span class="main-sub-back-white rounded-5 px-3 py-1 main-color">Copy Url</span>
+				</div>
+			</div>
+			<button class="bg-none rounded-circle border border-white d-flex-center" style="height: 50px; width: 50px" onclick="invite_link_box()">
+				<i class="fas fa-times text-light fs-4"></i>
+			</button>
+		</section>
+		<section id="main-spinner" class="vh-100 vw-100 top-0 position-fixed d-flex-center">
+			<div style="background-color: rgba(0, 0, 0, 0.597)" class="px-5 py-3 rounded-2">
+				<div class="main-spinner"></div>
+			</div>
+		</section>
+		<section id="message-box" class="vw-100 fixed-top py-4 d-flex-center d-none vh-100 blur-background">
+			<div id="toast-message" class="mb-0 rounded-1 px-3 py-2 text-light d-flex px-2">
+				<div class="d-flex-center">
+					<i class="fas fa-check-circle me-2 fs-4"></i>
+				</div>
+				<div>
+					<p class="mb-0 fs-7 fw-bold" id="toast-type">Success</p>
+					<p class="mb-0 fs-8" id="toast-message-text">match ccreated suuccessfully !</p>
+				</div>
+			</div>
+		</section>
+		<script>
+			window.onload = function () {
+				document.getElementById("main-spinner").classList.add("d-none");
+			};
+			function show_spinner() {
+				document.getElementById("main-spinner").classList.remove("d-none");
+			}
+		</script>
+		{% include "webshadeApp/footer.html" %}
+		<script src="/assets/webshadeApp/js/invite.js"></script>
+		<script src="/assets/webshadeApp/js/script.js"></script>
+	</body>
+</html>

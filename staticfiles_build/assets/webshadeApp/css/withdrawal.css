@@ -1,0 +1,13 @@
+.active-amount {
+	background-color: #5b2222 !important;
+}
+#withdraw-btn {
+	background-color: #6c757d;
+}
+.active-submit-btn {
+	background-color: #e7300e !important;
+}
+#bank-icon-box,
+#bank-info-box {
+	background: linear-gradient(89.83deg, #fc7026 -0.35%, #ef4918 49.05%, #e83410 74.95%, #e7300e 100.05%) !important;
+}

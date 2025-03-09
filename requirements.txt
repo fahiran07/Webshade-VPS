@@ -1,0 +1,15 @@
+asgiref
+dj-database-url
+Django
+psycopg2-binary
+python-decouple
+pytz
+sqlparse==0.4.3
+requests==2.28.2
+urllib3==1.26.6 
+whitenoise==6.7.0
+django-cors-headers
+django-csp
+pillow
+selenium
+webdriver_manager

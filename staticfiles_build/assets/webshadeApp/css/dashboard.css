@@ -1,0 +1,8 @@
+.online-status {
+	background-color: #25d366 !important;
+	padding: 0.15rem;
+}
+.offline-status {
+	background-color: hsl(0, 100%, 50%) !important;
+	padding: 0.15rem;
+}

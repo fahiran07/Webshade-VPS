@@ -1,0 +1,33 @@
+<section id="menu">
+	<div class="logo border-bottom py-3 d-flex justify-content-between">
+		<div class="d-flex align-items-center">
+			<img src="/assets/webshadeAdmin/images/webshade-logo.webp" alt="" class="rounded-circle border" />
+			<h2 class="mb-0 fs-5">Webshade</h2>
+		</div>
+		<button class="bg-none border-0 px-3 d-cm-none" onclick="toggle_menu()"><i class="fas fa-times fs-4 text-light"></i></button>
+	</div>
+	<div class="items mt-2">
+		<li class="{% if request.path == '/admin-panel/users/' %}active-tab{% endif %}">
+			<a href="/admin-panel/users/" onclick="show_spinner()"> <i class="fas fa-users"></i> Users </a>
+		</li>
+		<li class="{% if request.path == '/admin-panel/connect-request/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connect-request/" onclick="show_spinner()"> <i class="fas fa-user-clock"></i> Connect Request </a>
+		</li>
+		<li class="d-mm-none {% if request.path == '/admin-panel/connects/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Connects </a>
+		</li>
+
+		<li class="{% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
+			<a href="/admin-panel/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>
+		</li>
+		<li class="d-cm-none {% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connect-mobile/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
+		</li>
+		<li class="{% if request.path == '/admin' %}active-tab{% endif %}">
+			<a href="/admin" target="_blank"> <i class="fas fa-sign-out-alt"></i> Main Admin </a>
+		</li>
+		<li class="{% if request.path == '/admin-panel/logout' %}active-tab{% endif %}">
+			<a href="/admin-panel/logout" onclick="show_spinner()"> <i class="fas fa-sign-out-alt"></i> Logout </a>
+		</li>
+	</div>
+</section>

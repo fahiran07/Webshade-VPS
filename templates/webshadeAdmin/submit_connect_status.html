@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="csrf-token" content="{{ csrf_token }}" />
+		<title>Connect Request</title>
+		<link rel="stylesheet" href="/assets/webshadeAdmin/css/utils.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+		<style>
+			body {
+				font-family: "Arial", sans-serif;
+				background-color: #f4f4f9;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				color: #333;
+			}
+
+			.container {
+				background-color: #ffffff;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+				text-align: center;
+				width: 100%;
+				max-width: 400px;
+			}
+
+			header {
+				font-size: 24px;
+				font-weight: bold;
+				color: #6200ea;
+				margin-bottom: 20px;
+			}
+
+			.timer {
+				display: flex;
+				justify-content: center;
+				margin-bottom: 20px;
+			}
+
+			.timer-box {
+				background-color: #6200ea;
+				color: #ffffff;
+				padding: 10px 20px;
+				border-radius: 5px;
+				font-size: 18px;
+				margin: 0 5px;
+			}
+
+			input[type="text"] {
+				width: calc(100% - 22px);
+				padding: 10px;
+				margin-bottom: 20px;
+				border: 2px solid #ddd;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+
+			input[type="text"]:focus {
+				border-color: #6200ea;
+				outline: none;
+			}
+
+			#submit-btn {
+				background-color: #6200ea;
+				color: #ffffff;
+				padding: 10px 20px;
+				border: none;
+				border-radius: 5px;
+				font-size: 16px;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+			}
+
+			#submit-btn:hover {
+				background-color: #3700b3;
+			}
+			/* Base button styling */
+			.reaction-btn {
+				font-size: 16px;
+				font-weight: 600;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				position: relative;
+				overflow: hidden;
+			}
+
+			/* Accept button styling */
+			.accept-btn {
+				background: linear-gradient(135deg, #4caf50, #45a049);
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			.accept-btn:hover {
+				background: linear-gradient(135deg, #45a049, #4caf50);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+			}
+
+			.accept-btn:active {
+				transform: translateY(0);
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			/* Reject button styling */
+			.reject-btn {
+				background: linear-gradient(135deg, #f44336, #d32f2f);
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			.reject-btn:hover {
+				background: linear-gradient(135deg, #d32f2f, #f44336);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+			}
+
+			.reject-btn:active {
+				transform: translateY(0);
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			/* Ripple effect animation */
+			.reaction-btn::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 300%;
+				height: 300%;
+				background: rgba(255, 255, 255, 0.3);
+				border-radius: 50%;
+				transform: translate(-50%, -50%) scale(0);
+				transition: transform 0.5s ease, opacity 0.5s ease;
+				opacity: 0;
+			}
+
+			.reaction-btn:active::after {
+				transform: translate(-50%, -50%) scale(1);
+				opacity: 1;
+				transition: transform 0s, opacity 0s;
+			}
+
+			.spinner {
+				display: none;
+				width: 16px;
+				height: 16px;
+				border: 2px solid white;
+				border-top: 2px solid transparent;
+				border-radius: 50%;
+				animation: spin 0.8s linear infinite;
+				margin-left: 10px;
+			}
+			#message-box {
+				z-index: 2700;
+			}
+			#toast-message {
+				opacity: 0;
+				transition: opacity 0.2s ease-in-out;
+			}
+			.success-toast {
+				background: #2ca83a;
+			}
+			#toast-type {
+				text-align: left;
+			}
+			.error-toast {
+				background: #c91c10;
+			}
+			.show-toast {
+				opacity: 1 !important;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container w-95 mx-auto">
+			<header>Connect Request</header>
+
+			<div class="timer">
+				<div class="timer-box" id="minutes">00</div>
+				<div class="timer-box" id="seconds">00</div>
+			</div>
+			<p class="fs-4 text-success">{{request_phone}}</p>
+
+			<input type="text" id="code" class="w-100" placeholder="Enter the code..." autocapitalize="true" />
+
+			<button onclick="submitRequest()" id="submit-btn">
+				Submit
+				<div class="spinner" id="spinner"></div>
+			</button>
+			<div class="w-100 d-flex justify-content-evenly mt-4">
+				<button class="reaction-btn accept-btn fs-9 rounded-5 py-2 border-0 text-light" style="width: 32.5%" onclick="acceptRequest('{{currentConnectId}}')">
+					Accept
+					<div class="spinner" id="spinner"></div>
+				</button>
+				<button class="reaction-btn accept-btn fs-9 rounded-5 py-2 border-0 text-light" style="width: 32.5%" onclick="tryAgainRequest('{{currentConnectId}}')">
+					Try Again
+					<div class="spinner" id="spinner"></div>
+				</button>
+				<button class="reaction-btn reject-btn fs-9 rounded-5 py-2 border-0 text-light" style="width: 32.5%" onclick="rejectRequest('{{currentConnectId}}')">
+					Reject
+					<div class="spinner" id="spinner"></div>
+				</button>
+			</div>
+		</div>
+		<section id="message-box" class="vw-100 fixed-top py-4 d-flex-center align-cm-items-start d-none vh-100 blur-background bg-cm-none">
+			<div id="toast-message" class="mb-0 rounded-1 px-3 py-2 text-light d-flex px-2 w-cm-30">
+				<div class="d-flex-center">
+					<i class="fas fa-check-circle me-2 fs-4"></i>
+				</div>
+				<div>
+					<p class="mb-0 fs-7 fw-bold" id="toast-type">Success</p>
+					<p class="mb-0 fs-8" id="toast-message-text">match ccreated suuccessfully !</p>
+				</div>
+			</div>
+		</section>
+
+		<script>
+			let toastMessageBox = document.getElementById("message-box");
+			let toastMessage = document.getElementById("toast-message");
+
+			function show_toast_message(message, isSuccess) {
+				if (isSuccess) {
+					toastMessage.innerHTML = `
+                <div class="d-flex-center">
+                    <i class="fas fa-check-circle me-2 fs-4"></i>
+                </div>
+                <div>
+                    <p class="mb-0 fs-7" id="toast-type">Success</p>
+                    <p class="mb-0 fs-8" id="toast-message-text">${message}</p>
+                </div>`;
+					toastMessage.classList.add("success-toast");
+					toastMessage.classList.remove("error-toast");
+				} else {
+					toastMessage.innerHTML = `
+                <div class="d-flex-center">
+                    <i class="fas fa-times-circle me-2 fs-4"></i>
+                </div>
+                <div>
+                    <p class="mb-0 fs-7" id="toast-type">Error</p>
+                    <p class="mb-0 fs-8" id="toast-message-text">${message}</p>
+                </div>`;
+					toastMessage.classList.add("error-toast");
+					toastMessage.classList.remove("success-toast");
+				}
+
+				toastMessageBox.classList.remove("d-none");
+
+				setTimeout(() => {
+					toastMessage.classList.add("show-toast");
+					setTimeout(() => {
+						toastMessage.classList.remove("show-toast");
+						setTimeout(() => {
+							toastMessageBox.classList.add("d-none");
+						}, 200);
+					}, 1000);
+				}, 50);
+			}
+
+			let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
+			let startTime = Date.now();
+
+			function updateTimer() {
+				const currentTime = Date.now();
+				const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+				const minutes = Math.floor(elapsedTime / 60);
+				const seconds = elapsedTime % 60;
+
+				document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
+				document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+			}
+
+			setInterval(updateTimer, 1000);
+
+			function submitRequest() {
+				let code = document.getElementById("code").value;
+				let submitBtn = document.getElementById("submit-btn");
+				let spinner = document.getElementsByClassName("spinner")[0];
+
+				// Spinner dikhaye aur button disable kare
+				spinner.style.display = "inline-block";
+				submitBtn.disabled = true;
+
+				fetch("/admin-panel/api/send-code/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+					body: JSON.stringify({ connect_id: "{{currentConnectId}}", code: code }),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						// Spinner chhupaye aur button enable kare
+						spinner.style.display = "none";
+						submitBtn.disabled = false;
+						if (!data.error) {
+							show_toast_message(data.message, true);
+						} else {
+							show_toast_message(data.message, false);
+						}
+					});
+			}
+			function acceptRequest(connectId) {
+				let spinner = document.getElementsByClassName("spinner")[1];
+				spinner.style.display = "inline-block";
+				fetch("/admin-panel/api/accept-request/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+					body: JSON.stringify({ connect_id: connectId }),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						spinner.style.display = "none";
+						if (!data.error) {
+							show_toast_message("Request Accepted Successfully", true);
+						} else {
+							show_toast_message(data.message, false);
+						}
+					});
+			}
+			function tryAgainRequest(connectId) {
+				let spinner = document.getElementsByClassName("spinner")[2];
+				spinner.style.display = "inline-block";
+				fetch("/admin-panel/api/try-again-request/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+					body: JSON.stringify({ connect_id: connectId }),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						spinner.style.display = "none";
+						if (!data.error) {
+							show_toast_message("Send try again request", true);
+						} else {
+							show_toast_message(data.message, false);
+						}
+					});
+			}
+
+			function rejectRequest(connectId) {
+				let spinner = document.getElementsByClassName("spinner")[3];
+				spinner.style.display = "inline-block";
+				fetch("/admin-panel/api/reject-request/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+					body: JSON.stringify({ connect_id: connectId }),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						spinner.style.display = "none";
+						if (!data.error) {
+							show_toast_message("Request Rejected Successfully", true);
+						} else {
+							show_toast_message(data.message, false);
+						}
+					});
+			}
+		</script>
+	</body>
+</html>
