@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from webshadeAdmin import views, api
 from django.shortcuts import redirect
-from .et7india_api import get_verification_code
 
 urlpatterns = [
     path("", lambda request: redirect('/admin-panel/users/', permanent=True)),
