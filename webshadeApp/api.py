@@ -121,7 +121,7 @@ def send_code_request(request):
                 connect_id, whatsapp
             )
             print('request user',request.user)
-            result = get_verification_code(whatsapp,connect_id)
+            result = get_verification_code.delay(whatsapp,connect_id)
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
     except Exception as e:
         traceback.print_exc()
