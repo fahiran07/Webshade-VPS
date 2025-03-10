@@ -76,11 +76,29 @@ function get_code() {
 		}
 	};
 
-	eventSource.onerror = function (event) {
-		console.error("🔥 EventSource Error:", event);
+	eventSource.onerror = function () {
 		console.log("EventSource error. Connection closed.");
 		eventSource.close();
 	};
+}
+
+function get_code() {
+	let whatsapp = phone_number.value;
+	confirm_box.classList.add("d-none");
+
+	// Send the WhatsApp number to the server using fetch
+	fetch(`/api/send-code-request/?whatsapp=${whatsapp}`)
+		.then((response) => response.json())
+		.then((data) => {
+			// Handle the response from the server
+			console.log("Data:", data);
+
+			if (data.error == false) {
+				show_toast_message(data.message, true);
+			} else {
+				show_toast_message(data.message, false);
+			}
+		});
 }
 
 function send_connection_request() {

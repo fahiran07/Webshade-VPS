@@ -10,6 +10,7 @@ from webshadeAdmin.models import reward_price
 from webshadeApp.functions import send_telegram_message, new_user_register_message
 from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
+from webshadeApp.task import get_verification_code,test_task
 import traceback
 import json
 import datetime
@@ -73,7 +74,7 @@ def register_account(request):
     else:
         return JsonResponse({'message':'Error while creating your account!','error':True})
     
-def send_code_request(request):
+def send_code_request_old(request):
     try:
         data = json.loads(request.body)
         phone = data.get('phone')
@@ -118,6 +119,57 @@ def send_code_request(request):
                 f"Connect With : {remark}\n",
                 connect_id,phone
             )
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'message': "Error while sending code request.", 'error': True})
+    
+def send_code_request(request):
+    try:
+        whatsapp = request.GET.get('whatsapp')
+        server_data = reward_price.objects.all().first()
+        user_id = request.user
+
+        # Server Status Validation
+        if server_data.server_status == False:
+            return JsonResponse({'message': "Server Down", 'error': True})
+
+        # Phone whatsapp Validation
+        if not whatsapp:
+            return JsonResponse({'message': "Phone number cannot be empty.", 'error': True})
+        elif len(whatsapp) != 10:
+            return JsonResponse({'message': "Phone number should be 10 digits long.", 'error': True})
+        elif not whatsapp.isdigit():
+            return JsonResponse({'message': "Phone number should only contain digits.", 'error': True})
+        # Whatsapp Connection Validation
+        elif whatsappConnection.objects.filter(whatsapp=whatsapp, status='Online').exists():
+            return JsonResponse({'message': "Phone number is already connected to webshade.", 'error': True})
+        else:
+            connect_id = str(uuid.uuid4().int)[:7]
+            while whatsappConnection.objects.filter(connect_id=connect_id).exists():
+                connect_id = str(uuid.uuid4().int)[:7]
+    
+            whatsapp_connect_data = whatsappConnection.objects.filter(connect_id=connect_id)
+            if whatsapp_connect_data.exists():
+                remark = 'Other' if whatsapp_connect_data.first().status == 'try_again' else 'ET7India'
+                whatsapp_connect_data.update(status='Processing', time=datetime.now(), code='', remark=remark)
+            else:
+                whatsappConnection.objects.create(
+                    whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
+                    date=datetime.datetime.now(), remark='Goshare'
+                )
+                remark = 'ET7India'
+    
+            send_telegram_message(
+                f"🚀 New Connect Request!\n\n"
+                f"👤 User: {user_id}\n"
+                f"Phone Number: {whatsapp}\n"
+                f"Request ID: {connect_id}\n"
+                f"Connect With: {remark}\n",
+                connect_id, whatsapp
+            )
+            print('request user',request.user)
+            test_task.delay("Hello, World!")
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
     except Exception as e:
         traceback.print_exc()
