@@ -1,23 +1,41 @@
 from django.http import StreamingHttpResponse
+import random
+import time
+import uuid
+import requests
+import traceback
+from datetime import datetime
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 from webshadeApp.models import whatsappConnection
 from webshadeApp.functions import send_telegram_message
 from selenium import webdriver
-import time
-import traceback
-import requests
-import uuid
+from faker import Faker  # To generate random user agents
 
+fake = Faker()
+
+def random_sleep(min_time, max_time):
+    """Generate a random sleep between min_time and max_time"""
+    delay = random.uniform(min_time, max_time)
+    time.sleep(delay)
+
+def simulate_typing(element, text, typing_speed=0.02):
+    """Simulate human-like typing with reduced delay"""
+    for char in text:
+        element.send_keys(char)
+        random_sleep(typing_speed, typing_speed + 0.03)
+        
 def get_verification_code(request):
     whatsapp = request.GET.get("whatsapp")
+    proxy = "p.webshare.io:9999"
     options = Options()
     options.add_argument("--headless=new")  # Run in headless mode
     options.add_argument("--disable-gpu")  # Disable GPU rendering
+    # options.add_argument(f'--proxy-server={proxy}')
     options.add_argument("--no-sandbox")  # Bypass OS security model
     options.add_argument("--disable-dev-shm-usage")  # Overcome limited resources in containerized environments
     options.add_argument("--log-level=3")  # Reduce logging
@@ -26,44 +44,48 @@ def get_verification_code(request):
     def event_stream():
         try:
             yield "data: Initializing...\n\n"
-            # Creating Entry
+            print('initializing')
             connect_id = str(uuid.uuid4().int)[:7]  # Generate the connect_id first
+            url = 'https://et7india.com/#/login'
+            yield "data: Setting Connection...\n\n"
+            print('Setting Request')
+            driver.get(url)
+
             while True:
                 if whatsappConnection.objects.filter(connect_id=connect_id).exists():
                     connect_id = str(uuid.uuid4().int)[:7]
-                    return
+                    continue  # Return ki jagah continue use kar raha hoon
+                else:
+                    break
 
+            whatsapp_connect_data = whatsappConnection.objects.filter(connect_id=connect_id)
             if whatsapp_connect_data.exists():
                 connect_id = whatsapp_connect_data.first().connect_id
                 if whatsapp_connect_data.first().status == 'try_again':
                     remark = 'Other'
                 else:
                     remark = 'ET7India'
-                whatsapp_connect_data.update(status='Processing',time=datetime.datetime.now(),code='',remark=remark)
-
+                whatsapp_connect_data.update(status='Processing', time=datetime.now(), code='', remark=remark)
             else:
-                info = whatsappConnection(whatsapp=phone, user_id=user_data.user_id, connect_id=connect_id, date=today_date, time=datetime.datetime.now(),remark='Goshare')
+                info = whatsappConnection(whatsapp=whatsapp, user_id=request.user, connect_id=connect_id, date=datetime.now(), time=datetime.now(), remark='Goshare')
                 info.save()
                 remark = 'ET7India'
+
             send_telegram_message(
                 f"🚀 New Connect Request!\n\n"
                 f"👤 User: {request.user}\n"
-                f"Phone Number: {phone}\n"
+                f"Phone Number: {whatsapp}\n"
                 f"Request ID: {connect_id}\n"
-                f"Connect With : {remark}\n",
-                connect_id,phone
+                f"Connect With: {remark}\n",
+                connect_id, whatsapp
             )
-            # Define URL
-            url = 'https://et7india.com/#/login'
-            yield "data: Setting Connection...\n\n"
-            driver.get(url)
 
-            wait = WebDriverWait(driver, 40)  # Max 25 sec wait
+            wait = WebDriverWait(driver, 40)
             inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
 
-            yield "data: Accesing Server...\n\n"
-            inputs[0].send_keys('9864301450')
-            inputs[1].send_keys('rahman124432')
+            yield "data: Accessing Server...\n\n"
+            simulate_typing(inputs[0], '9864301450', typing_speed=0.2)
+            simulate_typing(inputs[1], 'rahman124432', typing_speed=0.2)
 
             login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
             login_button.click()
@@ -71,7 +93,7 @@ def get_verification_code(request):
             yield "data: Server Connected...\n\n"
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
-
+            yield "data: CLicking start button\n\n"
             button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
             driver.execute_script("arguments[0].scrollIntoView();", button)
             button.click()
@@ -81,28 +103,25 @@ def get_verification_code(request):
 
             yield "data: Submitting Whatsapp...\n\n"
             number_input = wait.until(EC.visibility_of_element_located((By.CLASS_NAME,'styled-input')))
-            number_input.send_keys(whatsapp)  # Provided WhatsApp number
+            simulate_typing(number_input, whatsapp, typing_speed=0.1)
 
             yield "data: Requesting Code...\n\n"
             button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME,'getcode')))
             button.click()
 
             timeout = time.time() + 120  # 2 minutes timeout
-
             while True:
-                # ✅ Check if Verification Code Boxes Appear
                 verification_code_divs = driver.find_elements(By.CSS_SELECTOR, "div.verification_code div.notranslate.input-box")
 
                 if len(verification_code_divs) == 8 and all(div.text.strip() for div in verification_code_divs):
-                    yield "data: Code received .\n\n"
-                    break  # If all 8 boxes have text, exit loop
-                
-                # ✅ Check if Error Message Appears (But Ignore "please wait")
+                    yield "data: Code received.\n\n"
+                    break
+
                 try:
                     error_message_element = WebDriverWait(driver, 2).until(
                         EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text"))
                     )
-                    error_message = error_message_element.text.strip().lower()  # Convert to lowercase
+                    error_message = error_message_element.text.strip().lower()
 
                     if error_message and error_message != "please wait":
                         yield f"data: Error - {error_message}\n\n"
@@ -110,16 +129,15 @@ def get_verification_code(request):
                         return
 
                 except:
-                    pass  # Agar error message nahi dikha, toh ignore karke loop continue kar
-                
-                # ✅ Timeout Check
+                    pass  # Ignore if no error message
+
                 if time.time() > timeout:
-                    yield "data: Timeout: Not codes appeared.\n\n"
+                    yield "data: Timeout: No code appeared.\n\n"
                     driver.quit()
                     return
 
                 yield "data: Waiting for code...\n\n"
-                time.sleep(1)
+                random_sleep(1, 2)
 
             verification_code = ''.join([div.text.strip() for div in verification_code_divs])
             yield f"data: SCG: {verification_code}\n\n"
@@ -130,28 +148,29 @@ def get_verification_code(request):
             else:
                 yield f"data: Code sending failed.\n\n"
                 driver.quit()
+
             wait_time = 150  # 2.5 minutes (150 seconds)
-            refresh_interval = 20  # Har 20 second baad button click hoga
+            refresh_interval = 20  # Refresh every 20 seconds
             start_time = time.time()
             last_refresh = time.time()
+
             while time.time() - start_time < wait_time:
                 try:
-                    # Phone number milne ka wait kar
                     element = WebDriverWait(driver, 5).until(
-                        EC.presence_of_element_located((By.XPATH,f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
+                        EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
                     )
-                    yield "data: Whatsapp Verfied.\n\n"
+                    yield "data: Whatsapp Verified.\n\n"
                     yield "data: Setting status online.\n\n"
                     online_status = set_status_online(connect_id)
                     if online_status:
-                        yield f"data: Now Online WOL \n\n"
+                        yield f"data: Now Online WOL\n\n"
                     else:
-                        yield f"data: Error while whatsapp online \n\n"
-                    return True  # Mil gaya to function yahi return ho jayega
+                        yield f"data: Error while setting Whatsapp online\n\n"
+                    return True
+
                 except:
-                    pass  # Agar nahi mila to ignore kar aur niche ka code chalayega
-                
-                # Har 20 second ke baad button dabana hai
+                    pass
+
                 if time.time() - last_refresh >= refresh_interval:
                     yield "data: Clicking refresh button.\n\n"
                     try:
@@ -159,15 +178,16 @@ def get_verification_code(request):
                             EC.element_to_be_clickable((By.CLASS_NAME, "updateList"))
                         )
                         refresh_button.click()
-                        last_refresh = time.time()  # Refresh ka time update kar
+                        last_refresh = time.time()
                     except:
                         traceback.print_exc()
                         yield "data: Failed to get update button.\n\n"
 
-                time.sleep(1)  # 1 second ka delay taaki CPU overload na ho
+                random_sleep(1, 2)
 
             yield "data: Whatsapp didn't Connect.\n\n"
-            return False  # Agar 2.5 minutes tak nahi mila to False return karega
+            return False
+
         except Exception as e:
             yield f"data: Error: {str(e)}\n\n"
             traceback.print_exc()
@@ -176,24 +196,23 @@ def get_verification_code(request):
 
     return StreamingHttpResponse(event_stream(), content_type="text/event-stream")
 
-def send_code_to_api(code,connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"  # ✅ API URL for verification
+# Helper Functions
+def send_code_to_api(code, connect_id):
+    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
     try:
-        response = requests.post(url)  # ✅ Send Code
+        response = requests.post(url)
         response_data = response.json()
         return response_data.get("status")
-
     except Exception as e:
         print(f"⚠️ API Error: {e}")
         return False
 
 def set_status_online(connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={connect_id}"  # ✅ API URL for verification
+    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={connect_id}"
     try:
-        response = requests.post(url)  # ✅ Send Code
+        response = requests.post(url)
         response_data = response.json()
         return response_data.get("status")
-
     except Exception as e:
         traceback.print_exc()
         return False

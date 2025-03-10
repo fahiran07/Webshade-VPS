@@ -32,6 +32,7 @@ function toggle_server_dialog() {
 }
 
 function get_code() {
+	run_timer = true;
 	let whatsapp = phone_number.value;
 	let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
 	let button_text = document.getElementById("button-text"); // Specific progress div
@@ -50,12 +51,28 @@ function get_code() {
 		let progress_status = event.data; // Us button ka progress update karega
 		console.log(progress_status);
 
-		if (progress_status.includes("SGC")) {
-			let code = progress_status.match(/SGC\s([A-Z0-9]+)/);
+		if (progress_status.includes("SCG")) {
+			let code = progress_status.slice(-8);
 			for (let i = 0; i < code.length; i++) {
 				copy_btn_box.classList.remove("d-none");
-				document.getElementById(`code-${i + 1}`).textContent = data.code[i];
+				document.getElementById(`code-${i + 1}`).textContent = code[i];
+				request_timer = 150;
+				code_status = "Veryfying Code";
 			}
+		} else if (progress_status.includes("Error")) {
+			show_toast_message(progress_status, false);
+			get_code_button.classList.remove("disabled");
+			button_text.innerText = "Get Code";
+			run_timer = false;
+			eventSource.close();
+		} else if (progress_status.includes("WOL")) {
+			show_toast_message("Your whatsapp is now online", true);
+			get_code_button.classList.remove("disabled");
+			button_text.innerText = "Get Code";
+			run_timer = false;
+			eventSource.close();
+			show_spinner();
+			location.href = "/dashboard";
 		}
 	};
 
