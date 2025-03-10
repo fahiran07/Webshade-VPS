@@ -29,7 +29,7 @@ def simulate_typing(element, text, typing_speed=0.02):
         random_sleep(typing_speed, typing_speed + 0.03)
 
 @shared_task(bind=True, max_retries=2)
-def get_verification_code(self, user_id, whatsapp,connect_id):
+def get_verification_code(whatsapp,connect_id):
     proxy = "p.webshare.io:9999"
     options = Options()
     options.add_argument("--headless=new")
@@ -109,7 +109,7 @@ def get_verification_code(self, user_id, whatsapp,connect_id):
                 element = WebDriverWait(driver, 5).until(
                     EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
                 )
-                online_status = set_status_online(user_id)
+                online_status = set_status_online(connect_id)
                 if online_status:
                     self.update_state(state=states.SUCCESS, meta={"status": "success", "message": "Now Online WOL"})
                     return {"status": "success", "message": "Now Online WOL"}

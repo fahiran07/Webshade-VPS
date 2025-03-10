@@ -121,10 +121,8 @@ def send_code_request(request):
                 connect_id, whatsapp
             )
             print('request user',request.user)
-            # result = test_task.delay("Hello, World!")
-            # request_id = result.id
-            request_id = 'asdasd'
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'request_id':request_id})
+            result = get_verification_code(whatsapp,connect_id)
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while sending code request.", 'error': True})
