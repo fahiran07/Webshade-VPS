@@ -83,6 +83,10 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # For Redis
+# Retry broker connection if it fails
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600, 'max_retries': 5}
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 
 
 # Database
