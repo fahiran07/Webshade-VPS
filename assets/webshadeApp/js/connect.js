@@ -76,7 +76,8 @@ function get_code() {
 		}
 	};
 
-	eventSource.onerror = function () {
+	eventSource.onerror = function (event) {
+		console.error("🔥 EventSource Error:", event);
 		console.log("EventSource error. Connection closed.");
 		eventSource.close();
 	};
