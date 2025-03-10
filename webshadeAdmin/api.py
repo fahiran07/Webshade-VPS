@@ -124,6 +124,20 @@ def set_online_status(request):
         traceback.print_exc()
         return JsonResponse({'status':False,'error':True})
 
+@csrf_exempt
+def update_error(request):
+    try:
+        connect_id = request.GET.get("connect-id")
+        error = request.GET.get("error")
+        connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
+        status=error,
+        code='Error'
+        )
+        return JsonResponse({'status':True,'error':False})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'status':False,'error':True})
+
 
 def accept_request(request):
     try:

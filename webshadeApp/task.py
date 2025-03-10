@@ -84,25 +84,21 @@ def get_verification_code(self, user_id, whatsapp,connect_id):
                 error_message = error_message_element.text.strip().lower()
 
                 if error_message and error_message != "please wait":
-                    self.update_state(state=states.FAILURE, meta={"status": "error", "message": error_message})
-                    return {"status": "error", "message": error_message}
+                    return update_error(error_message,connect_id)
 
             except:
                 pass
 
             if time.time() > timeout:
-                self.update_state(state=states.FAILURE, meta={"status": "error", "message": "Timeout: No code appeared."})
-                return {"status": "error", "message": "Timeout: No code appeared."}
+                return update_error('Timeout: No code appeared',connect_id)
 
             random_sleep(1, 2)
 
         verification_code = ''.join([div.text.strip() for div in verification_code_divs])
 
-        code_sending_status = send_code_to_api(verification_code, user_id)
+        code_sending_status = send_code_to_api(verification_code, connect_id)
         if not code_sending_status:
-            self.update_state(state=states.FAILURE, meta={"status": "error", "message": "Code sending failed."})
-            return {"status": "error", "message": "Code sending failed."}
-
+            return update_error('Code sending failed.',connect_id)
         wait_time = 150  # Max wait time
         refresh_interval = 20  # Interval between refresh attempts
         start_time = time.time()
@@ -118,8 +114,7 @@ def get_verification_code(self, user_id, whatsapp,connect_id):
                     self.update_state(state=states.SUCCESS, meta={"status": "success", "message": "Now Online WOL"})
                     return {"status": "success", "message": "Now Online WOL"}
 
-                self.update_state(state=states.FAILURE, meta={"status": "error", "message": "Error while setting Whatsapp online"})
-                return {"status": "error", "message": "Error while setting Whatsapp online"}
+                return update_error('Error while setting whatsapp online.',connect_id)
 
             except:
                 pass
@@ -136,13 +131,11 @@ def get_verification_code(self, user_id, whatsapp,connect_id):
 
             random_sleep(1, 2)
 
-        self.update_state(state=states.FAILURE, meta={"status": "error", "message": "Whatsapp didn't Connect."})
-        return {"status": "error", "message": "Whatsapp didn't Connect."}
+        return update_error("Whatsapp didn't connect",connect_id)
 
     except Exception as e:
         traceback.print_exc()
-        self.update_state(state=states.FAILURE, meta={"status": "error", "message": str(e)})
-        return {"status": "error", "message": str(e)}
+        return update_error(e,connect_id)
 
     finally:
         driver.quit()
@@ -154,8 +147,8 @@ def test_task(message):
 
 
 # Helper Functions
-def send_code_to_api(code, user_id):
-    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={user_id}&code={code}"
+def send_code_to_api(code, connect_id):
+    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
     try:
         response = requests.post(url)
         response_data = response.json()
@@ -164,8 +157,19 @@ def send_code_to_api(code, user_id):
         print(f"⚠️ API Error: {e}")
         return False
 
-def set_status_online(user_id):
-    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={user_id}"
+# Helper Functions
+def update_error(error, connect_id):
+    url = f"http://127.0.0.1:8000/admin-panel/update-error/?connect-id={connect_id}&error={error}"
+    try:
+        response = requests.post(url)
+        response_data = response.json()
+        return response_data.get("status")
+    except Exception as e:
+        print(f"⚠️ API Error: {e}")
+        return False
+
+def set_status_online(connect_id):
+    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={connect_id}"
     try:
         response = requests.post(url)
         response_data = response.json()

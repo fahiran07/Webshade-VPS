@@ -8,11 +8,13 @@ let message_box = document.getElementById("message-box");
 let time_minute = document.getElementById("time-minute");
 let time_second = document.getElementById("time-second");
 let server_down_msg = document.getElementById("server-down-msg");
-let phone_number = document.getElementById("phone-number");
 let copy_btn_box = document.getElementById("copy-btn-box");
+let whatsapp = document.getElementById("phone-number");
+let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
+let button_text = document.getElementById("button-text"); // Specific progress div
 
-let request_timer = 250;
-let run_timer = true;
+let request_timer = 200;
+let run_timer = false;
 
 let code_status = "Getting Code";
 
@@ -21,7 +23,7 @@ function cancel_connection() {
 }
 
 function connecting_confirmation() {
-	if (phone_number.value.length < 10) {
+	if (whatsapp.value.length < 10) {
 		show_toast_message("Please enter a valid phone number", false);
 		return;
 	}
@@ -31,11 +33,9 @@ function toggle_server_dialog() {
 	document.getElementById("server-down-msg").classList.toggle("d-none");
 }
 
-function get_code() {
+function get_csode() {
 	run_timer = true;
-	let whatsapp = phone_number.value;
-	let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
-	let button_text = document.getElementById("button-text"); // Specific progress div
+
 	setInterval(() => {
 		if (run_timer && request_timer >= 1) {
 			request_timer -= 1;
@@ -81,94 +81,42 @@ function get_code() {
 		eventSource.close();
 	};
 }
+setInterval(() => {
+	if (run_timer == true) {
+		request_timer = request_timer - 1;
+		button_text.innerText = code_status + " " + request_timer;
+	}
+}, 1000);
 
 function get_code() {
-	let whatsapp = phone_number.value;
+	show_spinner();
 	confirm_box.classList.add("d-none");
 
 	// Send the WhatsApp number to the server using fetch
-	fetch(`/api/send-code-request/?whatsapp=${whatsapp}`)
-		.then((response) => response.json())
-		.then((data) => {
-			// Handle the response from the server
-			console.log("Data:", data);
-
-			if (data.error == false) {
-				show_toast_message(data.message, true);
-			} else {
-				show_toast_message(data.message, false);
-			}
-		});
-}
-
-function send_connection_request() {
-	for (let i = 0; i < 8; i++) {
-		copy_btn_box.classList.remove("d-none");
-		document.getElementById(`code-${i + 1}`).textContent = "";
-	}
-	show_spinner();
-	request_timer = 600;
-
-	confirm_box.classList.add("d-none");
-
-	fetch("/api/send-code-request/", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"X-CSRFToken": csrfToken,
-		},
-		body: JSON.stringify({ phone: phone_number.value }),
-	})
+	fetch(`/api/send-code-request/?whatsapp=${whatsapp.value}`)
 		.then((response) => response.json())
 		.then((data) => {
 			hide_spinner();
-			get_code_btn.classList.add("disabled");
-			get_code_btn.innerHTML = `${code_status} ${request_timer} s`;
-			run_timer = true;
-			if (timer_run_away == false) {
-				timer_run_away = true;
-				setInterval(() => {
-					if (request_timer >= 1 && run_timer) {
-						request_timer -= 1;
-						get_code_btn.innerHTML = `${code_status} ${request_timer} s`;
-					}
-				}, 1000);
-			}
-			if (data.error === true && data.message === "Server Down") {
-				get_code_btn.innerHTML = "Get Code";
-				get_code_btn.classList.remove("disabled");
-				run_timer = false;
-				toggle_server_dialog();
-			} else if (data.error === false) {
+			// Handle the response from the server
+			if (data.error == false) {
 				show_toast_message(data.message, true);
+				run_timer = true;
+				request_timer = 200;
+				get_code_button.classList.add("disabled");
 				check_code_request(data.connect_id);
 			} else {
-				get_code_btn.innerHTML = "Get Code";
-				request_timer = 600;
-				get_code_btn.classList.remove("disabled");
-				run_timer = false;
 				show_toast_message(data.message, false);
 			}
 		});
 }
 
 function check_code_request(connect_id) {
-	console.log(connect_id);
-
-	fetch("/api/check-code-request/", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"X-CSRFToken": csrfToken,
-		},
-		body: JSON.stringify({ connect_id: connect_id }),
-	})
+	fetch("/api/check-code-request/?connect_id=" + connect_id)
 		.then((response) => response.json())
 		.then((data) => {
 			if (data.error == true) {
-				request_timer = 600;
-				get_code_btn.innerHTML = "Get Code";
-				get_code_btn.classList.remove("disabled");
+				button_text.innerHTML = "Get Code";
+				get_code_button.classList.remove("disabled");
 				run_timer = false;
 				show_toast_message(data.message, false);
 			} else if (data.error === false && data.code !== "") {
@@ -179,18 +127,19 @@ function check_code_request(connect_id) {
 					document.getElementById(`code-${i + 1}`).textContent = data.code[i];
 				}
 				setTimeout(() => {
-					code_status = "Checking Code";
+					code_status = "Verification Started";
+					request_timer = 140;
+					get_code_button.classList.add("disabled");
 					check_code_acceptence(connect_id);
 				}, 1000);
 			} else if (data.error === false && data.code === "") {
 				if (request_timer < 1) {
-					request_timer = 600;
-					get_code_btn.innerHTML = "Get Code";
-					get_code_btn.classList.remove("disabled");
+					request_timer = 0;
+					button_text.innerHTML = "Get Code";
+					get_code_button.classList.remove("disabled");
+					show_toast_message("Error - Please try again", false);
 				} else {
-					setTimeout(() => {
-						check_code_request(connect_id);
-					}, 1000);
+					check_code_request(connect_id);
 				}
 			}
 		});
@@ -216,13 +165,13 @@ function check_code_acceptence(connect_id) {
 				} else {
 					setTimeout(() => {
 						check_code_acceptence(connect_id);
-					}, 2500);
+					}, 1500);
 				}
 			} else if (data.error == true && data.acceptence == false) {
 				run_timer = false;
 				get_code_btn.innerHTML = "Get Code";
 				get_code_btn.classList.remove("disabled");
-				phone_number.value == "";
+				whatsapp.value == "";
 				show_toast_message(data.message, false);
 			}
 		});

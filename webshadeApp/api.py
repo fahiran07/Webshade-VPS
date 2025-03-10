@@ -11,6 +11,7 @@ from webshadeApp.functions import send_telegram_message, new_user_register_messa
 from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
+from celery.result import AsyncResult
 import traceback
 import json
 import datetime
@@ -74,56 +75,7 @@ def register_account(request):
     else:
         return JsonResponse({'message':'Error while creating your account!','error':True})
     
-def send_code_request_old(request):
-    try:
-        data = json.loads(request.body)
-        phone = data.get('phone')
-        user_data = userDetail.objects.get(user_id=request.user)
-        server_data = reward_price.objects.all().first()
-
-        # Server Status Validation
-        if server_data.server_status == False:
-            return JsonResponse({'message': "Server Down", 'error': True})
-
-        # Phone Number Validation
-        if not phone:
-            return JsonResponse({'message': "Phone number cannot be empty.", 'error': True})
-        elif len(phone) != 10:
-            return JsonResponse({'message': "Phone number should be 10 digits long.", 'error': True})
-        elif not phone.isdigit():
-            return JsonResponse({'message': "Phone number should only contain digits.", 'error': True})
-        # Whatsapp Connection Validation
-        elif whatsappConnection.objects.filter(whatsapp=phone, status='Online').exists():
-            return JsonResponse({'message': "Phone number is already connected to webshade.", 'error': True})
-        else:
-            while whatsappConnection.objects.filter(connect_id := str(uuid.uuid4().int)[:7]).exists(): pass
-            
-            whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=phone,user_id=request.user,onlineTime=0)
-            if whatsapp_connect_data.exists():
-                connect_id = whatsapp_connect_data.first().connect_id
-                if whatsapp_connect_data.first().status == 'try_again':
-                    remark = 'Other'
-                else:
-                    remark = 'ET7India'
-                whatsapp_connect_data.update(status='Processing',time=datetime.datetime.now(),code='',remark=remark)
-
-            else:
-                info = whatsappConnection(whatsapp=phone, user_id=user_data.user_id, connect_id=connect_id, date=today_date, time=datetime.datetime.now(),remark='Goshare')
-                info.save()
-                remark = 'ET7India'
-            send_telegram_message(
-                f"🚀 New Connect Request!\n\n"
-                f"👤 User: {request.user}\n"
-                f"Phone Number: {phone}\n"
-                f"Request ID: {connect_id}\n"
-                f"Connect With : {remark}\n",
-                connect_id,phone
-            )
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'message': "Error while sending code request.", 'error': True})
-    
+ 
 def send_code_request(request):
     try:
         whatsapp = request.GET.get('whatsapp')
@@ -169,19 +121,20 @@ def send_code_request(request):
                 connect_id, whatsapp
             )
             print('request user',request.user)
-            test_task.delay("Hello, World!")
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
+            # result = test_task.delay("Hello, World!")
+            # request_id = result.id
+            request_id = 'asdasd'
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'request_id':request_id})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while sending code request.", 'error': True})
     
 def check_code_request(request):
     try:
-        data = json.loads(request.body)
-        connect_id = data.get('connect_id')
+        connect_id = request.GET.get('connect_id')
         connect_data = whatsappConnection.objects.filter(connect_id=connect_id).exclude(code="").first()
-        if connect_data and connect_data.status == 'Rejected':
-            return JsonResponse({'message': "The whatsapp is already connected by other.", 'error': True,'code':'Rejected'})
+        if connect_data and connect_data.code == 'Error':
+            return JsonResponse({'message': connect_data.status, 'error': True,})
         elif connect_data:
             return JsonResponse({'message': "Your whatsapp code was received.", 'error': False,'code':connect_data.code})
         else:
@@ -195,8 +148,8 @@ def check_code_acceptence(request):
         data = json.loads(request.body)
         connect_id = data.get('connect_id')
         connect_data = whatsappConnection.objects.get(connect_id=connect_id)
-        if connect_data.status == 'try_again':
-            return JsonResponse({'message': "Please try again.", 'error': True,'acceptence':False})
+        if connect_data.code == 'Error':
+            return JsonResponse({'message': connect_data.status, 'error': True,'acceptence':False})
         elif connect_data.status == 'Online':
             return JsonResponse({'message': "Congrats, Your whatsapp is now online.", 'error': False,'acceptence':True})
         elif connect_data.status == 'Rejected':
