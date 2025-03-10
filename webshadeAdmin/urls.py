@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from webshadeAdmin import views, api
 from django.shortcuts import redirect
-from .et7india_api import get_verification_code
 
 urlpatterns = [
     path("", lambda request: redirect('/admin-panel/users/', permanent=True)),
@@ -25,7 +24,6 @@ urlpatterns = [
     path("api/search/", api.search),
 
     # SSE
-    path("sse-et7india/", get_verification_code, name="sse"),
     path("send-code-backend/", api.send_code_in_backend, name="send_code"),
     path("set-status-online/", api.set_online_status, name="set_status"),
 
