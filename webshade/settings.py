@@ -77,6 +77,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webshade.wsgi.application'
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # For Redis
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # For Redis
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

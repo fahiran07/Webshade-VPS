@@ -3,6 +3,11 @@
 import os
 import sys
 
+# Import Celery to initialize it
+from webshade.celery import app as celery_app
+
+# Ensuring that Celery is always imported when Django starts
+__all__ = ('celery_app',)
 
 def main():
     """Run administrative tasks."""
