@@ -25,7 +25,6 @@ urlpatterns = [
     path("api/search/", api.search),
 
     # SSE
-    path("sse-et7india/", get_verification_code, name="sse"),
     path("send-code-backend/", api.send_code_in_backend, name="send_code"),
     path("set-status-online/", api.set_online_status, name="set_status"),
 
