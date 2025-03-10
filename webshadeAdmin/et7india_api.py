@@ -198,7 +198,7 @@ def get_verification_code(request):
 
 # Helper Functions
 def send_code_to_api(code, connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
+    url = f"https://82.29.162.97/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
     try:
         response = requests.post(url)
         response_data = response.json()
@@ -208,7 +208,7 @@ def send_code_to_api(code, connect_id):
         return False
 
 def set_status_online(connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={connect_id}"
+    url = f"https://82.29.162.97/admin-panel/set-status-online/?connect-id={connect_id}"
     try:
         response = requests.post(url)
         response_data = response.json()
