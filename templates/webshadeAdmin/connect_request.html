@@ -197,9 +197,7 @@
 								<button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>
 							<td id="progress-{{ connect.connect_id }}"></td>
-							<td>
-								<button class="pro-btn px-2 py-1 rounded-1" onclick="get_code('{{ connect.whatsapp }}', '{{ connect.connect_id }}')" type="button"><i class="fas fa-code fs-8"></i> Get Code</button>
-							</td>
+							<td>{{connect.code}}</td>
 						</tr>
 						{% endfor %} {% for connect in rejected_data %}
 						<tr>
@@ -213,9 +211,7 @@
 								<button class="bg-success px-3 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('{{connect.connect_id}}')" type="button">Accept</button>
 								<button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>
-							<td>
-								<button class="pro-btn" onclick="showCodeBox('{{connect.connect_id}}')" type="button"><i class="fas fa-code"></i> Get Code</button>
-							</td>
+							<td>{{connect.code}}</td>
 						</tr>
 						{% endfor %} {% for connect in try_again %}
 						<tr>
@@ -229,9 +225,7 @@
 								<button class="bg-success px-3 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('{{connect.connect_id}}')" type="button">Accept</button>
 								<button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>
-							<td>
-								<button class="pro-btn" onclick="showCodeBox('{{connect.connect_id}}')" type="button"><i class="fas fa-code"></i> Get Code</button>
-							</td>
+							<td>{{connect.code}}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -256,43 +250,6 @@
 				</div>
 			</div>
 		</section>
-		<script>
-			function get_code(whatsapp, connect_id) {
-				let progressContainer = document.getElementById("progress-" + connect_id); // Specific progress div
-				progressContainer.innerHTML = `<div class="loader"></div>`; // Circular progress show karega
-
-				const eventSource = new EventSource(`/admin-panel/sse-et7india/?whatsapp=${whatsapp}&connect-id=${connect_id}`);
-
-				eventSource.onmessage = function (event) {
-					progressContainer.innerHTML = event.data; // Us button ka progress update karega
-				};
-
-				eventSource.onerror = function () {
-					console.log("EventSource error. Connection closed.");
-					eventSource.close();
-				};
-			}
-		</script>
-		<!-- Add this CSS in your style section -->
-		<style>
-			.loader {
-				border: 3px solid #ff0101;
-				border-top: 4px solid #3498db;
-				border-radius: 50%;
-				width: 18px;
-				height: 18px;
-				animation: spin 1s linear infinite;
-				margin: 10px auto;
-			}
-			@keyframes spin {
-				0% {
-					transform: rotate(0deg);
-				}
-				100% {
-					transform: rotate(360deg);
-				}
-			}
-		</style>
 
 		<script src="/assets/webshadeAdmin/js/menu.js"></script>
 		<script src="/assets/webshadeAdmin/js/connect_request.js"></script>
