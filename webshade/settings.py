@@ -77,9 +77,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webshade.wsgi.application'
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # For Redis
+# Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as broker
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # For Redis
 
 
