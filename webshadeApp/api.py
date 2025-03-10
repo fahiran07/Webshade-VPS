@@ -125,7 +125,7 @@ def send_code_request(request):
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
     except Exception as e:
         traceback.print_exc()
-        return JsonResponse({'message': "Error while sending code request.", 'error': True})
+        return JsonResponse({'message': e, 'error': True})
     
 def check_code_request(request):
     try:
