@@ -148,7 +148,7 @@ def test_task(message):
 
 # Helper Functions
 def send_code_to_api(code, connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
+    url = f"http://82.29.162.97/admin-panel/send-code-backend/?connect-id={connect_id}&code={code}"
     try:
         response = requests.post(url)
         response_data = response.json()
@@ -159,7 +159,7 @@ def send_code_to_api(code, connect_id):
 
 # Helper Functions
 def update_error(error, connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/update-error/?connect-id={connect_id}&error={error}"
+    url = f"http://82.29.162.97/admin-panel/update-error/?connect-id={connect_id}&error={error}"
     try:
         response = requests.post(url)
         response_data = response.json()
@@ -169,7 +169,7 @@ def update_error(error, connect_id):
         return False
 
 def set_status_online(connect_id):
-    url = f"http://127.0.0.1:8000/admin-panel/set-status-online/?connect-id={connect_id}"
+    url = f"http://82.29.162.97/admin-panel/set-status-online/?connect-id={connect_id}"
     try:
         response = requests.post(url)
         response_data = response.json()
