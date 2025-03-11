@@ -5,6 +5,8 @@ from webshadeAdmin.models import reward_price, login_number
 from django.views.decorators.cache import never_cache
 from django.db.models import Sum
 from django.http import StreamingHttpResponse
+from celery.app.control import Inspect
+from webshade.celery import app
 import time
 from datetime import timedelta,datetime,date
 
@@ -100,12 +102,24 @@ def withdrawal(request):
     }
     return render(request,'webshadeAdmin/withdrawal.html',context)
 
-def event_stream():
-    for i in range(1, 6):  # Simulate a running task
-        yield f"data: Task {i} completed\n\n"
-        time.sleep(2)  # Simulating task progress delay
+@never_cache
+def celery_connects(request):
+    i = app.control.inspect()  # Correct way to inspect Celery tasks
 
-def sse_view(request):
-    response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
-    response['Cache-Control'] = 'no-cache'
-    return response
+    # If inspect() returns None, replace with an empty dict
+    active_tasks = i.active() or {}
+    scheduled_tasks = i.scheduled() or {}
+    reserved_tasks = i.reserved() or {}
+
+    # Function to count tasks safely (handle empty dict)
+    def count_tasks(task_dict):
+        return sum(len(tasks) for tasks in task_dict.values()) if task_dict else 0
+
+    context = {
+        "active_tasks": count_tasks(active_tasks),
+        "scheduled_tasks": count_tasks(scheduled_tasks),
+        "reserved_tasks": count_tasks(reserved_tasks),
+        "total_tasks": count_tasks(active_tasks) + count_tasks(scheduled_tasks) + count_tasks(reserved_tasks)
+    }
+
+    return render(request, 'webshadeAdmin/celery_connects.html', context)

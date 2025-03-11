@@ -13,7 +13,6 @@ from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
-
 from celery.result import AsyncResult
 import traceback
 import json
@@ -125,7 +124,7 @@ def send_code_request(request):
             )
             print('request user',request.user)
             result = get_verification_code.delay(whatsapp,connect_id)
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': e, 'error': True})
@@ -252,3 +251,24 @@ def update_error(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'status':False,'error':True})
+
+@csrf_exempt
+def cancel_task(request):
+    try:
+        data = json.loads(request.body)
+        task_id = data.get('task_id')
+        task = AsyncResult(task_id)
+        task.revoke(terminate=True)
+        return JsonResponse({'status':True,'error':False})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'status':False,'error':True})
+
+def cancel_task(request):
+    task_id = request.GET.get("connect_id")
+    if task_id:
+        task = AsyncResult(task_id)
+        task.revoke(terminate=True)  # 🔴 Yahan se task terminate hoga forcefully
+        return JsonResponse({"message": "Task cancelled", "status": True})
+    
+    return JsonResponse({"message": "Task ID not found", "status": False})

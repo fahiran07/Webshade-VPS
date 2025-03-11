@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from webshadeAdmin import views, api
+from webshadeAdmin import views, api, get_api
 from django.shortcuts import redirect
 
 urlpatterns = [
@@ -9,6 +9,7 @@ urlpatterns = [
     path("connect-request/", views.connect_request),
     path("connects/", views.connects),
     path("withdrawal/", views.withdrawal),
+    path("celery-connects/", views.celery_connects),
     path("submit-connect-request/<str:connect_id>/<str:request_phone>/", views.submit_connect_status),
     # API Routes
     path("api/get-user-data/", api.get_user_data),
@@ -22,4 +23,7 @@ urlpatterns = [
     path("api/update-withdrawal-status/", api.update_withdrawal_status),
     path("api/update-server-status/", api.update_server_status),
     path("api/search/", api.search),
+
+    # Get Data API
+    path("api/get-celery-data/", get_api.get_running_tasks),
 ]

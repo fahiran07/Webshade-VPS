@@ -11,7 +11,8 @@ let server_down_msg = document.getElementById("server-down-msg");
 let copy_btn_box = document.getElementById("copy-btn-box");
 let whatsapp = document.getElementById("phone-number");
 let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
-let button_text = document.getElementById("button-text"); // Specific progress div
+let button_text = document.getElementById("button-text");
+let task_id; // Specific progress div
 
 let request_timer = 200;
 let run_timer = false;
@@ -55,6 +56,7 @@ function get_code() {
 				run_timer = true;
 				request_timer = 200;
 				get_code_button.classList.add("disabled");
+				task_id = data.task_id;
 				check_code_request(data.connect_id);
 			} else {
 				show_toast_message(data.message, false);
@@ -159,4 +161,16 @@ function copy_code() {
 
 server_back_btn.addEventListener("click", () => {
 	server_down_msg.classList.add("d-none");
+});
+
+window.addEventListener("beforeunload", function () {
+	fetch("/api/cancel-task/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ task_id: task_id }),
+	})
+		.then((response) => response.json())
+		.then((data) => console.log(data.message));
 });

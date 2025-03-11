@@ -16,6 +16,9 @@
 		<li class="d-mm-none {% if request.path == '/admin-panel/connects/' %}active-tab{% endif %}">
 			<a href="/admin-panel/connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Connects </a>
 		</li>
+		<li class="d-mm-none {% if request.path == '/admin-panel/celery-connects/' %}active-tab{% endif %}">
+			<a href="/admin-panel/celery-connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Celery Connects </a>
+		</li>
 
 		<li class="{% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
 			<a href="/admin-panel/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>
