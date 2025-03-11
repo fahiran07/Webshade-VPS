@@ -131,10 +131,11 @@ def send_code_request(request):
 def check_code_request(request):
     try:
         connect_id = request.GET.get('connect_id')
-        connect_data = whatsappConnection.objects.filter(connect_id=connect_id).exclude(code="").first()
+        connect_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
+        connect_data.refresh_from_db()
         if connect_data and connect_data.code == 'Error':
             return JsonResponse({'message': connect_data.status, 'error': True,})
-        elif connect_data:
+        elif connect_data and connect_id.code != '':
             return JsonResponse({'message': "Your whatsapp code was received.", 'error': False,'code':connect_data.code})
         else:
             return JsonResponse({'message': "Waiting for verification.", 'error': False,'code':'','connect_id':connect_id})
