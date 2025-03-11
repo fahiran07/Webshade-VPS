@@ -35,7 +35,7 @@ function toggle_server_dialog() {
 }
 
 setInterval(() => {
-	if (run_timer == true) {
+	if (run_timer == true && request_timer > 1) {
 		request_timer = request_timer - 1;
 		button_text.innerText = code_status + " " + request_timer;
 	}
@@ -128,6 +128,7 @@ function check_code_acceptence(connect_id) {
 				if (request_timer < 1) {
 					get_code_btn.innerHTML = "Get Code";
 					get_code_btn.classList.remove("disabled");
+					show_toast_message("Error - Please try again", false);
 				} else {
 					setTimeout(() => {
 						check_code_acceptence(connect_id);
