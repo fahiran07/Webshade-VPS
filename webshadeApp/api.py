@@ -129,10 +129,11 @@ def send_code_request(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': e, 'error': True})
-
+@csrf_exempt
 def check_code_request(request):
     try:
-        connect_id = request.GET.get('connect_id')
+        data = json.loads(request.body)
+        connect_id = data.get('connect_id')
         connect_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
         connection.close()  # Force new DB connection
         connect_data.refresh_from_db()

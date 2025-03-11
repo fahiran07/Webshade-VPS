@@ -63,12 +63,18 @@ function get_code() {
 }
 
 function check_code_request(connect_id) {
-	fetch("/api/check-code-request/?connect_id=" + connect_id)
+	fetch("/api/check-code-request/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ connect_id: connect_id }),
+	})
 		.then((response) => response.json())
 		.then((data) => {
 			console.log("Checking code:", data);
 
-			if (data.error == true) {
+			if (data.error === true) {
 				button_text.innerHTML = "Get Code";
 				get_code_button.classList.remove("disabled");
 				run_timer = false;
