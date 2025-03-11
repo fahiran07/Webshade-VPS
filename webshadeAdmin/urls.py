@@ -22,10 +22,4 @@ urlpatterns = [
     path("api/update-withdrawal-status/", api.update_withdrawal_status),
     path("api/update-server-status/", api.update_server_status),
     path("api/search/", api.search),
-
-    # SSE
-    path("send-code-backend/", api.send_code_in_backend, name="send_code"),
-    path("set-status-online/", api.set_online_status, name="set_status"),
-    path("update-error/", api.update_error, name="update_error"),
-
 ]

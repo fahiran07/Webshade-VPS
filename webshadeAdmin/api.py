@@ -97,49 +97,6 @@ def send_code(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message':'Error while sending code','error':True})
-@csrf_exempt
-def send_code_in_backend(request):
-    try:
-        connect_id = request.GET.get("connect-id")
-        code = request.GET.get("code")
-        connection_data = whatsappConnection.objects.get(connect_id=connect_id)
-        connection_data.code = code
-        connection_data.save()
-        return JsonResponse({'status':True,'error':False})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'status':False,'error':True})
-
-@csrf_exempt
-def set_online_status(request):
-    try:
-        connect_id = request.GET.get("connect-id")
-        code = request.GET.get("code")
-        connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
-        status='Online', 
-        date=today_date, 
-        time=current_time.strftime("%H:%M:%S"), 
-        successTimestamp=datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
-        )
-        return JsonResponse({'status':True,'error':False})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'status':False,'error':True})
-
-@csrf_exempt
-def update_error(request):
-    try:
-        connect_id = request.GET.get("connect-id")
-        error = request.GET.get("error")
-        connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
-        status=error,
-        code='Error'
-        )
-        return JsonResponse({'status':True,'error':False})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'status':False,'error':True})
-
 
 def accept_request(request):
     try:
