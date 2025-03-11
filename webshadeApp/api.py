@@ -132,7 +132,9 @@ def check_code_request(request):
     try:
         connect_id = request.GET.get('connect_id')
         connect_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
+        connection.close()  # Force new DB connection
         connect_data.refresh_from_db()
+
         if connect_data and connect_data.code == 'Error':
             return JsonResponse({'message': connect_data.status, 'error': True,})
         elif connect_data and connect_data.code != '':
