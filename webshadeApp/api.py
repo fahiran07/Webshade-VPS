@@ -12,6 +12,8 @@ from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+
 from celery.result import AsyncResult
 import traceback
 import json

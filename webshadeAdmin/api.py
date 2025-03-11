@@ -8,7 +8,6 @@ from webshadeAdmin.models import reward_price
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta
-from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 import random
 import traceback
