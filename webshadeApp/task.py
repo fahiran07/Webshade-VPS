@@ -111,6 +111,7 @@ def get_verification_code(self,whatsapp,connect_id):
                     EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
                 )
                 online_status = set_status_online(connect_id)
+                print("Online status",online_status)
                 if online_status:
                     return True
                 return update_error('Error while setting whatsapp online.',connect_id)
