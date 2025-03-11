@@ -136,7 +136,7 @@ def check_code_request(request):
         elif connect_data:
             return JsonResponse({'message': "Your whatsapp code was received.", 'error': False,'code':connect_data.code})
         else:
-            return JsonResponse({'message': "The whatsapp was already connected.", 'error': False,'code':''})
+            return JsonResponse({'message': "Waiting for verification.", 'error': False,'code':''})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while checking code request.", 'error': True})
