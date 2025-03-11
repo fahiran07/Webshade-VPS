@@ -20,6 +20,7 @@ import json
 import datetime
 import uuid
 today_date = datetime.date.today()
+current_time = datetime.datetime.now()
 
 def login_account(request):
     data = json.loads(request.body)
@@ -231,7 +232,7 @@ def set_online_status(request):
         status='Online', 
         date=today_date, 
         time=current_time.strftime("%H:%M:%S"), 
-        successTimestamp=datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
+        successTimestamp=datetime.datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
         )
         return JsonResponse({'status':True,'error':False})
     except Exception as e:

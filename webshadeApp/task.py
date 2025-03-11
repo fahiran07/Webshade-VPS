@@ -174,6 +174,7 @@ def set_status_online(connect_id):
     try:
         response = requests.post(url)
         response_data = response.json()
+        print('Returing')
         return response_data.get("status")
     except Exception as e:
         traceback.print_exc()
