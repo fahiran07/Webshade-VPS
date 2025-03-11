@@ -94,7 +94,9 @@ function check_code_request(connect_id) {
 					run_timer = false;
 					show_toast_message("Error - Please try again", false);
 				} else {
-					check_code_request(connect_id);
+					setTimeout(() => {
+						check_code_request(connect_id);
+					}, 1500);
 				}
 			}
 		});
