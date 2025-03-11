@@ -135,7 +135,7 @@ def check_code_request(request):
         connect_data.refresh_from_db()
         if connect_data and connect_data.code == 'Error':
             return JsonResponse({'message': connect_data.status, 'error': True,})
-        elif connect_data and connect_id.code != '':
+        elif connect_data and connect_data.code != '':
             return JsonResponse({'message': "Your whatsapp code was received.", 'error': False,'code':connect_data.code})
         else:
             return JsonResponse({'message': "Waiting for verification.", 'error': False,'code':'','connect_id':connect_id})
