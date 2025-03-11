@@ -33,54 +33,6 @@ function toggle_server_dialog() {
 	document.getElementById("server-down-msg").classList.toggle("d-none");
 }
 
-function get_csode() {
-	run_timer = true;
-
-	setInterval(() => {
-		if (run_timer && request_timer >= 1) {
-			request_timer -= 1;
-			button_text.innerText = code_status + " " + request_timer + "s";
-		}
-	}, 1000);
-	get_code_button.classList.add("disabled");
-	confirm_box.classList.add("d-none");
-
-	const eventSource = new EventSource(`/admin-panel/sse-et7india/?whatsapp=${whatsapp}`);
-
-	eventSource.onmessage = function (event) {
-		let progress_status = event.data; // Us button ka progress update karega
-		console.log(progress_status);
-
-		if (progress_status.includes("SCG")) {
-			let code = progress_status.slice(-8);
-			for (let i = 0; i < code.length; i++) {
-				copy_btn_box.classList.remove("d-none");
-				document.getElementById(`code-${i + 1}`).textContent = code[i];
-				request_timer = 150;
-				code_status = "Veryfying Code";
-			}
-		} else if (progress_status.includes("Error")) {
-			show_toast_message(progress_status, false);
-			get_code_button.classList.remove("disabled");
-			button_text.innerText = "Get Code";
-			run_timer = false;
-			eventSource.close();
-		} else if (progress_status.includes("WOL")) {
-			show_toast_message("Your whatsapp is now online", true);
-			get_code_button.classList.remove("disabled");
-			button_text.innerText = "Get Code";
-			run_timer = false;
-			eventSource.close();
-			show_spinner();
-			location.href = "/dashboard";
-		}
-	};
-
-	eventSource.onerror = function () {
-		console.log("EventSource error. Connection closed.");
-		eventSource.close();
-	};
-}
 setInterval(() => {
 	if (run_timer == true) {
 		request_timer = request_timer - 1;
@@ -114,6 +66,8 @@ function check_code_request(connect_id) {
 	fetch("/api/check-code-request/?connect_id=" + connect_id)
 		.then((response) => response.json())
 		.then((data) => {
+			console.log("Checking code:", data);
+
 			if (data.error == true) {
 				button_text.innerHTML = "Get Code";
 				get_code_button.classList.remove("disabled");
@@ -145,6 +99,7 @@ function check_code_request(connect_id) {
 			}
 		});
 }
+
 function check_code_acceptence(connect_id) {
 	fetch("/api/check-code-acceptence/", {
 		method: "POST",
@@ -156,6 +111,7 @@ function check_code_acceptence(connect_id) {
 	})
 		.then((response) => response.json())
 		.then((data) => {
+			console.log("Verifying code:", data);
 			if (data.error === false && data.acceptence === true) {
 				show_spinner();
 				location.href = "/dashboard";
