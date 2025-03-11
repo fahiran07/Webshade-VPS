@@ -11,6 +11,7 @@ from webshadeApp.functions import send_telegram_message, new_user_register_messa
 from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
+from django.db import connection
 from celery.result import AsyncResult
 import traceback
 import json
@@ -130,6 +131,7 @@ def send_code_request(request):
 def check_code_request(request):
     try:
         connect_id = request.GET.get('connect_id')
+        connection.close()
         connect_data = whatsappConnection.objects.filter(connect_id=connect_id).exclude(code="").first()
         if connect_data and connect_data.code == 'Error':
             return JsonResponse({'message': connect_data.status, 'error': True,})
@@ -153,7 +155,7 @@ def check_code_acceptence(request):
         elif connect_data.status == 'Rejected':
             return JsonResponse({'message': "The whatsapp is already connected by other.", 'error': True,'acceptence':False})
         elif connect_data.status == 'Offline' or connect_data.status == 'Processing':
-            return JsonResponse({'message': "Your whatsapp is not online.", 'error': False,'acceptence':False})
+            return JsonResponse({'message': "Waiting for Acceptence.", 'error': False,'acceptence':False})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while checking code request.", 'error': True})
