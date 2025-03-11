@@ -137,6 +137,7 @@ function check_code_request(connect_id) {
 					request_timer = 0;
 					button_text.innerHTML = "Get Code";
 					get_code_button.classList.remove("disabled");
+					run_timer = false;
 					show_toast_message("Error - Please try again", false);
 				} else {
 					check_code_request(connect_id);
