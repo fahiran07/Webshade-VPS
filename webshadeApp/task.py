@@ -105,7 +105,6 @@ def get_verification_code(self,whatsapp,connect_id):
         refresh_interval = 20  # Interval between refresh attempts
         start_time = time.time()
         last_refresh = time.time()
-
         while time.time() - start_time < wait_time:
             try:
                 element = WebDriverWait(driver, 5).until(
@@ -113,9 +112,7 @@ def get_verification_code(self,whatsapp,connect_id):
                 )
                 online_status = set_status_online(connect_id)
                 if online_status:
-                    self.update_state(state=states.SUCCESS, meta={"status": "success", "message": "Now Online WOL"})
-                    return {"status": "success", "message": "Now Online WOL"}
-
+                    return True
                 return update_error('Error while setting whatsapp online.',connect_id)
 
             except:

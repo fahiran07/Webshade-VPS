@@ -77,7 +77,6 @@ def register_account(request):
             return JsonResponse({'message':'Your account was created successfully !','error':False})
     else:
         return JsonResponse({'message':'Error while creating your account!','error':True})
-    
  
 def send_code_request(request):
     try:
@@ -129,6 +128,7 @@ def send_code_request(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': e, 'error': True})
+
 @csrf_exempt
 def check_code_request(request):
     try:
@@ -145,6 +145,7 @@ def check_code_request(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while checking code request.", 'error': True})
+
 @csrf_exempt
 def check_code_acceptence(request):
     try:
