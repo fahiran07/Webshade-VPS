@@ -69,16 +69,15 @@ def get_verification_code(self,whatsapp,connect_id):
         print('Getting code')
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'getcode')))
         button.click()
-
         timeout = time.time() + 120  # 2-minute timeout
         while True:
             verification_code_divs = driver.find_elements(By.CSS_SELECTOR, "div.verification_code div.notranslate.input-box")
 
             if len(verification_code_divs) == 8 and all(div.text.strip() for div in verification_code_divs):
                 break  # Exit loop once all boxes are filled with the code
-
+                print('Code got')
             try:
-                error_message_element = WebDriverWait(driver, 2).until(
+                error_message_element = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text"))
                 )
                 error_message = error_message_element.text.strip().lower()
@@ -95,10 +94,13 @@ def get_verification_code(self,whatsapp,connect_id):
             random_sleep(1, 2)
 
         verification_code = ''.join([div.text.strip() for div in verification_code_divs])
+        print('Code is:',verification_code)
 
+        print('Sending Code')
         code_sending_status = send_code_to_api(verification_code, connect_id)
         if not code_sending_status:
             return update_error('Code sending failed.',connect_id)
+        print('Code sent succesfully')
         wait_time = 150  # Max wait time
         refresh_interval = 20  # Interval between refresh attempts
         start_time = time.time()
@@ -120,8 +122,9 @@ def get_verification_code(self,whatsapp,connect_id):
                 pass
 
             if time.time() - last_refresh >= refresh_interval:
+                print('Clicking refresh')
                 try:
-                    refresh_button = WebDriverWait(driver, 5).until(
+                    refresh_button = WebDriverWait(driver, 10).until(
                         EC.element_to_be_clickable((By.CLASS_NAME, "updateList"))
                     )
                     refresh_button.click()
