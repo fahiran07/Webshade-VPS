@@ -102,15 +102,15 @@ def send_code_request(request):
             connect_id = str(uuid.uuid4().int)[:7]
             while whatsappConnection.objects.filter(connect_id=connect_id).exists():
                 connect_id = str(uuid.uuid4().int)[:7]
-    
-            whatsapp_connect_data = whatsappConnection.objects.filter(connect_id=connect_id)
+
+            whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=whatsapp,user_id=request.user)
             if whatsapp_connect_data.exists():
-                remark = 'Other' if whatsapp_connect_data.first().status == 'try_again' else 'ET7India'
+                remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'
                 whatsapp_connect_data.update(status='Processing', time=datetime.now(), code='', remark=remark)
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    date=datetime.datetime.now(), remark='Goshare'
+                    date=datetime.datetime.now(), remark='ET7India'
                 )
                 remark = 'ET7India'
     
@@ -122,7 +122,6 @@ def send_code_request(request):
                 f"Connect With: {remark}\n",
                 connect_id, whatsapp
             )
-            print('request user',request.user)
             result = get_verification_code.delay(whatsapp,connect_id)
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
