@@ -102,7 +102,9 @@ def send_code_in_backend(request):
     try:
         connect_id = request.GET.get("connect-id")
         code = request.GET.get("code")
-        connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(code=code)
+        connection_data = whatsappConnection.objects.get(connect_id=connect_id)
+        connection_data.code = code
+        connection_data.save()
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()
