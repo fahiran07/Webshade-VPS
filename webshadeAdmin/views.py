@@ -37,7 +37,7 @@ def connect_request(request):
     whatsappConnection.objects.filter(status='Rejected').delete()
     connection_data = whatsappConnection.objects.filter(status="Processing").order_by("-id")
     rejected_data = whatsappConnection.objects.filter(status="Rejected").order_by("-id")
-    try_again = whatsappConnection.objects.filter(status="Rejected").order_by("-id")
+    try_again = whatsappConnection.objects.filter(code="Error").order_by("-id")
     context = {
         "connection_data": connection_data,
         "rejected_data": rejected_data,

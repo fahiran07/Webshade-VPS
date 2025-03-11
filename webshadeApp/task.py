@@ -134,7 +134,7 @@ def get_verification_code(self,whatsapp,connect_id):
         return update_error("Whatsapp didn't connect",connect_id)
 
     except Exception as e:
-        traceback.print_exc()
+        e = traceback.print_exc()
         return update_error(e,connect_id)
 
     finally:

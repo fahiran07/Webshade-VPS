@@ -110,7 +110,7 @@ def dashboard(request):
       user_data = userDetail.objects.get(user_id=request.user)
       page_num = request.GET.get('page-number')
       total_referals_info = userDetail.objects.filter(refer_by=user_data.user_id).count()
-      total_connections = whatsappConnection.objects.filter(user_id=request.user).exclude(status__in=['Processing', 'Rejected','try_again']).order_by('-id')
+      total_connections = whatsappConnection.objects.filter(user_id=request.user,status__in=['Online', 'Offline']).order_by('-id')
       total_online = whatsappConnection.objects.filter(user_id=request.user, status='Online').count()
       total_offline = whatsappConnection.objects.filter(user_id=request.user,status='Offline').count()
       total_commision = total_connections.aggregate(Sum('commission'))['commission__sum'] or 0
