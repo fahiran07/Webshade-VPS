@@ -113,7 +113,6 @@ function check_code_acceptence(connect_id) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"X-CSRFToken": csrfToken,
 		},
 		body: JSON.stringify({ connect_id: connect_id }),
 	})

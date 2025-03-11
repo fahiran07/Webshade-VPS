@@ -135,8 +135,6 @@ def check_code_request(request):
         data = json.loads(request.body)
         connect_id = data.get('connect_id')
         connect_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
-        connection.close()  # Force new DB connection
-        connect_data.refresh_from_db()
 
         if connect_data and connect_data.code == 'Error':
             return JsonResponse({'message': connect_data.status, 'error': True,})
@@ -147,7 +145,7 @@ def check_code_request(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': "Error while checking code request.", 'error': True})
-    
+@csrf_exempt
 def check_code_acceptence(request):
     try:
         data = json.loads(request.body)
