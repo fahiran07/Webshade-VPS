@@ -231,7 +231,7 @@ def set_online_status(request):
         status='Online', 
         date=today_date, 
         time=current_time.strftime("%H:%M:%S"), 
-        successTimestamp=datetime.datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
+        successTimestamp=datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
         )
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
