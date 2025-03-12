@@ -111,7 +111,7 @@ def send_code_request(request):
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    date=datetime.datetime.now(), remark='ET7India'
+                    date=datetime.now(), remark='ET7India'
                 )
                 remark = 'ET7India'
     
