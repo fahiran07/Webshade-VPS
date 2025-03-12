@@ -82,7 +82,7 @@ def send_code_request(request):
     try:
         whatsapp = request.GET.get('whatsapp')
         server_data = reward_price.objects.all().first()
-        user_id = request.user
+        user_id = str(request.user)
 
         # Server Status Validation
         if server_data.server_status == False:
