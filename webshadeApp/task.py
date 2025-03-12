@@ -90,13 +90,15 @@ def get_verification_code(whatsapp,connect_id, user_id):
                 error_message = error_message_element.text.strip().lower()
 
                 if error_message and error_message != "please wait":
-                    return update_error(error_message,connect_id,pid)
+                    status = update_error(error_message,connect_id,pid)
+                    return status
 
             except:
                 pass
 
             if time.time() > timeout:
-                return update_error('Timeout: No code appeared',connect_id,pid)
+                status = update_error('Timeout: No code appeared',connect_id,pid)
+                return status
 
             random_sleep(1, 2)
 
@@ -106,7 +108,8 @@ def get_verification_code(whatsapp,connect_id, user_id):
         print('Sending Code')
         code_sending_status = send_code_to_api(verification_code, connect_id)
         if not code_sending_status:
-            return update_error('Code sending failed.',connect_id,pid)
+            status = update_error('Code sending failed.',connect_id,pid)
+            return status
         print('Code sent succesfully')
         wait_time = 150  # Max wait time
         refresh_interval = 20  # Interval between refresh attempts
@@ -121,7 +124,8 @@ def get_verification_code(whatsapp,connect_id, user_id):
                 print("Online status",online_status)
                 if online_status:
                     return True
-                return update_error('Error while setting whatsapp online.',connect_id,pid)
+                status = update_error('Error while setting whatsapp online.',connect_id,pid)
+                return status
 
             except:
                 pass
@@ -138,12 +142,14 @@ def get_verification_code(whatsapp,connect_id, user_id):
                     traceback.print_exc()
 
             random_sleep(1, 2)
-        return update_error("Whatsapp didn't connect",connect_id,pid)
+        status = update_error("Whatsapp didn't connect",connect_id,pid)
+        return status
 
     except Exception as e:
         e = traceback.print_exc()
         driver.quit()
-        return update_error(e,connect_id,pid)
+        status = update_error(e,connect_id,pid)
+        return status
 
     finally:
         driver.quit()
@@ -167,7 +173,7 @@ def send_code_to_api(code, connect_id):
 
 # Helper Functions
 def update_error(error, connect_id,pid):
-    url = f"https://webshade.site/update-error/?connect-id={connect_id}&error={error}&pid=pid"
+    url = f"https://webshade.site/update-error/?connect-id={connect_id}&error={error}&pid={pid}"
     try:
         response = requests.post(url)
         response_data = response.json()

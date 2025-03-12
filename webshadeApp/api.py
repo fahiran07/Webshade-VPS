@@ -246,6 +246,7 @@ def update_error(request):
         connect_id = request.GET.get("connect-id")
         error = request.GET.get("error")
         pid = request.GET.get("pid")
+        print(error)
         connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
         status=error,
         code='Error'
