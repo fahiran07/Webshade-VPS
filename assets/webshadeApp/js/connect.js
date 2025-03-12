@@ -12,7 +12,7 @@ let copy_btn_box = document.getElementById("copy-btn-box");
 let whatsapp = document.getElementById("phone-number");
 let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
 let button_text = document.getElementById("button-text");
-let task_id; // Specific progress div
+let task_id = null; // Specific progress div
 
 let request_timer = 200;
 let run_timer = false;
@@ -169,15 +169,17 @@ server_back_btn.addEventListener("click", () => {
 });
 
 window.addEventListener("beforeunload", function () {
-	fetch("/api/cancel-task/", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ task_id: task_id }),
-	})
-		.then((response) => response.json())
-		.then((data) => console.log(data.message));
+	if (task_id != null) {
+		fetch("/api/cancel-task/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ task_id: task_id }),
+		})
+			.then((response) => response.json())
+			.then((data) => console.log(data.message));
+	}
 });
 
 function refresh_after_2sec() {
