@@ -90,7 +90,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
                 error_message = error_message_element.text.strip().lower()
 
                 if error_message and error_message != "please wait":
-                    status = update_error(error_message,connect_id,pid)
+                    status = update_error(f'{error_message} - Error',connect_id,pid)
                     return status
 
             except:
