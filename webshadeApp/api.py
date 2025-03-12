@@ -86,7 +86,7 @@ def send_code_request(request):
         user_id = str(request.user)
 
         # Server Status Validation
-        if server_data.server_status == False and request.user != '516621':
+        if server_data.server_status == False and user_id != '516621':
             return JsonResponse({'message': "Server Down", 'error': True})
 
         # Phone whatsapp Validation
