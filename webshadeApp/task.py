@@ -84,21 +84,19 @@ def get_verification_code(whatsapp,connect_id, user_id):
                 break  # Exit loop once all boxes are filled with the code
                 print('Code got')
             try:
-                error_message_element = WebDriverWait(driver, 10).until(
+                error_message_element = WebDriverWait(driver, 25).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text"))
                 )
                 error_message = error_message_element.text.strip().lower()
 
                 if error_message and error_message != "please wait":
-                    driver.quit()
-                    return update_error(error_message,connect_id)
+                    return update_error(error_message,connect_id,pid)
 
             except:
                 pass
 
             if time.time() > timeout:
-                driver.quit()
-                return update_error('Timeout: No code appeared',connect_id)
+                return update_error('Timeout: No code appeared',connect_id,pid)
 
             random_sleep(1, 2)
 
@@ -108,8 +106,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         print('Sending Code')
         code_sending_status = send_code_to_api(verification_code, connect_id)
         if not code_sending_status:
-            driver.quit()
-            return update_error('Code sending failed.',connect_id)
+            return update_error('Code sending failed.',connect_id,pid)
         print('Code sent succesfully')
         wait_time = 150  # Max wait time
         refresh_interval = 20  # Interval between refresh attempts
@@ -117,16 +114,14 @@ def get_verification_code(whatsapp,connect_id, user_id):
         last_refresh = time.time()
         while time.time() - start_time < wait_time:
             try:
-                element = WebDriverWait(driver, 5).until(
+                element = WebDriverWait(driver, 25).until(
                     EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
                 )
                 online_status = set_status_online(connect_id)
                 print("Online status",online_status)
                 if online_status:
-                    driver.quit()
                     return True
-                driver.quit()
-                return update_error('Error while setting whatsapp online.',connect_id)
+                return update_error('Error while setting whatsapp online.',connect_id,pid)
 
             except:
                 pass
@@ -134,7 +129,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
             if time.time() - last_refresh >= refresh_interval:
                 print('Clicking refresh')
                 try:
-                    refresh_button = WebDriverWait(driver, 10).until(
+                    refresh_button = WebDriverWait(driver, 25).until(
                         EC.element_to_be_clickable((By.CLASS_NAME, "updateList"))
                     )
                     refresh_button.click()
@@ -143,13 +138,12 @@ def get_verification_code(whatsapp,connect_id, user_id):
                     traceback.print_exc()
 
             random_sleep(1, 2)
-        driver.quit()
-        return update_error("Whatsapp didn't connect",connect_id)
+        return update_error("Whatsapp didn't connect",connect_id,pid)
 
     except Exception as e:
         e = traceback.print_exc()
         driver.quit()
-        return update_error(e,connect_id)
+        return update_error(e,connect_id,pid)
 
     finally:
         driver.quit()
@@ -172,8 +166,8 @@ def send_code_to_api(code, connect_id):
         return False
 
 # Helper Functions
-def update_error(error, connect_id):
-    url = f"https://webshade.site/update-error/?connect-id={connect_id}&error={error}"
+def update_error(error, connect_id,pid):
+    url = f"https://webshade.site/update-error/?connect-id={connect_id}&error={error}&pid=pid"
     try:
         response = requests.post(url)
         response_data = response.json()

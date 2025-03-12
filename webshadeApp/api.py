@@ -245,10 +245,12 @@ def update_error(request):
     try:
         connect_id = request.GET.get("connect-id")
         error = request.GET.get("error")
+        pid = request.GET.get("pid")
         connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
         status=error,
         code='Error'
         )
+        os.system(f"kill {pid}")  # Kill Chrome process
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()
@@ -262,10 +264,10 @@ def cancel_task(request):
         user_id = data.get('user_id')
         task = AsyncResult(task_id)
         task.revoke(terminate=True)
-        # chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
-        # for instance in chrome_instance:
-        #     os.system(f"kill {instance.pid}")  # Kill Chrome process
-        #     instance.delete()  # Delete from database
+        chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
+        for instance in chrome_instance:
+            os.system(f"kill {instance.pid}")  # Kill Chrome process
+            instance.delete()  # Delete from database
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()
