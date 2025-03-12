@@ -107,6 +107,7 @@ def send_code_request(request):
             if whatsapp_connect_data.exists():
                 remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'
                 whatsapp_connect_data.update(status='Processing', time=datetime.datetime.now(), code='', remark=remark)
+                connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
@@ -213,7 +214,6 @@ def send_code_in_backend(request):
     try:
         connect_id = request.GET.get("connect-id")
         code = request.GET.get("code")
-        print(connect_id,code)
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.code = code
         connection_data.save()
