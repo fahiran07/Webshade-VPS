@@ -146,7 +146,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         return status
 
     except Exception as e:
-        e = traceback.print_exc()
+        traceback.print_exc()
         driver.quit()
         status = update_error(e,connect_id,pid)
         return status
