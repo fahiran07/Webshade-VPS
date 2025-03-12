@@ -1,6 +1,13 @@
 from django.http import JsonResponse
 from webshade.celery import app
 from django.views.decorators.csrf import csrf_exempt
+from webshadeApp.models import userDetail, whatsappConnection
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
+import traceback
+from datetime import date,datetime
+today_date = date.today().strftime("%d-%m-%Y")
+
 
 @csrf_exempt
 def get_running_tasks(request):
@@ -35,3 +42,48 @@ def get_running_tasks(request):
         "total_tasks": count_tasks(active_tasks) + count_tasks(scheduled_tasks) + count_tasks(reserved_tasks),
         "tasks": extract_task_details(active_tasks) + extract_task_details(scheduled_tasks) + extract_task_details(reserved_tasks)
     })
+@csrf_exempt
+def dashboard_data(request):
+    try:
+        print(today_date)
+        users = userDetail.objects.all()
+        total_users = users.count()
+        today_users = users.filter(last_login=today_date).count()
+        total_balance = users.aggregate(Sum("balance"))["balance__sum"] or 0
+        total_commision = users.aggregate(Sum("commision"))["commision__sum"] or 0
+        return JsonResponse({
+            "total_users": total_users,
+            "today_users": today_users,
+            "total_balance": total_balance,
+            "total_commision": total_commision
+        })
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})
+@csrf_exempt
+def connect_request_data(request):
+    try:
+        connection_data = whatsappConnection.objects.filter(status__in=['Online','Offline','Processing']).order_by("-id")
+        return JsonResponse({
+            "total_connects": connection_data.count(),
+            "processing_connects": connection_data.filter(status='Processing').count(),
+            "online_connects": connection_data.filter(status="Online").count(),
+            "offline_connects": connection_data.filter(status="Offline").count(),
+        })
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})
+
+@csrf_exempt
+def connects_data(request):
+    try:
+        connection_data = whatsappConnection.objects.filter(status__in=['Online','Offline','Processing']).order_by("-id")
+        return JsonResponse({
+            "total_connects": connection_data.count(),
+            "today_connects": connection_data.filter(date=today_date).count(),
+            "online_connects": connection_data.filter(status="Online").count(),
+            "offline_connects": connection_data.filter(status="Offline").count(),
+        })
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})

@@ -18,47 +18,25 @@ today_date = date.today().strftime("%d-%m-%Y")
 @never_cache
 def users(request):
     users = userDetail.objects.all()
-
-    total_users = users.count()
-    active_users = users.filter(active=True).count()
-    total_balance = users.aggregate(Sum("balance"))["balance__sum"]
-    total_commision = users.aggregate(Sum("commision"))["commision__sum"]
-
     context = {
         "users_data": users,
-        "total_users": total_users,
-        "active_users": active_users,
-        "total_balance": total_balance if total_balance else 0,
-        "total_commision": total_commision if total_commision else 0,
     }
-
     return render(request, "webshadeAdmin/users.html", context)
 
 @never_cache
 def connect_request(request):
-    whatsappConnection.objects.filter(status='Rejected').delete()
     connection_data = whatsappConnection.objects.filter(status="Processing").order_by("-id")
-    rejected_data = whatsappConnection.objects.filter(status="Rejected").order_by("-id")
-    try_again = whatsappConnection.objects.filter(code="Error").order_by("-id")
+    other_request = whatsappConnection.objects.exclude(status__in=['Processing','Online','Offline']).order_by("-id")
     context = {
         "connection_data": connection_data,
-        "rejected_data": rejected_data,
-        "try_again": try_again,
-        "total_connects": whatsappConnection.objects.count(),
-        "processing_connects": connection_data.count(),
-        "online_connects": whatsappConnection.objects.filter(status="Online").count(),
-        "offline_connects": whatsappConnection.objects.filter(status="Offline").count(),
+        "other_request": other_request,
     }
     return render(request, "webshadeAdmin/connect_request.html", context)
 @never_cache
 def connects(request):
-    connection_data = whatsappConnection.objects.all().exclude(status__in=['Processing', 'Rejected','try_again']).order_by("-id")
+    connection_data = whatsappConnection.objects.filter(status__in=['Processing', 'Offline','Online']).order_by("-id")
     context = {
         "connection_data": connection_data,
-        "total_connects": whatsappConnection.objects.count(),
-        "today_connects": whatsappConnection.objects.filter(status="Online",date=today_date).count(),
-        "online_connects": connection_data.filter(status="Online").count(),
-        "offline_connects": connection_data.filter(status="Offline").count(),
     }
     return render(request, "webshadeAdmin/connects.html", context)
 

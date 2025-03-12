@@ -14,12 +14,12 @@ from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
+from datetime import date,datetime
 import traceback
 import json
-import datetime
 import uuid
-today_date = datetime.date.today()
-current_time = datetime.datetime.now()
+today_date = date.today().strftime("%d-%m-%Y")
+current_time = datetime.now()
 
 def login_account(request):
     data = json.loads(request.body)

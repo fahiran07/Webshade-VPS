@@ -141,3 +141,28 @@ function reset_search(query) {
 		dataTable.innerHTML = previewsHtml;
 	}
 }
+
+function fetchConnectionData() {
+	fetch("/admin-panel/api/connects-data/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json", // JSON data bhejne ke liye
+		},
+		body: JSON.stringify({}), // Agar koi data send nahi karna toh empty object bhej
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			document.getElementById("total-connects").innerText = data.total_connects;
+			document.getElementById("today-connects").innerText = data.today_connects;
+			document.getElementById("online-connects").innerText = data.online_connects;
+			document.getElementById("offline-connects").innerText = data.offline_connects;
+		})
+		.catch((error) => console.error("Error fetching dashboard data:", error));
+}
+
+// Page load hone pe fetch call karne ke liye
+document.addEventListener("DOMContentLoaded", fetchConnectionData);
+
+setInterval(() => {
+	fetchConnectionData();
+}, 1000);

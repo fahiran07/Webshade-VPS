@@ -69,20 +69,6 @@ def get_user_data(request):
             {"message": "Error while retrieving user data!", "error": True}
         )
 
-def update_user_status(request):
-    try:
-        data = json.loads(request.body)
-        user_id = data.get("user_id")
-        active_status = data.get("active")
-        user = userDetail.objects.get(user_id=user_id)
-        user.active = active_status
-        print(user.active)
-        user.save()
-        return JsonResponse({"error": False})
-    except userDetail.DoesNotExist:
-        return JsonResponse({"error": True, "message": "User not found"})
-    except Exception as e:
-        return JsonResponse({"error": True, "message": str(e)})
 
 def send_code(request):
     try:

@@ -12,7 +12,7 @@ import json
 import time
 import datetime
 import traceback
-today_date = datetime.date.today()
+today_date = datetime.date.today().strftime("%d-%m-%Y")
 # Create your views here.
 def register_account(request,refer_code=''):
       return render(request,'webshadeApp/register.html',{'refer_code':refer_code})
@@ -40,6 +40,8 @@ def connect(request):
       withdrawal_record = withdrawal_request.objects.filter(user_id=request.user)
       total_connection_earning = whatsappConnection.objects.filter(user_id=request.user).aggregate(Sum('commission'))['commission__sum'] or 0
       reward_data = reward_price.objects.all().first()
+      if user_data.last_login != today_date:
+            userDetail.objects.filter(user_id=request.user).update(last_login=today_date)
       amount_dict = {
             "amount_24": reward_data.amount_24,
             "amount_48": reward_data.amount_48,

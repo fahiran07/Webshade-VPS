@@ -10,7 +10,7 @@ class userDetail(models.Model):
     balance = models.IntegerField(default=0)
     refer_by = models.CharField(blank=True,max_length=50)
     commision = models.IntegerField(default=0)
-    active = models.BooleanField(default=False)
+    last_login = models.CharField(blank=True,max_length=50)
 
 class withdrawal_request(models.Model):
     user_id = models.CharField(max_length=50)
