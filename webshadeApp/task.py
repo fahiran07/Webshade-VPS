@@ -28,8 +28,8 @@ def simulate_typing(element, text, typing_speed=0.02):
         element.send_keys(char)
         random_sleep(typing_speed, typing_speed + 0.03)
 
-@shared_task(bind=True, max_retries=2)
-def get_verification_code(self,whatsapp,connect_id, user_id):
+@shared_task()
+def get_verification_code(whatsapp,connect_id, user_id):
     proxy = "p.webshare.io:9999"
     options = Options()
     options.add_argument("--headless=new")
