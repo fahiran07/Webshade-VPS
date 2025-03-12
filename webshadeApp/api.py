@@ -264,10 +264,10 @@ def cancel_task(request):
         user_id = data.get('user_id')
         task = AsyncResult(task_id)
         task.revoke(terminate=True)
-        chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
-        for instance in chrome_instance:
-            os.system(f"kill {instance.pid}")  # Kill Chrome process
-            instance.delete()  # Delete from database
+        # chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
+        # for instance in chrome_instance:
+        #     os.system(f"kill {instance.pid}")  # Kill Chrome process
+        #     instance.delete()  # Delete from database
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()
