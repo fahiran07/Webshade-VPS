@@ -27,7 +27,6 @@ urlpatterns = [
     path('api/add-bank-account/', api.add_bank_account),
     path('api/cancel-task/', api.cancel_task),
     path('api/join-give-telegram-reward/', api.join_give_telegram_reward),
-    path('api/join-give-telegram-group-reward/', api.join_give_telegram_group_reward),
 
     # SSE
     path("send-code-backend/", api.send_code_in_backend, name="send_code"),
