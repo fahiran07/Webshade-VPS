@@ -259,7 +259,7 @@ def cancel_task(request):
         task_id = data.get('task_id')
         task = AsyncResult(task_id)
         task.revoke(terminate=True)
-        chrome_instance = ChromeInstance.objects.filter(task_id=task_id).first()
+        chrome_instance = ChromeInstance.objects.filter(request=task_id).first()
         if chrome_instance:
             os.system(f"kill {chrome_instance.pid}")  # Kill Chrome process
             chrome_instance.delete()  # Delete from database
