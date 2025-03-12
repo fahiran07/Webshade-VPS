@@ -102,8 +102,12 @@ import dj_database_url
 # }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  # Use PostgreSQL
+        'NAME': 'webshade',               # Your PostgreSQL database name
+        'USER': 'postgres',               # Your PostgreSQL user (usually 'postgres')
+        'PASSWORD': '124432',       # Your PostgreSQL password
+        'HOST': 'localhost',                        # Database server (localhost means same server)
+        'PORT': '5432',                             # Default PostgreSQL port
     }
 }
 # Password validation
