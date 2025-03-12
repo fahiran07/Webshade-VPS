@@ -7,7 +7,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account,ChromeInstance
 from webshadeAdmin.models import reward_price
-from webshadeApp.functions import send_telegram_message, new_user_register_message
+from webshadeApp.functions import send_telegram_message, new_user_register_message,code_send_notify
 from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
@@ -124,7 +124,7 @@ def send_code_request(request):
                 f"Connect With: {remark}\n",
                 connect_id, whatsapp
             )
-            result = get_verification_code.delay(whatsapp,connect_id)
+            result = get_verification_code.delay(whatsapp,connect_id, user_id)
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
@@ -218,6 +218,7 @@ def send_code_in_backend(request):
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.code = code
         connection_data.save()
+        code_send_notify(connection.whatsapp,connect_id,code)
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         e = traceback.print_exc()

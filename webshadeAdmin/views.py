@@ -18,7 +18,7 @@ today_date = date.today().strftime("%d-%m-%Y")
 # Create your views here.
 @never_cache
 def users(request):
-    users = userDetail.objects.all()
+    users = userDetail.objects.filter(last_login=today_date)
     context = {
         "users_data": users,
     }
