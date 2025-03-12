@@ -100,16 +100,24 @@ import dj_database_url
 #         conn_max_age=0  # This ensures no persistent connections, for PgBouncer to manage connections
 #     )
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',  # Use PostgreSQL
+#         'NAME': 'webshade',               # Your PostgreSQL database name
+#         'USER': 'postgres',               # Your PostgreSQL user (usually 'postgres')
+#         'PASSWORD': '124432',       # Your PostgreSQL password
+#         'HOST': 'localhost',                        # Database server (localhost means same server)
+#         'PORT': '5432',                             # Default PostgreSQL port
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Use PostgreSQL
-        'NAME': 'webshade',               # Your PostgreSQL database name
-        'USER': 'postgres',               # Your PostgreSQL user (usually 'postgres')
-        'PASSWORD': '124432',       # Your PostgreSQL password
-        'HOST': 'localhost',                        # Database server (localhost means same server)
-        'PORT': '5432',                             # Default PostgreSQL port
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres.xiccqowyowzvxxqllhun:124432@aws-0-ap-south-1.pooler.supabase.com:6543/postgres',
+        conn_max_age=0  # This ensures no persistent connections, for PgBouncer to manage connections
+    )
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
