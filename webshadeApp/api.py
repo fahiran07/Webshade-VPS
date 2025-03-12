@@ -262,12 +262,3 @@ def cancel_task(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'status':False,'error':True})
-
-def cancel_task(request):
-    task_id = request.GET.get("connect_id")
-    if task_id:
-        task = AsyncResult(task_id)
-        task.revoke(terminate=True)  # 🔴 Yahan se task terminate hoga forcefully
-        return JsonResponse({"message": "Task cancelled", "status": True})
-    
-    return JsonResponse({"message": "Task ID not found", "status": False})
