@@ -59,7 +59,7 @@ def connect_mobile(request):
         "connection_data": connection_data,
         "server_status": server_status,
     }
-    return render(request, "webshadeAdmin/connect_mobile.html", context)
+    return render(request, "webshadeAdmin/mobile/connect_mobile.html", context)
 
 @never_cache
 def submit_connect_status(request,connect_id,request_phone):
