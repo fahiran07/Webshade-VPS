@@ -1,6 +1,5 @@
 from celery import shared_task, states
 from django.http import JsonResponse
-from celery import current_task
 import random
 import time
 import uuid
@@ -45,7 +44,7 @@ def get_verification_code(self,whatsapp,connect_id):
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     pid = driver.service.process.pid
-    chrome_instance = ChromeInstance.objects.create(task_id=self.request.id, pid=pid)
+    chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
     chrome_instance.save()
 
     try:

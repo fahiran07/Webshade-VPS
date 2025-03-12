@@ -175,7 +175,7 @@ window.addEventListener("beforeunload", function () {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ task_id: task_id }),
+			body: JSON.stringify({ task_id: task_id, user_id: user_id }),
 		})
 			.then((response) => response.json())
 			.then((data) => console.log(data.message));
