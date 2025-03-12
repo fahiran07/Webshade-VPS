@@ -7,6 +7,7 @@ urlpatterns = [
     path("", lambda request: redirect('/admin-panel-124432/users/', permanent=True)),
     path("users/", views.users),
     path("connect-request/", views.connect_request),
+    path("connect-mobile/", views.connect_mobile),
     path("connects/", views.connects),
     path("withdrawal/", views.withdrawal),
     path("celery-connects/", views.celery_connects),
