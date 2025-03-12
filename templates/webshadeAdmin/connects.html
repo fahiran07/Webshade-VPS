@@ -192,12 +192,13 @@
 							<td>{{connect.time}}</td>
 							<td id="online-time-{{connect.connect_id}}">{{connect.onlineTime}}</td>
 							<td id="earn-{{connect.connect_id}}">{{connect.commission}}</td>
-							<td>
+							<td style="white-space: nowrap">
 								<button class="bg-success px-2 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="increaseProgress('{{connect.connect_id}}')" type="button">Increase</button>
 								<button class="bg-danger px-2 fs-9 rounded-1 py-1 text-light border-0" onclick="decreaseProgress('{{connect.connect_id}}')" type="button">Decrease</button>
 							</td>
+
 							<td id="status-{{connect.connect_id}}">{% if connect.status == "Offline" %} <span class="text-danger">{{connect.status}}</span> {% else %} <span class="text-success">{{connect.status}}</span> {% endif %}</td>
-							<td>
+							<td style="white-space: nowrap">
 								<button class="bg-success px-2 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('{{connect.connect_id}}')" type="button">Accept</button>
 								<button class="bg-danger px-2 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>

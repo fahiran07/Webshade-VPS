@@ -4,7 +4,7 @@ from webshadeAdmin import views, api, get_api
 from django.shortcuts import redirect
 
 urlpatterns = [
-    path("", lambda request: redirect('/admin-panel/users/', permanent=True)),
+    path("", lambda request: redirect('/admin-panel-124432/users/', permanent=True)),
     path("users/", views.users),
     path("connect-request/", views.connect_request),
     path("connects/", views.connects),

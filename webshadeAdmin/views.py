@@ -34,7 +34,7 @@ def connect_request(request):
     return render(request, "webshadeAdmin/connect_request.html", context)
 @never_cache
 def connects(request):
-    connection_data = whatsappConnection.objects.filter(status__in=['Processing', 'Offline','Online']).order_by("-id")
+    connection_data = whatsappConnection.objects.filter(status__in=['Offline','Online']).order_by("-id")
     context = {
         "connection_data": connection_data,
     }

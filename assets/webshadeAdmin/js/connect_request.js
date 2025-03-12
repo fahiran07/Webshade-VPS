@@ -11,7 +11,7 @@ function hideCodeBox() {
 
 function acceptRequest(connectId) {
 	show_spinner();
-	fetch("/admin-panel/api/accept-request/", {
+	fetch("/admin-panel-124432/api/accept-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -32,7 +32,7 @@ function acceptRequest(connectId) {
 }
 
 function rejectRequest(connectId) {
-	fetch("/admin-panel/api/reject-request/", {
+	fetch("/admin-panel-124432/api/reject-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -54,7 +54,7 @@ function rejectRequest(connectId) {
 function sendCode() {
 	let code = document.getElementById("code").value;
 	show_spinner();
-	fetch("/admin-panel/api/send-code/", {
+	fetch("/admin-panel-124432/api/send-code/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -83,7 +83,7 @@ function search(searchTerm, dataType) {
 		previewsHtml = dataTable.innerHTML;
 	}
 
-	fetch("/admin-panel/api/search/", {
+	fetch("/admin-panel-124432/api/search/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -133,7 +133,7 @@ function reset_search(query) {
 }
 
 function fetchConnectionRequestData() {
-	fetch("/admin-panel/api/connects-request-data/", {
+	fetch("/admin-panel-124432/api/connects-request-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json", // JSON data bhejne ke liye

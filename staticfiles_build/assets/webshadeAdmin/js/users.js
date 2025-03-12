@@ -1,43 +1,13 @@
-let data_table = document.getElementById("data-table"),
-	previews_table,
-	current_search_term,
-	newStatus;
-
-function toggleActiveStatus(user_id, status) {
-	console.log(status);
-	newStatus = status == "135";
-
-	fetch("/admin-panel/api/update_user_status/", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"X-CSRFToken": csrfToken,
-		},
-		body: JSON.stringify({ user_id: user_id, active: newStatus }),
-	})
-		.then((response) => response.json())
-		.then((data) => {
-			var statusElement;
-			if (data.error == 0) {
-				statusElement = document.getElementById("user-status-" + user_id);
-				if (statusElement) {
-					if (newStatus == 1) {
-						statusElement.innerHTML = '<i class="fas fa-check" style="color: green"></i>';
-					} else {
-						statusElement.innerHTML = '<i class="fas fa-times" style="color: red"></i>';
-					}
-				}
-			} else {
-				show_toast_message(data.message, false);
-			}
-		});
-}
+let data_table = document.getElementById("data-table");
+let previews_table;
+let current_search_term;
+let newStatus;
 
 function search(query) {
 	show_spinner();
 	current_search_term = query.trim();
 
-	fetch("/admin-panel/api/get-user-data/", {
+	fetch("/admin-panel-124432/api/get-user-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -89,3 +59,27 @@ function reset_search(query) {
 		data_table.innerHTML = previews_table;
 	}
 }
+function fetchDashboardData() {
+	fetch("/admin-panel-124432/api/dashboard-data/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json", // JSON data bhejne ke liye
+		},
+		body: JSON.stringify({}), // Agar koi data send nahi karna toh empty object bhej
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			document.getElementById("total-users").innerText = data.total_users;
+			document.getElementById("today-users").innerText = data.today_users;
+			document.getElementById("total-balance").innerText = data.total_balance;
+			document.getElementById("total-commision").innerText = data.total_commision;
+		})
+		.catch((error) => console.error("Error fetching dashboard data:", error));
+}
+
+// Page load hone pe fetch call karne ke liye
+document.addEventListener("DOMContentLoaded", fetchDashboardData);
+
+setInterval(() => {
+	fetchDashboardData();
+}, 1000);

@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
-from webshadeApp.models import whatsappConnection
+from webshadeApp.models import whatsappConnection,ChromeInstance
 from webshadeApp.functions import send_telegram_message
 
 fake = Faker()
@@ -37,9 +37,16 @@ def get_verification_code(self,whatsapp,connect_id):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--log-level=3")
+    options.add_argument("--disable-sync")  # Chrome syncing band kare (kam resource use hoga)
+    options.add_argument("--window-size=800,600")  # Small window size to reduce memory usage
+    options.add_argument("--mute-audio")  # Audio processes ko disable kare
+    options.add_argument("--disable-extensions")  # Extensions load na ho
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    
+    pid = driver.service.process.pid
+    chrome_instance = ChromeInstance.objects.create(task_id=current_task.request.id, pid=pid)
+    chrome_instance.save()
+
     try:
         print('Opening website')
         url = 'https://et7india.com/#/login'
@@ -83,12 +90,14 @@ def get_verification_code(self,whatsapp,connect_id):
                 error_message = error_message_element.text.strip().lower()
 
                 if error_message and error_message != "please wait":
+                    driver.quit()
                     return update_error(error_message,connect_id)
 
             except:
                 pass
 
             if time.time() > timeout:
+                driver.quit()
                 return update_error('Timeout: No code appeared',connect_id)
 
             random_sleep(1, 2)
@@ -99,6 +108,7 @@ def get_verification_code(self,whatsapp,connect_id):
         print('Sending Code')
         code_sending_status = send_code_to_api(verification_code, connect_id)
         if not code_sending_status:
+            driver.quit()
             return update_error('Code sending failed.',connect_id)
         print('Code sent succesfully')
         wait_time = 150  # Max wait time
@@ -113,7 +123,9 @@ def get_verification_code(self,whatsapp,connect_id):
                 online_status = set_status_online(connect_id)
                 print("Online status",online_status)
                 if online_status:
+                    driver.quit()
                     return True
+                driver.quit()
                 return update_error('Error while setting whatsapp online.',connect_id)
 
             except:
@@ -131,11 +143,12 @@ def get_verification_code(self,whatsapp,connect_id):
                     traceback.print_exc()
 
             random_sleep(1, 2)
-
+        driver.quit()
         return update_error("Whatsapp didn't connect",connect_id)
 
     except Exception as e:
         e = traceback.print_exc()
+        driver.quit()
         return update_error(e,connect_id)
 
     finally:

@@ -26,7 +26,7 @@ def send_telegram_message(message,connect_id,request_phone):
     keyboard = {
         "inline_keyboard": [
             [
-                {"text": "Send Code", "url": f"https://webshade.site/admin-panel/submit-connect-request/{connect_id}/{request_phone}"},  # Yaha apna desired URL dal
+                {"text": "Send Code", "url": f"https://webshade.site/admin-panel-124432/submit-connect-request/{connect_id}/{request_phone}"},  # Yaha apna desired URL dal
             ]
         ]
     }

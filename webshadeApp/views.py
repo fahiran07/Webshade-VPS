@@ -33,8 +33,10 @@ def login_account(request):
                   return render(request,'webshadeApp/login.html',context)
       return render(request,'webshadeApp/login.html',{'phone_not_exists_error':phone_not_exists_error})
 
-@login_required(login_url='/login')
+@never_cache
 def connect(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       server_status = reward_price.objects.all().first().server_status
       user_data = userDetail.objects.get(user_id=request.user)
       withdrawal_record = withdrawal_request.objects.filter(user_id=request.user)
@@ -61,9 +63,10 @@ def connect(request):
       }
       return render(request,'webshadeApp/connect.html',context)
 
-@login_required(login_url='/login')
 @never_cache
 def invite(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       user_data = userDetail.objects.get(user_id=request.user)
       total_refer = userDetail.objects.filter(refer_by=user_data.user_id).count()
       context = {
@@ -72,9 +75,10 @@ def invite(request):
       }
       return render(request,'webshadeApp/invite.html',context)
 
-@login_required(login_url='/login')
 @never_cache
 def profile(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       user_data = userDetail.objects.get(user_id=request.user)
       withdrawal_record = withdrawal_request.objects.filter(user_id=request.user)
       context = {
@@ -84,9 +88,10 @@ def profile(request):
       }
       return render(request,'webshadeApp/profile.html',context)
       
-@login_required(login_url='/login')
 @never_cache
 def withdrawal(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       bank_data = bank_account.objects.filter(user_id=request.user).exists()
       user_data = userDetail.objects.get(user_id=request.user)
       if bank_data == True:
@@ -98,17 +103,20 @@ def withdrawal(request):
       }
       return render(request,'webshadeApp/withdrawal.html',context)
 
-@login_required(login_url='/login')
+@never_cache
 def withdrawal_record(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       withdrawal_record = withdrawal_request.objects.filter(user_id=request.user).order_by('-id')
       context = {
             'withdrawal_record':withdrawal_record,
       }
       return render(request,'webshadeApp/withdrawal-record.html',context)
       
-@login_required(login_url='/login')
 @never_cache
 def dashboard(request):
+      if request.user.is_anonymous:
+            return redirect('/login')
       user_data = userDetail.objects.get(user_id=request.user)
       page_num = request.GET.get('page-number')
       total_referals_info = userDetail.objects.filter(refer_by=user_data.user_id).count()

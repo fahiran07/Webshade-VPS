@@ -2,7 +2,7 @@ function acceptRequest(connectId) {
 	console.log(connectId);
 
 	show_spinner();
-	fetch("/admin-panel/api/accept-request/", {
+	fetch("/admin-panel-124432/api/accept-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -23,7 +23,7 @@ function acceptRequest(connectId) {
 }
 
 function rejectRequest(connectId) {
-	fetch("/admin-panel/api/reject-request/", {
+	fetch("/admin-panel-124432/api/reject-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -54,7 +54,7 @@ function hideCodeBox() {
 function sendCode() {
 	let code = document.getElementById("code").value;
 	show_spinner();
-	fetch("/admin-panel/api/send-code/", {
+	fetch("/admin-panel-124432/api/send-code/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -75,7 +75,7 @@ function sendCode() {
 }
 function update_server_status(updating_status) {
 	show_spinner();
-	fetch("/admin-panel/api/update-server-status/", {
+	fetch("/admin-panel-124432/api/update-server-status/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

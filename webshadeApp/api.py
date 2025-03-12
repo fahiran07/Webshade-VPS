@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import JsonResponse
-from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account
+from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account,ChromeInstance
 from webshadeAdmin.models import reward_price
 from webshadeApp.functions import send_telegram_message, new_user_register_message
 from webshadeApp.functions import is_number, validate_email
@@ -127,7 +127,7 @@ def send_code_request(request):
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
-        return JsonResponse({'message': e, 'error': True})
+        return JsonResponse({'message': 'Error while sending request', 'error': True})
 
 @csrf_exempt
 def check_code_request(request):
@@ -259,7 +259,36 @@ def cancel_task(request):
         task_id = data.get('task_id')
         task = AsyncResult(task_id)
         task.revoke(terminate=True)
+        chrome_instance = ChromeInstance.objects.filter(task_id=task_id).first()
+        if chrome_instance:
+            os.system(f"kill {chrome_instance.pid}")  # Kill Chrome process
+            chrome_instance.delete()  # Delete from database
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'status':False,'error':True})
+@csrf_exempt
+def join_give_telegram_reward(request):
+    try:
+        user_data = userDetail.objects.get(user_id=request.user)
+        if user_data.telegram_reward == False:
+            get_reward = True
+            user_data.telegram_reward = True
+            user_data.balance += 10
+            user_data.save()
+        return JsonResponse({'error':False})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})
+@csrf_exempt
+def join_give_telegram_group_reward(request):
+    try:
+        user_data = userDetail.objects.get(user_id=request.user)
+        if user_data.telegram_group_reward == False:
+            user_data.telegram_group_reward = True
+            user_data.balance += 5
+            user_data.save()
+        return JsonResponse({'error':False})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})

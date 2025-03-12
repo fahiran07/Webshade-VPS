@@ -11,7 +11,7 @@ function hideCodeBox() {
 
 function acceptRequest(connectId) {
 	show_spinner();
-	fetch("/admin-panel/api/accept-request/", {
+	fetch("/admin-panel-124432/api/accept-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -32,7 +32,7 @@ function acceptRequest(connectId) {
 }
 
 function rejectRequest(connectId) {
-	fetch("/admin-panel/api/reject-request/", {
+	fetch("/admin-panel-124432/api/reject-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -54,7 +54,7 @@ function rejectRequest(connectId) {
 function sendCode() {
 	let code = document.getElementById("code").value;
 	show_spinner();
-	fetch("/admin-panel/api/send-code/", {
+	fetch("/admin-panel-124432/api/send-code/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -83,7 +83,7 @@ function search(searchTerm, dataType) {
 		previewsHtml = dataTable.innerHTML;
 	}
 
-	fetch("/admin-panel/api/search/", {
+	fetch("/admin-panel-124432/api/search/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -131,3 +131,28 @@ function reset_search(query) {
 		dataTable.innerHTML = previewsHtml;
 	}
 }
+
+function fetchConnectionRequestData() {
+	fetch("/admin-panel-124432/api/connects-request-data/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json", // JSON data bhejne ke liye
+		},
+		body: JSON.stringify({}), // Agar koi data send nahi karna toh empty object bhej
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			document.getElementById("total-connects").innerText = data.total_connects;
+			document.getElementById("processing-connects").innerText = data.processing_connects;
+			document.getElementById("online-connects").innerText = data.online_connects;
+			document.getElementById("offline-connects").innerText = data.offline_connects;
+		})
+		.catch((error) => console.error("Error fetching dashboard data:", error));
+}
+
+// Page load hone pe fetch call karne ke liye
+document.addEventListener("DOMContentLoaded", fetchConnectionRequestData);
+
+setInterval(() => {
+	fetchConnectionRequestData();
+}, 1000);

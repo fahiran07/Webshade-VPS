@@ -7,7 +7,7 @@ function search(query) {
 	show_spinner();
 	current_search_term = query.trim();
 
-	fetch("/admin-panel/api/get-user-data/", {
+	fetch("/admin-panel-124432/api/get-user-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -60,7 +60,7 @@ function reset_search(query) {
 	}
 }
 function fetchDashboardData() {
-	fetch("/admin-panel/api/dashboard-data/", {
+	fetch("/admin-panel-124432/api/dashboard-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json", // JSON data bhejne ke liye

@@ -156,7 +156,7 @@ def increase_progress(request):
         # Giving commision to refer
         refer_by_user_data = userDetail.objects.filter(user_id=user_data.refer_by)
         if refer_by_user_data.first():
-            refer_by_user_data.update(balance=F('balance') + (reward_amount*0.1),commision=F('commision') + (reward_amount*0.1))
+            refer_by_user_data.update(balance=F('balance') + (reward_amount*0.15),commision=F('commision') + (reward_amount*0.15))
         return JsonResponse({'error':False,'onlineTime':connection_data.onlineTime,'earn':connection_data.commission})
     except Exception as e:
         traceback.print_exc()

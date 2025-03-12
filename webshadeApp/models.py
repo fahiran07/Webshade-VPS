@@ -11,6 +11,8 @@ class userDetail(models.Model):
     refer_by = models.CharField(blank=True,max_length=50)
     commision = models.IntegerField(default=0)
     last_login = models.CharField(blank=True,max_length=50)
+    telegram_reward = models.BooleanField(default=False)
+    telegram_group_reward = models.BooleanField(default=False)
 
 class withdrawal_request(models.Model):
     user_id = models.CharField(max_length=50)
@@ -40,3 +42,8 @@ class whatsappConnection(models.Model):
     code = models.CharField(max_length=50,blank=True)
     remark = models.CharField(max_length=50,blank=True)
     successTimestamp = models.CharField(max_length=50, default='0')
+
+class ChromeInstance(models.Model):
+    task_id = models.CharField(max_length=255, unique=True)  # Celery task ID
+    pid = models.IntegerField()  # Chrome process ID
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp

@@ -187,3 +187,34 @@ function refresh_after_2sec() {
 		location.reload(); // Page ko reload karega
 	}, 2000); // 2000ms = 2 seconds
 }
+
+function join_give_telegram_reward() {
+	show_spinner();
+	fetch("/api/join-give-telegram-reward/", {
+		// Backend ka API endpoint
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({}), // Agar koi data send nahi karna toh empty object bhej
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			location.href = "https://t.me/g2carrier";
+		});
+}
+function join_give_telegram_group_reward() {
+	show_spinner();
+	fetch("/api/join-give-telegram-group-reward/", {
+		// Backend ka API endpoint
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({}), // Agar koi data send nahi karna toh empty object bhej
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			location.href = "https://t.me/g2carriercommunity";
+		});
+}
