@@ -1,5 +1,6 @@
 from celery import shared_task, states
 from django.http import JsonResponse
+from celery import current_task
 import random
 import time
 import uuid
