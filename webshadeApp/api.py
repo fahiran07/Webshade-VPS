@@ -124,7 +124,7 @@ def send_code_request(request):
                 f"Connect With: {remark}\n",
                 connect_id, whatsapp
             )
-            result = get_verification_code.delay(whatsapp,connect_id,str(user_id))
+            result = get_verification_code.delay(whatsapp,connect_id)
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
@@ -261,10 +261,10 @@ def cancel_task(request):
         user_id = data.get('user_id')
         task = AsyncResult(task_id)
         task.revoke(terminate=True)
-        chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
-        for instance in chrome_instance:
-            os.system(f"kill {instance.pid}")  # Kill Chrome process
-            instance.delete()  # Delete from database
+        # chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
+        # for instance in chrome_instance:
+        #     os.system(f"kill {instance.pid}")  # Kill Chrome process
+        #     instance.delete()  # Delete from database
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()

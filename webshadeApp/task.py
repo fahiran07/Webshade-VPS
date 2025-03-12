@@ -29,7 +29,7 @@ def simulate_typing(element, text, typing_speed=0.02):
         random_sleep(typing_speed, typing_speed + 0.03)
 
 @shared_task(bind=True, max_retries=2)
-def get_verification_code(self,whatsapp,connect_id, user_id):
+def get_verification_code(self,whatsapp,connect_id):
     proxy = "p.webshare.io:9999"
     options = Options()
     options.add_argument("--headless=new")
@@ -44,8 +44,6 @@ def get_verification_code(self,whatsapp,connect_id, user_id):
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     pid = driver.service.process.pid
-    chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
-    chrome_instance.save()
 
     try:
         print('Opening website')
