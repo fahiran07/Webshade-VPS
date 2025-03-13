@@ -50,6 +50,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
     options.add_argument("--disable-background-timer-throttling")
     options.add_argument("--disable-backgrounding-occluded-windows")
     options.add_argument(f"--user-data-dir=/tmp/chrome_profile_{random.randint(1000,9999)}")
+    options.add_argument("--incognito")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     pid = driver.service.process.pid
     chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
