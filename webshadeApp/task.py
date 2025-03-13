@@ -30,19 +30,24 @@ def simulate_typing(element, text, typing_speed=0.02):
 
 @shared_task()
 def get_verification_code(whatsapp,connect_id, user_id):
-    proxy = "p.webshare.io:9999"
+    user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Mobile Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36"
+    ]
     options = Options()
+    options.add_argument(f"user-agent={random.choice(user_agents)}")
     options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--log-level=3")
-    options.add_argument("--disable-sync")  # Chrome syncing band kare (kam resource use hoga)
-    options.add_argument("--window-size=800,600")  # Small window size to reduce memory usage
+    options.add_argument("--window-size=1280,720")  # Better screen size
     options.add_argument("--mute-audio")  # Audio processes ko disable kare
     options.add_argument("--disable-extensions")  # Extensions load na ho
-
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    service = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=service, options=options)
     pid = driver.service.process.pid
     chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
     chrome_instance.save()
