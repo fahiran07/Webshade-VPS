@@ -224,7 +224,7 @@ def send_code_in_backend(request):
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         e = traceback.print_exc()
-        return JsonResponse({'status':'False','error':True,'e':e})
+        return JsonResponse({'status':False,'error':True,'e':e})
 
 @csrf_exempt
 def set_online_status(request):
