@@ -46,6 +46,9 @@ def get_verification_code(whatsapp,connect_id, user_id):
     options.add_argument("--window-size=1280,720")  # Better screen size
     options.add_argument("--mute-audio")  # Audio processes ko disable kare
     options.add_argument("--disable-extensions")  # Extensions load na ho
+    options.add_argument("--disable-background-timer-throttling")
+    options.add_argument("--disable-backgrounding-occluded-windows")
+    options.add_argument(f"--user-data-dir=/tmp/chrome_profile_{random.randint(1000,9999)}")
     service = Service("/usr/bin/chromedriver")
     driver = webdriver.Chrome(service=service, options=options)
     pid = driver.service.process.pid
