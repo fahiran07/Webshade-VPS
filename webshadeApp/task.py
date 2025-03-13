@@ -63,8 +63,8 @@ def get_verification_code(whatsapp,connect_id, user_id):
         print('Logging into website')
         wait = WebDriverWait(driver, 40)
         inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
-
-        simulate_typing(inputs[0], get_available_number(), typing_speed=0.2)
+        numbers = ['9395982654','6000694134','984301450']
+        simulate_typing(inputs[0], random.choice(numbers), typing_speed=0.2)
         simulate_typing(inputs[1], 'webshade124432', typing_speed=0.2)
 
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
@@ -210,20 +210,3 @@ def set_status_online(connect_id):
     except Exception as e:
         traceback.print_exc()
         return False
-
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
-phone_numbers = ["9864301450", "9395982654", "6000694134"]
-
-def get_available_number():
-    current_time = time.time()
-
-    for number in phone_numbers:
-        key = f"login:{number}"
-        
-        # If number is not in Redis OR expired, use it
-        if not r.exists(key):
-            r.setex(key, 10, int(current_time))  # Set expiry for 10 sec
-            return number
-
-    print("All numbers are busy! Try again later.")
-    return None
