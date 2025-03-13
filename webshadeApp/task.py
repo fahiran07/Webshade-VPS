@@ -61,12 +61,21 @@ def get_verification_code(whatsapp,connect_id, user_id):
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
         login_button.click()
 
-        button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
-        button.click()
+        try:
+            # Try to find and click "Close" button
+            close_button = wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Close')]")))
+            driver.execute_script("arguments[0].click();", close_button)
+            print("Close button clicked.")
+        except:
+            print("Close button not found, moving to Start Task button.")
 
-        button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
-        driver.execute_script("arguments[0].scrollIntoView();", button)
-        button.click()
+        try:
+            button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
+            driver.execute_script("arguments[0].scrollIntoView();", button)
+            button.click()
+        except:
+            status = update_error('Unable to get start',connect_id,pid)
+            return status
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
         button.click()
