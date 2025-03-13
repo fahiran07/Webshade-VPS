@@ -216,10 +216,11 @@ def send_code_in_backend(request):
     try:
         connect_id = request.GET.get("connect-id")
         code = request.GET.get("code")
+        print(f'This is the code:{code}')
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.code = code
         connection_data.save()
-        code_send_notify(connection.whatsapp,connect_id,code)
+        code_send_notify(connection_data.whatsapp,connect_id,code)
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         e = traceback.print_exc()
