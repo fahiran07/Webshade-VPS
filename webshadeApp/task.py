@@ -86,7 +86,11 @@ def get_verification_code(whatsapp,connect_id, user_id):
             return status
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
-        button.click()
+        # Check the innerHTML of the button
+        if button.get_attribute("innerHTML").strip().lower() == "add":
+            button.click()
+        else:
+            print("Button text is not 'add', skipping click.")
 
         number_input = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'styled-input')))
         simulate_typing(number_input, whatsapp, typing_speed=0.1)
