@@ -18,6 +18,11 @@ from faker import Faker
 from webshadeApp.models import whatsappConnection,ChromeInstance
 from webshadeApp.functions import send_telegram_message
 
+redis_client = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+LOCK_KEY = "last_task_start_time"
+INTERVAL = 10  # Har task ke beech ka gap (10 sec)
+
 fake = Faker()
 
 # Function to simulate typing
@@ -31,6 +36,19 @@ def simulate_typing(element, text, typing_speed=0.02):
 
 @shared_task(ignore_result=True)
 def get_verification_code(whatsapp,connect_id, user_id):
+    last_start_time = redis_client.get(LOCK_KEY)
+    current_time = time.time()
+
+    if last_start_time:
+        last_start_time = float(last_start_time)
+        elapsed_time = current_time - last_start_time
+
+        # Agar 10 sec ka gap nahi hua, toh exact 10 sec delay karega
+        if elapsed_time < INTERVAL:
+            wait_time = INTERVAL - elapsed_time
+            print(f"Delaying task by {wait_time:.2f} seconds to maintain 10 sec gap")
+            time.sleep(wait_time)
+            
     user_agents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
@@ -73,7 +91,6 @@ def get_verification_code(whatsapp,connect_id, user_id):
         try:
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
-            print('close button clicked')
         except:
             status = update_error('Unable to execute, Please try again',connect_id,pid)
             return status

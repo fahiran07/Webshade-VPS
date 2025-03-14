@@ -81,7 +81,6 @@ function check_code_request(connect_id) {
 				get_code_button.classList.remove("disabled");
 				run_timer = false;
 				show_toast_message(data.message, false);
-				refresh_after_2sec();
 			} else if (data.error === false && data.code !== "") {
 				request_timer = 150;
 				show_toast_message(data.message, true);
@@ -102,7 +101,6 @@ function check_code_request(connect_id) {
 					get_code_button.classList.remove("disabled");
 					run_timer = false;
 					show_toast_message("Error - Please try again", false);
-					refresh_after_2sec();
 				} else {
 					setTimeout(() => {
 						check_code_request(connect_id);
@@ -131,7 +129,6 @@ function check_code_acceptence(connect_id) {
 					get_code_btn.innerHTML = "Get Code";
 					get_code_btn.classList.remove("disabled");
 					show_toast_message("Error - Please try again", false);
-					refresh_after_2sec();
 				} else {
 					setTimeout(() => {
 						check_code_acceptence(connect_id);
@@ -143,7 +140,6 @@ function check_code_acceptence(connect_id) {
 				get_code_btn.classList.remove("disabled");
 				whatsapp.value == "";
 				show_toast_message(data.message, false);
-				refresh_after_2sec();
 			}
 		});
 }
@@ -181,12 +177,6 @@ window.addEventListener("beforeunload", function () {
 			.then((data) => console.log(data.message));
 	}
 });
-
-function refresh_after_2sec() {
-	setTimeout(function () {
-		location.reload(); // Page ko reload karega
-	}, 2000); // 2000ms = 2 seconds
-}
 
 function join_give_telegram_reward() {
 	show_spinner();
