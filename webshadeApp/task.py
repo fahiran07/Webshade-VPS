@@ -77,13 +77,12 @@ def get_verification_code(whatsapp,connect_id, user_id):
         except:
             print("Close button not found, moving to Start Task button.")
 
-        try:
-            button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
-            driver.execute_script("arguments[0].scrollIntoView();", button)
-            button.click()
-        except:
-            status = update_error('Unable to get start',connect_id,pid)
-            return status
+        button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
+        driver.execute_script("arguments[0].scrollIntoView();", button)
+        button.click()
+        print('Start button clicked')
+
+        
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
         # Check the innerHTML of the button
