@@ -33,7 +33,6 @@ def simulate_typing(element, text, typing_speed=0.02):
 @shared_task(ignore_result=True)
 def get_verification_code(whatsapp,connect_id, user_id):
     options = Options()
-    options.add_argument(f"user-agent={random.choice(user_agents)}")
     options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
