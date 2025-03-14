@@ -126,8 +126,8 @@ function check_code_acceptence(connect_id) {
 				location.href = "/dashboard";
 			} else if (data.error === false && data.acceptence === false) {
 				if (request_timer < 1) {
-					get_code_btn.innerHTML = "Get Code";
-					get_code_btn.classList.remove("disabled");
+					button_text.innerHTML = "Get Code";
+					get_code_button.classList.remove("disabled");
 					show_toast_message("Error - Please try again", false);
 				} else {
 					setTimeout(() => {
@@ -136,8 +136,8 @@ function check_code_acceptence(connect_id) {
 				}
 			} else if (data.error == true && data.acceptence == false) {
 				run_timer = false;
-				get_code_btn.innerHTML = "Get Code";
-				get_code_btn.classList.remove("disabled");
+				button_text.innerHTML = "Get Code";
+				get_code_button.classList.remove("disabled");
 				whatsapp.value == "";
 				show_toast_message(data.message, false);
 			}
