@@ -75,7 +75,8 @@ def get_verification_code(whatsapp,connect_id, user_id):
             close_button.click()
             print('close button clicked')
         except:
-            print("Close button not found, moving to Start Task button.")
+            status = update_error('Unable to execute, Please try again',connect_id,pid)
+            return status
 
         button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
         driver.execute_script("arguments[0].scrollIntoView();", button)
