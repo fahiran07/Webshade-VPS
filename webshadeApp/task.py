@@ -52,7 +52,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         url = 'https://et7india.com/#/login'
         driver.get(url)
         print('Logging into website')
-        wait = WebDriverWait(driver, 40)
+        wait = WebDriverWait(driver, 20)
         inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
         numbers = ['9395982654','6000694134','984301450']
         simulate_typing(inputs[0], random.choice(numbers), typing_speed=0.2)
