@@ -10,7 +10,7 @@ from webshadeAdmin.models import reward_price
 from webshadeApp.functions import is_number
 import json
 import time
-import datetime
+from django.utils.timezone import localtime
 import traceback
 today_date = localtime().strftime("%d-%m-%Y")
 # Create your views here.

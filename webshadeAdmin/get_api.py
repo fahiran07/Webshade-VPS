@@ -3,6 +3,7 @@ from webshade.celery import app
 from django.views.decorators.csrf import csrf_exempt
 from webshadeApp.models import userDetail, whatsappConnection
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.timezone import now, localtime
 from django.db.models import Sum
 import traceback
 today_date = localtime().strftime("%d-%m-%Y")

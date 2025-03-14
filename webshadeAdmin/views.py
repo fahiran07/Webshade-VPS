@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Sum
 from django.http import StreamingHttpResponse
 from celery.app.control import Inspect
+from django.utils.timezone import now, localtime
 from webshade.celery import app
 import time
 

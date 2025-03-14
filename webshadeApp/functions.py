@@ -1,7 +1,7 @@
 import random
 import requests
 import json
-from django.utils.timezone import now
+from django.utils.timezone import now, localtime
 
 today_date = now().date()
 def is_number(value):

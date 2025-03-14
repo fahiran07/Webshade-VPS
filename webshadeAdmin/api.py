@@ -7,7 +7,7 @@ from webshadeApp.models import userDetail, whatsappConnection, withdrawal_reques
 from webshadeAdmin.models import reward_price
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from django.utils.timezone import localtime
+from django.utils.timezone import now, localtime
 from django.utils import timezone
 import random
 import traceback

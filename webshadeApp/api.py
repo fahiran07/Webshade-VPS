@@ -14,7 +14,7 @@ from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
-from django.utils.timezone import now
+from django.utils.timezone import now, localtime
 import traceback
 import json
 import os
