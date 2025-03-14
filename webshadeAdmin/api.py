@@ -90,7 +90,6 @@ def accept_request(request):
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.status = 'Online'
         connection_data.date = today_date
-        connection_data.time = current_time.strftime("%H:%M:%S")
         connection_data.successTimestamp = timezone.now()
         connection_data.save()
         return JsonResponse({'message':'Request accepted successfully','error':False})

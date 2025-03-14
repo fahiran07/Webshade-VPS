@@ -8,10 +8,12 @@ from django.http import JsonResponse
 from webshadeApp.models import userDetail,withdrawal_request,bank_account, whatsappConnection
 from webshadeAdmin.models import reward_price 
 from webshadeApp.functions import is_number
+from django.core.cache import cache
 import json
 import time
 from django.utils.timezone import localtime
 import traceback
+cache.clear()
 today_date = localtime().strftime("%d-%m-%Y")
 # Create your views here.
 def register_account(request,refer_code=''):

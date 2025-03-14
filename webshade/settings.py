@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mkj9=-7bgc5k)p893j)l6hl^kp#1h804#^)=*ppk)v#=ejkirm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 APPEND_SLASH = True
 ALLOWED_HOSTS = ['.vercel.app', '.now.sh','.site','127.0.0.1','82.29.162.97']
 
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',  # Cache update middleware
@@ -59,7 +59,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'webshade.urls'
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 
 TEMPLATES = [
@@ -90,6 +92,7 @@ CELERY_RESULT_BACKEND = None  # Disable result backend
 # Retry broker connection if it fails
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600, 'max_retries': 5}
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 
 
 

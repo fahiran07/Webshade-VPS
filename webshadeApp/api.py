@@ -15,10 +15,13 @@ from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
 from django.utils.timezone import now, localtime
+from datetime import timedelta
+from django.core.cache import cache
 import traceback
 import json
 import os
 import uuid
+cache.clear()
 today_date = localtime().strftime("%d-%m-%Y")
 current_time = now()
 
@@ -109,17 +112,17 @@ def send_code_request(request):
             previous_task = whatsappConnection.objects.last()
             delay_time = 0
             if previous_task:
-                time_diff = (now() - previous_task.time).total_seconds()
+                time_diff = (now() - previous_task.created_at).total_seconds()
                 if time_diff < 10:  # 10 sec se kam hai to delay add karenge
                     delay_time = 10 - time_diff
             if whatsapp_connect_data.exists():
                 remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'
-                whatsapp_connect_data.update(status='Processing', time=now() + timedelta(seconds=delay_time), code='', remark=remark)
+                whatsapp_connect_data.update(status='Processing', created_at=now() + timedelta(seconds=delay_time), code='', remark=remark)
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    time=now() + timedelta(seconds=delay_time), remark='ET7India'
+                    created_at=now() + timedelta(seconds=delay_time), remark='ET7India'
                 )
                 remark = 'ET7India'
     
@@ -243,7 +246,6 @@ def set_online_status(request):
         connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
         status='Online', 
         date=today_date, 
-        time=current_time.strftime("%H:%M:%S"), 
         successTimestamp=now()  # ✅ Properly closed parenthesis
         )
         return JsonResponse({'status':True,'error':False})
