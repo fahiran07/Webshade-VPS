@@ -71,10 +71,9 @@ def get_verification_code(whatsapp,connect_id, user_id):
         login_button.click()
 
         try:
-            # Try to find and click "Close" button
-            close_button = wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Close')]")))
-            driver.execute_script("arguments[0].click();", close_button)
-            print("Close button clicked.")
+            close_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Close')]")))
+            close_button.click()
+            print('close button clicked')
         except:
             print("Close button not found, moving to Start Task button.")
 
