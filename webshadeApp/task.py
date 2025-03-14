@@ -71,8 +71,8 @@ def get_verification_code(whatsapp,connect_id, user_id):
         login_button.click()
 
         try:
-            close_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Close')]")))
-            close_button.click()
+            button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
+            button.click()
             print('close button clicked')
         except:
             status = update_error('Unable to execute, Please try again',connect_id,pid)
