@@ -7,15 +7,15 @@ from webshadeApp.models import userDetail, whatsappConnection, withdrawal_reques
 from webshadeAdmin.models import reward_price
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from datetime import datetime, timedelta
+from django.utils.timezone import localtime
 from django.utils import timezone
 import random
 import traceback
 import json
 import uuid
 
-today_date = datetime.now().date().strftime("%d-%m-%Y")
-current_time = datetime.now()
+today_date = localtime().date().strftime("%d-%m-%Y")
+current_time = timezone.now()
 
 
 def login_account(request):
@@ -91,7 +91,7 @@ def accept_request(request):
         connection_data.status = 'Online'
         connection_data.date = today_date
         connection_data.time = current_time.strftime("%H:%M:%S")
-        connection_data.successTimestamp = datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")
+        connection_data.successTimestamp = timezone.now()
         connection_data.save()
         return JsonResponse({'message':'Request accepted successfully','error':False})
     except Exception as e:

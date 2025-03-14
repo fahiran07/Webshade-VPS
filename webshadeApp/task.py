@@ -6,7 +6,6 @@ import redis
 import uuid
 import requests
 import traceback
-from datetime import datetime
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
@@ -30,7 +29,7 @@ def simulate_typing(element, text, typing_speed=0.02):
         element.send_keys(char)
         random_sleep(typing_speed, typing_speed + 0.03)
 
-@shared_task(ignore_result=True)
+@shared_task(ignore_result=True,max_retries=0)
 def get_verification_code(whatsapp,connect_id, user_id):
     options = Options()
     options.add_argument("--headless=new")

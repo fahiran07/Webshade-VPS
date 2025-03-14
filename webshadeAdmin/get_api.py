@@ -5,8 +5,7 @@ from webshadeApp.models import userDetail, whatsappConnection
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 import traceback
-from datetime import date,datetime
-today_date = date.today().strftime("%d-%m-%Y")
+today_date = localtime().strftime("%d-%m-%Y")
 
 
 @csrf_exempt

@@ -9,9 +9,8 @@ from django.http import StreamingHttpResponse
 from celery.app.control import Inspect
 from webshade.celery import app
 import time
-from datetime import timedelta,datetime,date
 
-today_date = date.today().strftime("%d-%m-%Y")
+today_date = localtime().strftime("%d-%m-%Y")
 
 
 
@@ -43,7 +42,6 @@ def connects(request):
 
 @never_cache
 def connect_mobile(request):
-    # ten_minutes_ago = datetime.now() - timedelta(minutes=10)
 
     # # Fetch data with filtering directly on DB
     connection_data = whatsappConnection.objects.filter(Q(status='Online') | Q(status='Offline')).order_by("-id")

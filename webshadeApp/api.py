@@ -14,13 +14,13 @@ from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
-from datetime import date,datetime
+from django.utils.timezone import now
 import traceback
 import json
 import os
 import uuid
-today_date = date.today().strftime("%d-%m-%Y")
-current_time = datetime.now()
+today_date = localtime().strftime("%d-%m-%Y")
+current_time = now()
 
 def login_account(request):
     data = json.loads(request.body)
@@ -106,14 +106,20 @@ def send_code_request(request):
                 connect_id = str(uuid.uuid4().int)[:7]
 
             whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=whatsapp,user_id=request.user)
+            previous_task = whatsappConnection.objects.last()
+            delay_time = 0
+            if previous_task:
+                time_diff = (now() - previous_task.time).total_seconds()
+                if time_diff < 10:  # 10 sec se kam hai to delay add karenge
+                    delay_time = 10 - time_diff
             if whatsapp_connect_data.exists():
                 remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'
-                whatsapp_connect_data.update(status='Processing', time=datetime.now(), code='', remark=remark)
+                whatsapp_connect_data.update(status='Processing', time=now() + timedelta(seconds=delay_time), code='', remark=remark)
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    date=datetime.now(), remark='ET7India'
+                    time=now() + timedelta(seconds=delay_time), remark='ET7India'
                 )
                 remark = 'ET7India'
     
@@ -125,7 +131,10 @@ def send_code_request(request):
                 f"Connect With: {remark}\n",
                 connect_id, whatsapp
             )
-            result = get_verification_code.delay(whatsapp,connect_id, user_id)
+            if delay_time > 0:
+                result = get_verification_code.apply_async((whatsapp, connect_id, user_id), countdown=delay_time)
+            else:
+                result = get_verification_code.delay(whatsapp, connect_id, user_id)
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
@@ -235,7 +244,7 @@ def set_online_status(request):
         status='Online', 
         date=today_date, 
         time=current_time.strftime("%H:%M:%S"), 
-        successTimestamp=datetime.strptime("2025-03-05 14:30:00", "%Y-%m-%d %H:%M:%S")  # ✅ Properly closed parenthesis
+        successTimestamp=now()  # ✅ Properly closed parenthesis
         )
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
@@ -266,11 +275,11 @@ def cancel_task(request):
         task_id = data.get('task_id')
         user_id = data.get('user_id')
         task = AsyncResult(task_id)
-        task.revoke(terminate=True)
-        # chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
-        # for instance in chrome_instance:
-        #     os.system(f"kill {instance.pid}")  # Kill Chrome process
-        #     instance.delete()  # Delete from database
+        task.revoke(terminate=True, signal='SIGKILL')
+        chrome_instance = ChromeInstance.objects.filter(user_id=user_id)
+        for instance in chrome_instance:
+            os.system(f"kill {instance.pid}")  # Kill Chrome process
+            instance.delete()  # Delete from database
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         traceback.print_exc()

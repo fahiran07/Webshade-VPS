@@ -12,7 +12,7 @@ import json
 import time
 import datetime
 import traceback
-today_date = datetime.date.today().strftime("%d-%m-%Y")
+today_date = localtime().strftime("%d-%m-%Y")
 # Create your views here.
 def register_account(request,refer_code=''):
       return render(request,'webshadeApp/register.html',{'refer_code':refer_code})

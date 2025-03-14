@@ -1,9 +1,9 @@
 import random
-from datetime import datetime
 import requests
 import json
+from django.utils.timezone import now
 
-today_date = datetime.now().date()
+today_date = now().date()
 def is_number(value):
     if str(value).isdigit() and len(str(value)) == 10:
         return True
