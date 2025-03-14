@@ -29,7 +29,7 @@ def simulate_typing(element, text, typing_speed=0.02):
         element.send_keys(char)
         random_sleep(typing_speed, typing_speed + 0.03)
 
-@shared_task()
+@shared_task(ignore_result=True)
 def get_verification_code(whatsapp,connect_id, user_id):
     user_agents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
@@ -44,7 +44,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--log-level=3")
-    options.add_argument("--window-size=380,760")  # Better screen size
+    options.add_argument("--window-size=1300,800")  # Better screen size
     options.add_argument("--mute-audio")  # Audio processes ko disable kare
     options.add_argument("--disable-extensions")  # Extensions load na ho
     options.add_argument("--disable-background-timer-throttling")
