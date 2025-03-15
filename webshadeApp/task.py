@@ -37,6 +37,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
     options.add_argument("--disable-background-timer-throttling")
     options.add_argument("--disable-backgrounding-occluded-windows")
     options.add_argument("--incognito")
+    options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36")
     temp_dir = f"/tmp/chrome_{os.getpid()}_{tempfile.mktemp()}"
     options.add_argument(f"--user-data-dir={temp_dir}")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -54,26 +55,30 @@ def get_verification_code(whatsapp,connect_id, user_id):
         numbers = ['984301450']
         inputs[0].send_keys(random.choice(numbers))
         inputs[1].send_keys('webshade124432')
-
+        print('Page title:',driver.title)
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
         login_button.click()
-
+        print('Page title:',driver.title)
         try:
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
+            print('Page title:',driver.title)
         except:
             status = update_error('Unable to execute, Please try again',connect_id,pid)
+            print('Page title:',driver.title)
             return status
 
         button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
         driver.execute_script("arguments[0].scrollIntoView();", button)
         button.click()
+        print('Page title:',driver.title)
         print('Start button clicked')
 
         
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
         # Check the innerHTML of the button
+        print('Page title:',driver.title)
         print('this is button',button.get_attribute("innerHTML").strip().lower())
         if button.get_attribute("innerHTML").strip().lower() == "add":
             button.click()
