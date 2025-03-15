@@ -133,39 +133,26 @@ def get_verification_code(whatsapp,connect_id, user_id):
             status = update_error('Code sending failed.',connect_id,pid)
             return status
         print('Code sent succesfully')
-        wait_time = 150  # Max wait time
-        refresh_interval = 20  # Interval between refresh attempts
-        start_time = time.time()
-        last_refresh = time.time()
-        while time.time() - start_time < wait_time:
-            try:
-                element = WebDriverWait(driver, 25).until(
-                    EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
-                )
+        try:
+            # Wait for the element with the given number to appear
+            element = WebDriverWait(driver, 120).until(
+                EC.presence_of_element_located((By.XPATH, f"//div[@class='account_status']//div[@class='account' and contains(text(), '{whatsapp}')]"))
+            )
+            print('Verifying')
+            if element:
+                # If element is found, set status online
                 online_status = set_status_online(connect_id)
-                print("Online status",online_status)
+                print("Online status:", online_status)
                 if online_status:
                     return True
-                status = update_error('Error while setting whatsapp online.',connect_id,pid)
-                return status
+                else:
+                    return update_error("Error while setting WhatsApp online.", connect_id, pid)
+    
+        except Exception as e:
+            print(f"Error: {e}")
 
-            except:
-                pass
-
-            if time.time() - last_refresh >= refresh_interval:
-                print('Clicking refresh')
-                try:
-                    refresh_button = WebDriverWait(driver, 25).until(
-                        EC.element_to_be_clickable((By.CLASS_NAME, "updateList"))
-                    )
-                    refresh_button.click()
-                    last_refresh = time.time()
-                except:
-                    traceback.print_exc()
-
-            random_sleep(1, 2)
-        status = update_error("Whatsapp didn't connect",connect_id,pid)
-        return status
+        # If element is not found or any error occurs
+        return update_error("WhatsApp didn't connect", connect_id, pid)
 
     except Exception as e:
         traceback.print_exc()
