@@ -46,6 +46,5 @@ class whatsappConnection(models.Model):
 
 class ChromeInstance(models.Model):
     user_id = models.CharField(max_length=50)  # Celery task ID
-    task_id = models.CharField(max_length=50)  # Celery task ID
     pid = models.IntegerField()  # Chrome process ID
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp

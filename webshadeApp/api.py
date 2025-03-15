@@ -113,7 +113,7 @@ def send_code_request(request):
             delay_time = 0
             if previous_task:
                 time_diff = (now() - previous_task.created_at).total_seconds()
-                if time_diff < 10:  # 10 sec se kam hai to delay add karenge
+                if time_diff < 30:  # 10 sec se kam hai to delay add karenge
                     delay_time = 10 - time_diff
             if whatsapp_connect_data.exists():
                 remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'

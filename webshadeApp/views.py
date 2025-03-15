@@ -4,11 +4,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from webshadeApp.models import userDetail,withdrawal_request,bank_account, whatsappConnection
 from webshadeAdmin.models import reward_price 
 from webshadeApp.functions import is_number
 from django.core.cache import cache
+from django.contrib.auth.hashers import make_password
+
 import json
 import time
 from django.utils.timezone import localtime
@@ -142,4 +144,3 @@ def logout_account(request):
       logout(request)
       return redirect('/login')
    
-
