@@ -84,6 +84,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
+        button.click()
         # Check the innerHTML of the button
         print('Page URL:', driver.current_url)
         print('this is button',button.get_attribute("innerHTML").strip().lower())
