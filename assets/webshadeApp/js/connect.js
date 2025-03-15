@@ -14,7 +14,7 @@ let get_code_button = document.getElementById("get-code-btn"); // Specific progr
 let button_text = document.getElementById("button-text");
 let task_id = null; // Specific progress div
 
-let request_timer = 200;
+let request_timer = 150;
 let run_timer = false;
 
 let code_status = "Getting Code";
@@ -54,9 +54,9 @@ function get_code() {
 			if (data.error == false) {
 				show_toast_message(data.message, true);
 				run_timer = true;
-				request_timer = 200;
+				request_timer = 150;
 				get_code_button.classList.add("disabled");
-	
+
 				check_code_request(data.connect_id);
 			} else {
 				show_toast_message(data.message, false);
