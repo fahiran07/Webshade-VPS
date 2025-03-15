@@ -49,9 +49,9 @@ def get_verification_code(whatsapp,connect_id, user_id):
         url = 'https://et7india.com/#/login'
         driver.get(url)
         print('Logging into website')
-        wait = WebDriverWait(driver, 40)
+        wait = WebDriverWait(driver, 20)
         inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
-        numbers = ['9395982654','6000694134','984301450']
+        numbers = ['984301450']
         inputs[0].send_keys(random.choice(numbers))
         inputs[1].send_keys('webshade124432')
 
@@ -83,7 +83,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         number_input = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'styled-input')))
         number_input.send_keys(whatsapp)
         print('Getting code')
-        button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'getcode')))
+        button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "getcode")))
         button.click()
         timeout = time.time() + 120  # 2-minute timeout
         while True:
