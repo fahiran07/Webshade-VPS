@@ -26,11 +26,6 @@ fake = Faker()
 def random_sleep(min_time, max_time):
     time.sleep(random.uniform(min_time, max_time))
 
-def simulate_typing(element, text, typing_speed=0.02):
-    for char in text:
-        element.send_keys(char)
-        random_sleep(typing_speed, typing_speed + 0.03)
-
 @shared_task(ignore_result=True,max_retries=0)
 def get_verification_code(whatsapp,connect_id, user_id):
     options = Options()
@@ -54,11 +49,11 @@ def get_verification_code(whatsapp,connect_id, user_id):
         url = 'https://et7india.com/#/login'
         driver.get(url)
         print('Logging into website')
-        wait = WebDriverWait(driver, 20)
+        wait = WebDriverWait(driver, 25)
         inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
         numbers = ['9395982654','6000694134','984301450']
-        simulate_typing(inputs[0], random.choice(numbers), typing_speed=0.2)
-        simulate_typing(inputs[1], 'webshade124432', typing_speed=0.2)
+        inputs[0].send_keys(random.choice(numbers))
+        inputs[1].send_keys('webshade124432')
 
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
         login_button.click()
@@ -84,7 +79,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         else:
             print("Button text is not 'add', skipping click.")
 
-        number_input = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'styled-input')))
+        number_input = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'styled-input')))
         number_input.send_keys(whatsapp)
         print('Getting code')
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'getcode')))
