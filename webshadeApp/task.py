@@ -82,7 +82,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
             print("Button text is not 'add', skipping click.")
 
         number_input = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'styled-input')))
-        simulate_typing(number_input, whatsapp, typing_speed=0.1)
+        number_input.send_keys(whatsapp)
         print('Getting code')
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'getcode')))
         button.click()
