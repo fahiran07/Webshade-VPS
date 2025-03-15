@@ -59,6 +59,12 @@ def get_verification_code(whatsapp,connect_id, user_id):
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
         login_button.click()
         try:
+            error_message_element = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text")))
+            print(error_message_element)
+        except Exception as e:
+            print('Toast element not found')
+
+        try:
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
             print('Page URL:', driver.current_url)
