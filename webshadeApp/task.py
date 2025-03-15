@@ -52,7 +52,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         print('Logging into website')
         wait = WebDriverWait(driver, 20)
         inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
-        numbers = ['984301450']
+        numbers = ['6000694134']
         inputs[0].send_keys(random.choice(numbers))
         inputs[1].send_keys('webshade124432')
         print('Page URL:', driver.current_url)
@@ -60,11 +60,13 @@ def get_verification_code(whatsapp,connect_id, user_id):
         login_button.click()
         try:
             error_message_element = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text")))
-            print(error_message_element)
+            print("This is error message:",error_message_element.text.strip().lower())
         except Exception as e:
             print('Toast element not found')
 
         try:
+            error_message_element = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text")))
+            print("This is error message:",error_message_element.text.strip().lower())
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
             print('Page URL:', driver.current_url)
