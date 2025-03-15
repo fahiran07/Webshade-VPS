@@ -58,7 +58,6 @@ def get_verification_code(whatsapp,connect_id, user_id):
         print('Page URL:', driver.current_url)
         login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
         login_button.click()
-        v
         try:
             button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
