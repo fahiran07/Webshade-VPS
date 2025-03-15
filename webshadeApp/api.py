@@ -137,8 +137,8 @@ def send_code_request(request):
             if delay_time > 0:
                 result = get_verification_code.apply_async((whatsapp, connect_id, user_id), countdown=delay_time)
             else:
-                
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':787878})
+                result = get_verification_code.delay(whatsapp, connect_id, user_id)
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': 'Error while sending request', 'error': True})
