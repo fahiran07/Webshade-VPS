@@ -3,9 +3,11 @@ from django.http import JsonResponse
 import random
 import time
 import redis
+import os
 import uuid
 import requests
 import traceback
+import tempfile
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
@@ -39,8 +41,9 @@ def get_verification_code(whatsapp,connect_id, user_id):
     options.add_argument("--disable-extensions")  # Extensions load na ho
     options.add_argument("--disable-background-timer-throttling")
     options.add_argument("--disable-backgrounding-occluded-windows")
-    options.add_argument(f"--user-data-dir=/tmp/chrome_profile_{random.randint(1000,9999)}")
     options.add_argument("--incognito")
+    temp_dir = f"/tmp/chrome_{os.getpid()}_{tempfile.mktemp()}"
+    options.add_argument(f"--user-data-dir={temp_dir}")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     pid = driver.service.process.pid
     chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
