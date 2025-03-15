@@ -67,7 +67,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
         try:
             error_message_element = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.CLASS_NAME, "van-toast__text")))
             print("This is error message:",error_message_element.text.strip().lower())
-            button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
+            button = WebDriverWait(driver,50).until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span[text()='Close']]")))
             button.click()
             print('Page URL:', driver.current_url)
         except:
