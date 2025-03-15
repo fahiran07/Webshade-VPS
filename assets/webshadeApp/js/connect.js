@@ -56,7 +56,7 @@ function get_code() {
 				run_timer = true;
 				request_timer = 200;
 				get_code_button.classList.add("disabled");
-				task_id = data.task_id;
+	
 				check_code_request(data.connect_id);
 			} else {
 				show_toast_message(data.message, false);
@@ -162,20 +162,6 @@ function copy_code() {
 
 server_back_btn.addEventListener("click", () => {
 	server_down_msg.classList.add("d-none");
-});
-
-window.addEventListener("beforeunload", function () {
-	if (task_id != null) {
-		fetch("/api/cancel-task/", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ task_id: task_id, user_id: user_id }),
-		})
-			.then((response) => response.json())
-			.then((data) => console.log(data.message));
-	}
 });
 
 function join_give_telegram_reward() {
