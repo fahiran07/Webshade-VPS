@@ -74,6 +74,7 @@ def get_verification_code(whatsapp,connect_id, user_id):
 
         button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'switch_button')))
         # Check the innerHTML of the button
+        print('this is button',button.get_attribute("innerHTML").strip().lower())
         if button.get_attribute("innerHTML").strip().lower() == "add":
             button.click()
         else:
