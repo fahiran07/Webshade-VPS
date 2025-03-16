@@ -9,6 +9,6 @@ urlpatterns = [
     re_path(r'^assets/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     path('admin/', admin.site.urls),
     path('', include('webshadeApp.urls')),
-    path('admin-panel-124432/', include('webshadeAdmin.urls')),
+    path('admin-panel/', include('webshadeAdmin.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
