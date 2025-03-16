@@ -169,7 +169,7 @@ server_back_btn.addEventListener("click", () => {
 });
 
 window.addEventListener("beforeunload", function () {
-	if (task_id != null) {
+	if (task_id != null || task_id == false) {
 		fetch("/api/cancel-task/", {
 			method: "POST",
 			headers: {

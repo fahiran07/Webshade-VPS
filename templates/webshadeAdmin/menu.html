@@ -26,6 +26,9 @@
 		<li class="d-cm-none {% if request.path == '/admin-panel-124432/withdrawal/' %}active-tab{% endif %}">
 			<a href="/admin-panel-124432/connect-mobile/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
 		</li>
+		<li class="{% if request.path == '/admin-panel-124432/admins/' %}active-tab{% endif %}">
+			<a href="/admin-panel-124432/admins/" onclick="show_spinner()"> <i class="fas fa-user-shield"></i> Admins </a>
+		</li>
 		<li class="{% if request.path == '/admin' %}active-tab{% endif %}">
 			<a href="/admin" target="_blank"> <i class="fas fa-sign-out-alt"></i> Main Admin </a>
 		</li>

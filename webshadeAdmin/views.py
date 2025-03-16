@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price, login_number
+from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin
 from django.db.models import Sum, F, Q, Subquery, Max
 from django.views.decorators.cache import never_cache
 from django.db.models import Sum
@@ -79,6 +79,22 @@ def withdrawal(request):
         'failed_withdrawal':withdrawal_data.filter(status='Failed'),
     }
     return render(request,'webshadeAdmin/withdrawal.html',context)
+
+@never_cache
+def request_admins(request):
+    request_admins = RequestHandlingAdmin.objects.all()
+    total_admins = request_admins.count()
+    revenue = whatsappConnection.objects.filter(status='Online').exclude(admin_id='Bot').aggregate(Sum('commission'))['commission__sum']
+    success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id__in=['Bot', '']).count()
+    failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id__in=['Bot', '']).count()
+    context = {
+        'request_admins':request_admins,
+        'total_admins':total_admins,
+        'revenue':revenue,
+        'success_connects':success_connects,
+        'failed_connects':failed_connects,
+    }
+    return render(request,'webshadeAdmin/request_admin.html',context)
 
 @never_cache
 def celery_connects(request):

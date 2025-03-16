@@ -11,6 +11,7 @@ urlpatterns = [
     path("connects/", views.connects),
     path("withdrawal/", views.withdrawal),
     path("celery-connects/", views.celery_connects),
+    path("admins/", views.request_admins),
     path("submit-connect-request/<str:connect_id>/<str:request_phone>/", views.submit_connect_status),
     # API Routes
     path("api/get-user-data/", api.get_user_data),

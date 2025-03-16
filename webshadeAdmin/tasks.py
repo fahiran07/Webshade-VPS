@@ -13,7 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
-from webshadeApp.models import whatsappConnection,ChromeInstance
+from webshadeApp.models import whatsappConnection
 from webshadeApp.functions import send_telegram_message
 
 fake = Faker()
@@ -42,9 +42,7 @@ def get_verification_code(self,whatsapp,connect_id, user_id):
     options.add_argument("--disable-extensions")  # Extensions load na ho
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    pid = driver.service.process.pid
-    chrome_instance = ChromeInstance.objects.create(user_id=user_id, pid=pid)
-    chrome_instance.save()
+    
 
     try:
         print('Opening website')

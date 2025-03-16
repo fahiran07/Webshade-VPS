@@ -15,3 +15,9 @@ class login_number(models.Model):
     number = models.CharField(max_length=50)
     login_by = models.CharField(max_length=50,default='',blank=True)
     status = models.CharField(default='no login',max_length=50)
+
+class RequestHandlingAdmin(models.Model):
+    name = models.CharField(max_length=50)
+    chat_id = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
+    admin_id = models.CharField(max_length=50)

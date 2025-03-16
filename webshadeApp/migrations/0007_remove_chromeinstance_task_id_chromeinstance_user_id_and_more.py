@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='chromeinstance',
-            name='task_id',
-        ),
+        # migrations.RemoveField(
+        #     model_name='chromeinstance',
+        #     name='task_id',
+        # ),
         migrations.AddField(
             model_name='chromeinstance',
             name='user_id',

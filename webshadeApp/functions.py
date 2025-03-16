@@ -51,14 +51,22 @@ def new_user_register_message(message):
     response = requests.post(url, data=data)
     return response.json()
 
-def code_send_notify(whatsapp,connect_id,code):
-    TELEGRAM_BOT_TOKEN = "7566210125:AAERFGI5D4HjnFqRH7LRi5cgXIc9ihmedC4"  # Apna Bot Token Dal
-    TELEGRAM_CHAT_ID = "5862453909"  # Apna Telegram Chat ID Dal
+def send_task_to_admin(chat_id):
+    TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"  # Apna Bot Token Dal
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
 
+    keyboard = {
+        "inline_keyboard": [
+            [
+                {"text": "Send Code", "url": f"intent://#Intent;package=com.wsadmin.app;action=android.intent.action.VIEW;end;"},  # Yaha apna desired URL dal
+            ]
+        ]
+    }
+
     data = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": f"Code Generated ! \n\n whatsapp:{whatsapp} \n\n connect ID:{connect_id} \n\n 'code:{code}",
+        "chat_id": chat_id,
+        "text": message,
+        "reply_markup": json.dumps(keyboard)  # Buttons ko JSON format me bhejna hoga
     }
     response = requests.post(url, data=data)
     return response.json()

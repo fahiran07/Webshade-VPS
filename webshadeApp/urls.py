@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/check-code-acceptence/', api.check_code_acceptence),
     path('api/withdrawal/', api.withdrawal),
     path('api/add-bank-account/', api.add_bank_account),
-    path('api/cancel-task/', api.cancel_task),
     path('api/join-give-telegram-reward/', api.join_give_telegram_reward),
 
     # SSE

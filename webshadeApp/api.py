@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import JsonResponse
 from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account,ChromeInstance
-from webshadeAdmin.models import reward_price
-from webshadeApp.functions import send_telegram_message, new_user_register_message,code_send_notify
+from webshadeAdmin.models import reward_price,RequestHandlingAdmin
+from webshadeApp.functions import send_telegram_message, new_user_register_message,send_task_to_admin
 from webshadeApp.functions import is_number, validate_email
 from django.utils import timezone
 from webshadeApp.task import get_verification_code,test_task
@@ -109,36 +109,50 @@ def send_code_request(request):
                 connect_id = str(uuid.uuid4().int)[:7]
 
             whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=whatsapp,user_id=request.user)
-            previous_task = whatsappConnection.objects.last()
+
+            # Geting a free admin ID
+            free_admin = RegestHandlingAdmin.objects.annotate(
+                task_count=Count('whatsappconnection', filter=Q(whatsappconnection__status="Processing"))
+            ).filter(task_count__lte=2).exclude(admin_id="Bot").order_by('task_count').first()
+
+            # Identify the delay time
+            previous_task = whatsappConnection.objects.filter(admin_id='Bot').last()
             delay_time = 0
             if previous_task:
                 time_diff = (now() - previous_task.created_at).total_seconds()
-                if time_diff < 30:  # 10 sec se kam hai to delay add karenge
-                    delay_time = 30 - time_diff
+                if time_diff < 50:  # 10 sec se kam hai to delay add karenge
+                    delay_time = 50 - time_diff
+
+            # Sending task to handler Bot or Agent
+            if delay_time > 0:
+                send_task_to_admin(free_admin.chat_id)
+                created_at = now()
+                admin_id = free_admin.admin_id
+                handlingBy = free_admin.name
+                task_id = False
+            else:
+                result = get_verification_code.delay(whatsapp, connect_id, user_id)
+                admin_id = 'Bot'
+                created_at = now() + timedelta(seconds=delay_time)
+                handlingBy = 'Bot'
+                task_id = result.id
+
             if whatsapp_connect_data.exists():
-                remark = 'Other' if whatsapp_connect_data.first().status == 'this user already exists' else 'ET7India'
-                whatsapp_connect_data.update(status='Processing', created_at=now() + timedelta(seconds=delay_time), code='', remark=remark)
+                whatsapp_connect_data.update(status='Processing', created_at=created_at, code='')
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    created_at=now() + timedelta(seconds=delay_time), remark='ET7India'
+                    created_at=created_at,
                 )
-                remark = 'ET7India'
-    
             send_telegram_message(
-                f"🚀 New Connect Request!\n\n"
+                f"🚀 New Connect Request Recieved by {handlingBy}!\n\n"
                 f"👤 User: {user_id}\n"
                 f"Phone Number: {whatsapp}\n"
-                f"Request ID: {connect_id}\n"
-                f"Connect With: {remark}\n",
+                f"Request ID: {connect_id}\n",
                 connect_id, whatsapp
             )
-            if delay_time > 0:
-                result = get_verification_code.apply_async((whatsapp, connect_id, user_id), countdown=delay_time)
-            else:
-                result = get_verification_code.delay(whatsapp, connect_id, user_id)
-            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':result.id})
+            return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id,'task_id':task_id})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message': 'Error while sending request', 'error': True})
@@ -232,7 +246,6 @@ def send_code_in_backend(request):
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.code = code
         connection_data.save()
-        code_send_notify(connection_data.whatsapp,connect_id,code)
         return JsonResponse({'status':True,'error':False})
     except Exception as e:
         e = traceback.print_exc()

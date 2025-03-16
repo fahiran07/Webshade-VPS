@@ -12,7 +12,6 @@ let copy_btn_box = document.getElementById("copy-btn-box");
 let whatsapp = document.getElementById("phone-number");
 let get_code_button = document.getElementById("get-code-btn"); // Specific progress div
 let button_text = document.getElementById("button-text");
-let task_id = null; // Specific progress div
 
 let request_timer = 150;
 let run_timer = false;
