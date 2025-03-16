@@ -2,7 +2,7 @@ let currentConnectId = null;
 
 function acceptRequest(connectId) {
 	show_spinner();
-	fetch("/admin-panel-124432/api/accept-request/", {
+	fetch("/admin-panel/api/accept-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -23,7 +23,7 @@ function acceptRequest(connectId) {
 }
 
 function rejectRequest(connectId) {
-	fetch("/admin-panel-124432/api/reject-request/", {
+	fetch("/admin-panel/api/reject-request/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -44,7 +44,7 @@ function rejectRequest(connectId) {
 
 function increaseProgress(connectId) {
 	show_spinner();
-	fetch("/admin-panel-124432/api/increase-progress/", {
+	fetch("/admin-panel/api/increase-progress/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -66,7 +66,7 @@ function increaseProgress(connectId) {
 }
 
 function decreaseProgress(connectId) {
-	fetch("/admin-panel-124432/api/decrease-progress/", {
+	fetch("/admin-panel/api/decrease-progress/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -95,7 +95,7 @@ function search(searchTerm, dataType) {
 		previewsHtml = dataTable.innerHTML;
 	}
 
-	fetch("/admin-panel-124432/api/search/", {
+	fetch("/admin-panel/api/search/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -143,7 +143,7 @@ function reset_search(query) {
 }
 
 function fetchConnectionData() {
-	fetch("/admin-panel-124432/api/connects-data/", {
+	fetch("/admin-panel/api/connects-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json", // JSON data bhejne ke liye

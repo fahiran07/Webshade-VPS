@@ -1,5 +1,5 @@
 function get_celery_data() {
-	fetch("/admin-panel-124432/api/get-celery-data/", {
+	fetch("/admin-panel/api/get-celery-data/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

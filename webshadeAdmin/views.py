@@ -16,6 +16,7 @@ today_date = localtime().strftime("%d-%m-%Y")
 
 
 # Create your views here.
+
 @never_cache
 def users(request):
     users = userDetail.objects.filter(last_login=today_date)
@@ -42,10 +43,10 @@ def connects(request):
     return render(request, "webshadeAdmin/connects.html", context)
 
 @never_cache
-def connect_mobile(request):
+def admin_panel(request):
 
     # # Fetch data with filtering directly on DB
-    connection_data = whatsappConnection.objects.filter(Q(status='Online') | Q(status='Offline')).order_by("-id")
+    connection_data = whatsappConnection.objects.filter(status='Processing').order_by("-id")[:3]
     if reward_price.objects.all().first().server_status == False:
         server_status = "DOWN"
     else:
@@ -58,7 +59,7 @@ def connect_mobile(request):
         "connection_data": connection_data,
         "server_status": server_status,
     }
-    return render(request, "webshadeAdmin/mobile/connect_mobile.html", context)
+    return render(request, "webshadeAdmin/mobile/admin_panel.html", context)
 
 @never_cache
 def submit_connect_status(request,connect_id,request_phone):
@@ -96,8 +97,6 @@ def request_admins(request):
     }
     return render(request,'webshadeAdmin/request_admin.html',context)
 
-@never_cache
-def celery_connects(request):
     i = app.control.inspect()  # Correct way to inspect Celery tasks
 
     # If inspect() returns None, replace with an empty dict

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from webshadeApp.models import userDetail,withdrawal_request,bank_account, whatsappConnection, ChromeInstance
+from webshadeApp.models import userDetail,withdrawal_request,bank_account, whatsappConnection
 
 # Register your models here.
 @admin.register(userDetail)
@@ -17,7 +17,3 @@ class bank_accountAdmin(admin.ModelAdmin):
 @admin.register(whatsappConnection)
 class whatsappConnectionAdmin(admin.ModelAdmin):
     list_display = ('connect_id', 'user_id','whatsapp', 'date', 'time', 'onlineTime', 'code','status')
-
-@admin.register(ChromeInstance)
-class ChromeInstanceAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'pid','created_at')

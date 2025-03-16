@@ -7,33 +7,30 @@
 		<button class="bg-none border-0 px-3 d-cm-none" onclick="toggle_menu()"><i class="fas fa-times fs-4 text-light"></i></button>
 	</div>
 	<div class="items mt-2">
-		<li class="{% if request.path == '/admin-panel-124432/users/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/users/" onclick="show_spinner()"> <i class="fas fa-users"></i> Users </a>
+		<li class="{% if request.path == '/admin-panel/users/' %}active-tab{% endif %}">
+			<a href="/admin-panel/users/" onclick="show_spinner()"> <i class="fas fa-users"></i> Users </a>
 		</li>
-		<li class="{% if request.path == '/admin-panel-124432/connect-request/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/connect-request/" onclick="show_spinner()"> <i class="fas fa-user-clock"></i> Connect Request </a>
+		<li class="{% if request.path == '/admin-panel/connect-request/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connect-request/" onclick="show_spinner()"> <i class="fas fa-user-clock"></i> Connect Request </a>
 		</li>
-		<li class="d-mm-none {% if request.path == '/admin-panel-124432/connects/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Connects </a>
-		</li>
-		<li class="d-mm-none {% if request.path == '/admin-panel-124432/celery-connects/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/celery-connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Celery Connects </a>
+		<li class="d-mm-none {% if request.path == '/admin-panel/connects/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Connects </a>
 		</li>
 
-		<li class="{% if request.path == '/admin-panel-124432/withdrawal/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>
+		<li class="{% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
+			<a href="/admin-panel/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>
 		</li>
-		<li class="d-cm-none {% if request.path == '/admin-panel-124432/withdrawal/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/connect-mobile/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
+		<li class="d-cm-none {% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
+			<a href="/admin-panel/connect-mobile/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
 		</li>
-		<li class="{% if request.path == '/admin-panel-124432/admins/' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/admins/" onclick="show_spinner()"> <i class="fas fa-user-shield"></i> Admins </a>
+		<li class="{% if request.path == '/admin-panel/admins/' %}active-tab{% endif %}">
+			<a href="/admin-panel/admins/" onclick="show_spinner()"> <i class="fas fa-user-shield"></i> Admins </a>
 		</li>
 		<li class="{% if request.path == '/admin' %}active-tab{% endif %}">
 			<a href="/admin" target="_blank"> <i class="fas fa-sign-out-alt"></i> Main Admin </a>
 		</li>
-		<li class="{% if request.path == '/admin-panel-124432/logout' %}active-tab{% endif %}">
-			<a href="/admin-panel-124432/logout" onclick="show_spinner()"> <i class="fas fa-sign-out-alt"></i> Logout </a>
+		<li class="{% if request.path == '/admin-panel/logout' %}active-tab{% endif %}">
+			<a href="/admin-panel/logout" onclick="show_spinner()"> <i class="fas fa-sign-out-alt"></i> Logout </a>
 		</li>
 	</div>
 </section>

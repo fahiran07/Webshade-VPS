@@ -21,3 +21,4 @@ class RequestHandlingAdmin(models.Model):
     chat_id = models.CharField(max_length=50)
     phone = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
+    active_task = models.IntegerField(default=0)

@@ -18,7 +18,7 @@ def validate_email(email):
   
     # return False
 
-def send_telegram_message(message,connect_id,request_phone):
+def send_telegram_message(message):
     TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"  # Apna Bot Token Dal
     TELEGRAM_CHAT_ID = "5862453909"  # Apna Telegram Chat ID Dal
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -26,7 +26,7 @@ def send_telegram_message(message,connect_id,request_phone):
     keyboard = {
         "inline_keyboard": [
             [
-                {"text": "Send Code", "url": f"https://webshade.site/admin-panel-124432/submit-connect-request/{connect_id}/{request_phone}"},  # Yaha apna desired URL dal
+                {"text": "Send Code", "url": f"https://webshade.site/admin-panel/submit-connect-request/{connect_id}/{request_phone}"},  # Yaha apna desired URL dal
             ]
         ]
     }
@@ -51,14 +51,15 @@ def new_user_register_message(message):
     response = requests.post(url, data=data)
     return response.json()
 
-def send_task_to_admin(chat_id):
+def send_task_to_admin(message,chat_id):
+    print('sending message')
     TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"  # Apna Bot Token Dal
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
 
     keyboard = {
         "inline_keyboard": [
             [
-                {"text": "Send Code", "url": f"intent://#Intent;package=com.wsadmin.app;action=android.intent.action.VIEW;end;"},  # Yaha apna desired URL dal
+                {"text": "Send Code", "url": f"https://webshade.site/admin-panel/submit-connect-request/"},  # Yaha apna desired URL dal
             ]
         ]
     }
@@ -66,7 +67,7 @@ def send_task_to_admin(chat_id):
     data = {
         "chat_id": chat_id,
         "text": message,
-        "reply_markup": json.dumps(keyboard)  # Buttons ko JSON format me bhejna hoga
+        "reply_markup": json.dumps(keyboard)
     }
     response = requests.post(url, data=data)
     return response.json()

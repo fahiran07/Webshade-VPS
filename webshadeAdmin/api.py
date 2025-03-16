@@ -4,7 +4,7 @@ from django.db.models import Func, Value as V
 from django.db.models.functions import Substr
 from django.contrib.auth.models import User
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price
+from webshadeAdmin.models import reward_price, RequestHandlingAdmin
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.utils.timezone import now, localtime
@@ -18,27 +18,17 @@ today_date = localtime().date().strftime("%d-%m-%Y")
 current_time = timezone.now()
 
 
-def login_account(request):
+def admin_login(request):
     try:
         data = json.loads(request.body)
-        username = data.get("username")
-        password = data.get("password")
-        admin = authenticate(username=username, password=password)
-        if admin is not None and admin.is_superuser:
-            admin = User.objects.get(username=username)
-            login(request, admin)
-            return JsonResponse(
-                {"message": "Admin account logged succcessfully", "error": False}
-            )
+        admin_id = data.get("admin_id")
+        if RequestHandlingAdmin.objects.filter(admin_id=admin_id).exists():
+            return JsonResponse({"message": "Admin account logged succcessfully", "error": False})
         else:
-            return JsonResponse(
-                {"message": "Invalid username or password !", "error": True}
-            )
+            return JsonResponse({"message": "Invalid Admin ID, please try again !", "error": True})
     except Exception as e:
         traceback.print_exc()
-        return JsonResponse(
-            {"message": "Error while logging your account !", "error": True}
-        )
+        return JsonResponse({"message": "Error while logging your account !", "error": True})
 
 def get_user_data(request):
     try:
@@ -107,7 +97,7 @@ def reject_request(request):
             connection_data.code = ''
         else:
             connection_data.status = 'Rejected'
-            connection_data.code = 'Rejected'
+            connection_data.code = ''
         connection_data.save()
         return JsonResponse({'message':'Request rejected successfully','error':False})
     except Exception as e:

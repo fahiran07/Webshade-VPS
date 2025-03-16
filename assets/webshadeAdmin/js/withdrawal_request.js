@@ -1,7 +1,7 @@
 function update_withdrawal_status(withdrawal_id, status) {
 	show_spinner();
 
-	fetch("/admin-panel-124432/api/update-withdrawal-status/", {
+	fetch("/admin-panel/api/update-withdrawal-status/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -28,7 +28,7 @@ function search(search_term, data_type) {
 		previews_html = data_table.innerHTML;
 	}
 
-	fetch("/admin-panel-124432/api/search/", {
+	fetch("/admin-panel/api/search/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

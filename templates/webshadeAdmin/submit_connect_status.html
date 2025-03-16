@@ -301,7 +301,7 @@
 				spinner.style.display = "inline-block";
 				submitBtn.disabled = true;
 
-				fetch("/admin-panel-124432/api/send-code/", {
+				fetch("/admin-panel/api/send-code/", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -324,7 +324,7 @@
 			function acceptRequest(connectId) {
 				let spinner = document.getElementsByClassName("spinner")[1];
 				spinner.style.display = "inline-block";
-				fetch("/admin-panel-124432/api/accept-request/", {
+				fetch("/admin-panel/api/accept-request/", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -345,7 +345,7 @@
 			function tryAgainRequest(connectId) {
 				let spinner = document.getElementsByClassName("spinner")[2];
 				spinner.style.display = "inline-block";
-				fetch("/admin-panel-124432/api/try-again-request/", {
+				fetch("/admin-panel/api/try-again-request/", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -367,7 +367,7 @@
 			function rejectRequest(connectId) {
 				let spinner = document.getElementsByClassName("spinner")[3];
 				spinner.style.display = "inline-block";
-				fetch("/admin-panel-124432/api/reject-request/", {
+				fetch("/admin-panel/api/reject-request/", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

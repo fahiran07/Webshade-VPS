@@ -87,3 +87,24 @@ def connects_data(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'error':True})
+
+def get_admin_requests(request):
+    try:
+        admin_id = request.GET.get('admin-id')
+        request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).order_by("-id").values())
+        print('This is admin requests data',request_admins)
+        return JsonResponse({"request_admins": request_admins})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})
+
+def get_task_data(request):
+    try:
+        admin_id = request.GET.get('admin-id')
+        success_connects = whatsappConnection.objects.filter(admin_id=admin_id,status__in=['Online','Offline']).exclude(status='Processing').count()
+        failed_connects = whatsappConnection.objects.filter(admin_id=admin_id).exclude(status__in=['Online','Offline','Processing']).count()
+        return JsonResponse({"success_connects": success_connects,'failed_connects':failed_connects,'total_connects':success_connects+failed_connects})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True})
+
