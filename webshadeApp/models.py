@@ -1,6 +1,5 @@
 from django.db import models
-from django.utils import timezone
-
+from webshadeApp.functions import get_date_string,get_time_string
 # Create your models here.
 class userDetail(models.Model):
     user_id = models.CharField(blank=True,max_length=50)
@@ -35,12 +34,12 @@ class whatsappConnection(models.Model):
     user_id = models.CharField(max_length=50)
     whatsapp = models.CharField(max_length=50)
     date = models.CharField(max_length=50)
-    time = models.TimeField(default=timezone.now)  # Set default value as current time
+    time = models.TimeField(default=get_time_string)  # Set default value as current time
     onlineTime = models.IntegerField(default=0)
     commission = models.IntegerField(default=0)
     status = models.CharField(max_length=50, default='Processing')
     code = models.CharField(max_length=50,blank=True)
     remark = models.CharField(max_length=50,blank=True)
     successTimestamp = models.CharField(max_length=50, default='0')
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=get_time_string)
     admin_id = models.CharField(max_length=50,blank=True)

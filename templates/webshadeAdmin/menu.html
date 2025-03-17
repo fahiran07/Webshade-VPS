@@ -16,12 +16,15 @@
 		<li class="d-mm-none {% if request.path == '/admin-panel/connects/' %}active-tab{% endif %}">
 			<a href="/admin-panel/connects/" onclick="show_spinner()"> <i class="fas fa-users"></i> Connects </a>
 		</li>
+		<li class="{% if request.path == '/admin-panel/payment/' %}active-tab{% endif %}">
+			<a href="/admin-panel/payments/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Payments </a>
+		</li>
 
 		<li class="{% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
 			<a href="/admin-panel/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>
 		</li>
-		<li class="d-cm-none {% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
-			<a href="/admin-panel/connect-mobile/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
+		<li class="d-cm-none {% if request.path == '/admin-panel/admin-panel/' %}active-tab{% endif %}">
+			<a href="/admin-panel/admin-panel/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Connects </a>
 		</li>
 		<li class="{% if request.path == '/admin-panel/admins/' %}active-tab{% endif %}">
 			<a href="/admin-panel/admins/" onclick="show_spinner()"> <i class="fas fa-user-shield"></i> Admins </a>

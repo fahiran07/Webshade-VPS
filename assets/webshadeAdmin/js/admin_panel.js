@@ -237,3 +237,28 @@ function copyToClipboard(text, element) {
 	element.innerHTML = "COPIED";
 	show_toast_message("Phone number copied successfully!", true);
 }
+function update_active_status(admin_id, status_type) {
+	show_spinner();
+	fetch("/admin-panel/api/update-active-status", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"X-CSRFToken": csrfToken,
+		},
+		body: JSON.stringify({
+			admin_id: admin_id,
+			status_type: status_type,
+		}),
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			hide_spinner();
+			if (data.error == false) {
+				document.getElementById("be-active-btn").classList.toggle("d-none");
+				document.getElementById("be-inactive-btn").classList.toggle("d-none");
+				show_toast_message(data.message, true);
+			} else {
+				show_toast_message(data.message, false);
+			}
+		});
+}

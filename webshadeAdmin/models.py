@@ -1,6 +1,9 @@
 from django.db import models
+from webshadeAdmin.functions import get_date_string, get_time_string
+
 
 # Create your models here.
+
 class reward_price(models.Model):
     amount_24 = models.IntegerField(default=50)
     amount_48 = models.IntegerField(default=30)
@@ -22,3 +25,11 @@ class RequestHandlingAdmin(models.Model):
     phone = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
     active_task = models.IntegerField(default=0)
+    active = models.BooleanField(default=False)
+
+class whatsappPayments(models.Model):
+    release_id = models.CharField(max_length=50)
+    amount = models.IntegerField(default=0)
+    releaser = models.CharField(max_length=50)
+    date = models.CharField(max_length=50, default=get_date_string)
+    time = models.CharField(max_length=50, default=get_time_string)

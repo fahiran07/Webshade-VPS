@@ -12,3 +12,8 @@ def validate_email(email):
         return False
   
     # return False
+def get_date_string():
+    return localtime().strftime("%d-%m-%Y")  # Local date
+
+def get_time_string():
+    return localtime().strftime("%H:%M:%S")  # Local time

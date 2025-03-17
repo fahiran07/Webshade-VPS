@@ -71,3 +71,9 @@ def send_task_to_admin(message,chat_id):
     }
     response = requests.post(url, data=data)
     return response.json()
+
+def get_date_string():
+    return localtime().strftime("%d-%m-%Y")  # Local date
+
+def get_time_string():
+    return localtime().strftime("%H:%M:%S")  # Local time

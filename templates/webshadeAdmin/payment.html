@@ -5,7 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="csrf-token" content="{{ csrf_token }}" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Users</title>
+		<title>Connects</title>
 		<link rel="stylesheet" href="/assets/webshadeAdmin/css/utils.css" />
 		<link rel="stylesheet" href="/assets/webshadeAdmin/css/style.css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -83,6 +83,26 @@
 					left: auto !important;
 				}
 			}
+
+			#message-box {
+				z-index: 2700;
+			}
+			#toast-message {
+				opacity: 0;
+				transition: opacity 0.2s ease-in-out;
+			}
+			.success-toast {
+				background: #2ca83a;
+			}
+			#toast-type {
+				text-align: left;
+			}
+			.error-toast {
+				background: #c91c10;
+			}
+			.show-toast {
+				opacity: 1 !important;
+			}
 		</style>
 	</head>
 
@@ -99,101 +119,89 @@
 		<script src="/assets/webshadeAdmin/js/progress.js"></script>
 		{% include 'webshadeAdmin/menu.html' %}
 
-		<section id="interface" class="pb-2">
+		<section id="interface">
 			<div class="navigation">
 				<div class="n1">
 					<div>
 						<i class="fas fa-bars" id="menu-btn" onclick="toggle_menu()"></i>
 					</div>
 					<div class="search w-100">
-						<i class="fas fa-search" onclick="search(document.getElementById('search-input').value)"></i>
-						<input type="text" placeholder="Search by ID & Phone & Email" id="search-input" class="w-100" onkeyup="reset_search(document.getElementById('search-input').value)" />
+						<i class="fas fa-search" onclick="search(document.getElementById('search-input').value, 'whatsapp')"></i>
+						<input type="text" placeholder="Search by ID & Phone" id="search-input" class="w-100" onkeyup="reset_search(document.getElementById('search-input').value)" />
 					</div>
 				</div>
 			</div>
-			<h3 class="i-name">Users</h3>
+			<h3 class="i-name">Connect</h3>
 			<div class="values">
 				<div class="val-box shadow">
-					<i class="fas fa-users"></i>
+					<i class="fas fa-database"></i>
 					<div>
-						<h3 id="total-users">{{ total_users }}</h3>
-						<span>Users</span>
+						<h3 id="total-releases">{{total_releases}}</h3>
+						<span>Total</span>
 					</div>
 				</div>
 				<div class="val-box shadow">
-					<i class="fas fa-user-check"></i>
+					<i class="fas fa-calendar-day"></i>
 					<div>
-						<h3 id="today-users">{{ today_users }}</h3>
-						<span>Active</span>
+						<h3 id="today-releases">{{today_releases}}</h3>
+						<span>Today</span>
 					</div>
 				</div>
 				<div class="val-box shadow">
 					<i class="fas fa-wallet"></i>
 					<div>
-						<h3>₹<span id="total-balance" class="text-dark">{{ total_balance }}</span>.00</h3>
-						<span>Funds</span>
+						<h3 id="amount">{{total_released_amount}}</h3>
+						<span>Amount</span>
 					</div>
 				</div>
 				<div class="val-box shadow">
-					<i class="fas fa-users-cog"></i>
+					<i class="fas fa-arrow-down"></i>
 					<div>
-						<h3>₹<span id="total-commision" class="text-dark">{{ total_commision }}</span>.00</h3>
-						<span>Commission</span>
+						<h3 id="offline-connects">{{total_withdraw_amount}}</h3>
+						<span>Withdrawal</span>
 					</div>
 				</div>
 			</div>
-
-			<div class="board fs-9 shadow pb-3">
+			<div class="d-flex align-items-center justify-content-evenly my-3">
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('9395982654')">9395982654</p>
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('9864301450')">9864301450</p>
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('6000694134')">6000694134</p>
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('6000899230')">6000899230</p>
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('9365282819')">9365282819</p>
+				<p class="text-light fs-7 bg-success border rounded-5 shadow px-4 py-1 mb-0" onclick="release_payment('8822919998')">8822919998</p>
+			</div>
+			<div class="board fs-8 shadow" style="height: 370px; margin-top: 0">
 				<table class="home mainPage" width="100%">
 					<thead>
 						<tr>
-							<td>USERID</td>
-							<td>PHONE</td>
-							<td>EMAIL</td>
-							<td>PASSWORD</td>
-							<td class="text-nowrap">REFERRER</td>
-							<td>ACTIVE</td>
-							<td>BALANCE</td>
-							<td>COMMISSION</td>
+							<td>ID</td>
+							<td>RELEASER</td>
+							<td>AMOUNT</td>
+							<td>DATE</td>
+							<td>TIME</td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody id="data-table">
-						{% for user in users_data %}
+						{% for payment in payment_release_data %}
 						<tr>
-							<td>
-								<p class="mb-0">{{ user.user_id }}</p>
-							</td>
-							<td>
-								<p class="mb-0">{{ user.phone }}</p>
-							</td>
-							<td>
-								<p class="mb-0">{{ user.email }}</p>
-							</td>
-							<td>
-								<p class="mb-0">{{ user.password }}</p>
-							</td>
-							<td>
-								<p class="mb-0">{% if user.refer_by %}{{ user.refer_by }}{% else %}-{% endif %}</p>
-							</td>
-							<td>
-								<div id="user-status-{{user.user_id}}" class="hr-4 wr-4" onclick="toggleActiveStatus('{{ user.user_id }}','{{ user.active }}')">
-									{% if user.active %}
-									<i class="fas fa-check" style="color: green"></i>
-									{% else %}
-									<i class="fas fa-times" style="color: red"></i>
-									{% endif %}
-								</div>
-							</td>
-							<td>
-								<p>₹{{ user.balance }}.00</p>
-							</td>
-							<td>
-								<p>₹{{ user.commision }}.00</p>
-							</td>
+							<td>{{payment.release_id}}</td>
+							<td>{{payment.releaser}}</td>
+							<td>{{payment.amount}}</td>
+							<td>{{payment.date}}</td>
+							<td>{{payment.time}}</td>
+							<td><a href="/admin/webshadeAdmin/whatsappPayments/{{payment.id}}/change/" class="text-primary">EDIT</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>
 				</table>
+			</div>
+		</section>
+		<section id="code_box" class="float-blur d-flex-center d-none">
+			<div class="w-30 h-30 bg-white p-3 d-flex-center flex-column rounded-2">
+				<input type="text" id="code" class="w-100 fs-7 border p-3 bg-light shadow rounded-5" autocapitalize="true" placeholder="Enter Code" />
+				<button class="bg-success mt-4 rounded-5 px-5 py-2 border-0 text-light" onclick="sendCode()">Submit</button>
+				<button class="border-0 mt-3" onclick="hideCodeBox()"><i class="fas fa-times-circle"></i></button>
 			</div>
 		</section>
 		<section id="message-box" class="vw-100 fixed-top py-4 d-flex-center align-cm-items-start d-none vh-100 blur-background bg-cm-none">
@@ -207,7 +215,9 @@
 				</div>
 			</div>
 		</section>
-		<script src="/assets/webshadeAdmin/js/users.js"></script>
+
+		<script src="/assets/webshadeAdmin/js/menu.js"></script>
+		<script src="/assets/webshadeAdmin/js/payment.js"></script>
 		<script src="/assets/webshadeAdmin/js/script.js"></script>
 	</body>
 </html>

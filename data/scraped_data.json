@@ -1,0 +1,14 @@
+[
+    {
+        "serial": 1,
+        "number": "1244323232",
+        "status": "Offline",
+        "hours": 20
+    },
+    {
+        "serial": 2,
+        "number": "1244321244",
+        "status": "Offline",
+        "hours": 82
+    }
+]

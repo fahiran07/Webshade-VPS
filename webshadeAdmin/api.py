@@ -4,19 +4,19 @@ from django.db.models import Func, Value as V
 from django.db.models.functions import Substr
 from django.contrib.auth.models import User
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price, RequestHandlingAdmin
+from webshadeAdmin.models import reward_price, RequestHandlingAdmin,whatsappPayments
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
+from webshadeAdmin.functions import get_date_string, get_time_string
 from django.utils.timezone import now, localtime
-from django.utils import timezone
+import math
 import random
 import traceback
 import json
 import uuid
+import os
 
 today_date = localtime().date().strftime("%d-%m-%Y")
-current_time = timezone.now()
-
 
 def admin_login(request):
     try:
@@ -59,7 +59,23 @@ def get_user_data(request):
             {"message": "Error while retrieving user data!", "error": True}
         )
 
-
+def superuser_login(request):
+    try:
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        if username and password:
+            user = authenticate(username=username,password=password)
+            if user is not None:
+                login(request,user)
+                return JsonResponse({'message':'Congrats, admin your account was logged in','error':False})
+            else:
+                return JsonResponse({'message':'Invalid username or password','error':True})
+        return JsonResponse({'message':'Please enter valid username and password','error':True})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'message':'Error while logging in admin account','error':True})
+        
 def send_code(request):
     try:
         data = json.loads(request.body)
@@ -80,7 +96,6 @@ def accept_request(request):
         connection_data = whatsappConnection.objects.get(connect_id=connect_id)
         connection_data.status = 'Online'
         connection_data.date = today_date
-        connection_data.successTimestamp = timezone.now()
         connection_data.save()
         return JsonResponse({'message':'Request accepted successfully','error':False})
     except Exception as e:
@@ -103,83 +118,6 @@ def reject_request(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'message':'Error while rejecting request','error':True})
-
-def try_again_request(request):
-    try:
-        data = json.loads(request.body)
-        connect_id = data.get("connect_id")
-        connection_data = whatsappConnection.objects.get(connect_id=connect_id)
-        connection_data.status = 'try_again'
-        connection_data.code = ''
-        connection_data.save()
-        return JsonResponse({'message':'Request rejected successfully','error':False})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'message':'Error while rejecting request','error':True})
-
-def increase_progress(request):
-    try:
-        data = json.loads(request.body)
-        connect_id = data.get("connect_id")
-        connection_data = whatsappConnection.objects.get(connect_id=connect_id)
-        user_data = userDetail.objects.get(user_id=connection_data.user_id)
-        rewards = reward_price.objects.filter().first()
-        if connection_data.onlineTime >= 168:
-            return JsonResponse({'error':True,'message':"This whatsapp got it's maximum reward"})
-        # Instance ke values dictionary me daal raha hai
-        connection_data.onlineTime += 24
-        amount_dict = {
-            "amount_24": rewards.amount_24,
-            "amount_48": rewards.amount_48,
-            "amount_72": rewards.amount_72,
-            "amount_96": rewards.amount_96,
-            "amount_120": rewards.amount_120,
-            "amount_144": rewards.amount_144,
-            "amount_168": rewards.amount_168,
-        }
-        
-        reward_amount = int(amount_dict[f'amount_{connection_data.onlineTime}'])
-        connection_data.commission += reward_amount
-        userDetail.objects.filter(user_id=connection_data.user_id).update(balance=F('balance') + reward_amount)
-        connection_data.save()
-        # Giving commision to refer
-        refer_by_user_data = userDetail.objects.filter(user_id=user_data.refer_by)
-        if refer_by_user_data.first():
-            refer_by_user_data.update(balance=F('balance') + (reward_amount*0.15),commision=F('commision') + (reward_amount*0.15))
-        return JsonResponse({'error':False,'onlineTime':connection_data.onlineTime,'earn':connection_data.commission})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'message':'Error while increasing progress','error':True})
-
-def decrease_progress(request):
-    try:
-        data = json.loads(request.body)
-        connect_id = data.get("connect_id")
-        connection_data = whatsappConnection.objects.get(connect_id=connect_id)
-        if connection_data.onlineTime <= 0:
-            return JsonResponse({'error':True,'message':"This whatsapp doesn't got any reward"})
-        user_data = userDetail.objects.get(user_id=connection_data.user_id)
-        rewards = reward_price.objects.filter().first()
-        # Instance ke values dictionary me daal raha hai
-        connection_data.onlineTime -= 24
-        amount_dict = {
-            "amount_24": rewards.amount_24,
-            "amount_48": rewards.amount_48,
-            "amount_72": rewards.amount_72,
-            "amount_96": rewards.amount_96,
-            "amount_120": rewards.amount_120,
-            "amount_144": rewards.amount_144,
-            "amount_168": rewards.amount_168,
-        }
-        
-        connection_data.commission -= amount_dict['amount_'+str(connection_data.onlineTime+24)]
-        user_data = userDetail.objects.filter(user_id=connection_data.user_id).update(balance=F('balance') - amount_dict[f'amount_{connection_data.onlineTime+24}'])
-
-        connection_data.save()
-        return JsonResponse({'error':False,'onlineTime':connection_data.onlineTime,'earn':connection_data.commission})
-    except Exception as e:
-        traceback.print_exc()
-        return JsonResponse({'message':'Error while decreasing progress','error':True})
 
 def update_withdrawal_status(request):
     try:
@@ -209,6 +147,22 @@ def update_server_status(request):
         traceback.print_exc()
         return JsonResponse({'message':'Error while updating server status','error':True})
 
+def update_active_status(request):
+    try:
+        data = json.loads(request.body)
+        admin_id = data.get('admin_id')
+        status_type = data.get('status_type')
+        admin_data = RequestHandlingAdmin.objects.get(admin_id=admin_id)
+        if status_type == 'active':
+            admin_data.active = True
+        elif status_type == 'inactive':
+            admin_data.active = False
+        admin_data.save()
+        return JsonResponse({'message':'Your status was updated successfully!','error':False})
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'message':'Error while updating status','error':True})
+
 def search(request):
     data = json.loads(request.body)
     search_term = data.get('search_term')
@@ -225,3 +179,66 @@ def search(request):
             search_result = list(search_data.values())
 
     return JsonResponse({'search_result':search_result})
+
+def release_payment(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            releaser_phone = data.get('phone')
+
+            if not releaser_phone:
+                return JsonResponse({'status': 'fail', 'message': 'Phone number not provided'}, status=400)
+
+            json_path = os.path.join('data', 'scraped_data.json')
+            if not os.path.exists(json_path):
+                return JsonResponse({'status': 'fail', 'message': 'Scraped data file not found'}, status=404)
+
+            with open(json_path, 'r') as f:
+                scraped_data = json.load(f)
+
+            total_reward = 0
+            updated_connections = []
+            updated_users = []
+
+            for item in scraped_data:
+                phone = item.get('number')
+                hours = item.get('hours', 0)
+                status = item.get('status', '').lower()
+                reward = round(hours * 0.6, 2)
+
+                try:
+                    connection = whatsappConnection.objects.get(whatsapp=phone)
+                    prev_hours = connection.onlineTime
+                    reward_diff = (hours - prev_hours) * 0.6
+                    reward_diff = max(reward_diff, 0)
+                    reward_diff = math.ceil(reward_diff) if reward_diff < 1 else int(reward_diff)
+                    connection.onlineTime = hours
+                    connection.commission = math.ceil(reward) if reward < 1 else int(reward)
+                    connection.status = 'Offline' if status == 'offline' else 'Online'
+                    # Calculating user reward balance
+                    userDetail.objects.filter(user_id=connection.user_id).update(balance=F('balance') + reward_diff)
+                    
+                    updated_connections.append(connection)
+                    total_reward += reward_diff
+                except whatsappConnection.DoesNotExist:
+                    continue  # Skip if no matching connection
+
+            # Bulk update all connections
+            whatsappConnection.objects.bulk_update(updated_connections, ['onlineTime', 'commission', 'status'])
+            userDetail.objects.bulk_update(updated_users, ['balance'])
+
+            # Create payment record
+            release_id = str(uuid.uuid4())[:8]  # Short random ID
+            whatsappPayments.objects.create(
+                release_id=release_id,
+                amount=round(total_reward, 2),
+                releaser=releaser_phone,
+            )
+
+            return JsonResponse({ 'message': 'Payments successfully released', 'error': False})
+
+        except Exception as e:
+            traceback.print_exc()
+            return JsonResponse({'error': True, 'message': 'Error while releasing payment'})
+
+    return JsonResponse({'error': True, 'message': 'Invalid request method'})

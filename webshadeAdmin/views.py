@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login, logout
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin
+from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin, whatsappPayments
 from django.db.models import Sum, F, Q, Subquery, Max
 from django.views.decorators.cache import never_cache
+from webshadeAdmin.functions import get_date_string, get_time_string
 from django.db.models import Sum
 from django.http import StreamingHttpResponse
 from celery.app.control import Inspect
@@ -18,8 +20,14 @@ today_date = localtime().strftime("%d-%m-%Y")
 # Create your views here.
 
 @never_cache
+
+def login_admin(request):
+    return render(request, "webshadeAdmin/login.html")
+@never_cache
 def users(request):
-    users = userDetail.objects.filter(last_login=today_date)
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
+    users = userDetail.objects.all()
     context = {
         "users_data": users,
     }
@@ -27,6 +35,8 @@ def users(request):
 
 @never_cache
 def connect_request(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
     connection_data = whatsappConnection.objects.filter(status="Processing").order_by("-id")
     other_request = whatsappConnection.objects.exclude(status__in=['Processing','Online','Offline']).order_by("-id")
     context = {
@@ -34,8 +44,11 @@ def connect_request(request):
         "other_request": other_request,
     }
     return render(request, "webshadeAdmin/connect_request.html", context)
+
 @never_cache
 def connects(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
     connection_data = whatsappConnection.objects.filter(status__in=['Offline','Online']).order_by("-id")
     context = {
         "connection_data": connection_data,
@@ -44,7 +57,6 @@ def connects(request):
 
 @never_cache
 def admin_panel(request):
-
     # # Fetch data with filtering directly on DB
     connection_data = whatsappConnection.objects.filter(status='Processing').order_by("-id")[:3]
     if reward_price.objects.all().first().server_status == False:
@@ -62,15 +74,9 @@ def admin_panel(request):
     return render(request, "webshadeAdmin/mobile/admin_panel.html", context)
 
 @never_cache
-def submit_connect_status(request,connect_id,request_phone):
-    context = {
-        'currentConnectId':connect_id,
-        'request_phone':request_phone,
-    }
-    return render(request, "webshadeAdmin/submit_connect_status.html", context)
-
-@never_cache
 def withdrawal(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
     withdrawal_data = withdrawal_request.objects.all()
     context = {
         'withdrawal_data':withdrawal_data,
@@ -83,11 +89,13 @@ def withdrawal(request):
 
 @never_cache
 def request_admins(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
     request_admins = RequestHandlingAdmin.objects.all()
     total_admins = request_admins.count()
-    revenue = whatsappConnection.objects.filter(status='Online').exclude(admin_id='Bot').aggregate(Sum('commission'))['commission__sum']
-    success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id__in=['Bot', '']).count()
-    failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id__in=['Bot', '']).count()
+    revenue = whatsappConnection.objects.filter(status='Online').aggregate(Sum('commission'))['commission__sum']
+    success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
+    failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id='').count()
     context = {
         'request_admins':request_admins,
         'total_admins':total_admins,
@@ -97,22 +105,23 @@ def request_admins(request):
     }
     return render(request,'webshadeAdmin/request_admin.html',context)
 
-    i = app.control.inspect()  # Correct way to inspect Celery tasks
-
-    # If inspect() returns None, replace with an empty dict
-    active_tasks = i.active() or {}
-    scheduled_tasks = i.scheduled() or {}
-    reserved_tasks = i.reserved() or {}
-
-    # Function to count tasks safely (handle empty dict)
-    def count_tasks(task_dict):
-        return sum(len(tasks) for tasks in task_dict.values()) if task_dict else 0
-
+@never_cache
+def payment(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
+    payment_release_data = whatsappPayments.objects.all().order_by('-id')
+    today_releases = payment_release_data.filter(date=today_date)
+    total_released_amount = payment_release_data.aggregate(Sum('amount'))['amount__sum'] or 0
+    total_withdraw_amount = withdrawal_request.objects.aggregate(Sum('amount'))['amount__sum'] or 0
     context = {
-        "active_tasks": count_tasks(active_tasks),
-        "scheduled_tasks": count_tasks(scheduled_tasks),
-        "reserved_tasks": count_tasks(reserved_tasks),
-        "total_tasks": count_tasks(active_tasks) + count_tasks(scheduled_tasks) + count_tasks(reserved_tasks)
+        'payment_release_data':payment_release_data,
+        'total_releases':payment_release_data.count(),
+        'today_releases':today_releases.count(),
+        'total_released_amount':total_released_amount,
+        'total_withdraw_amount':total_withdraw_amount,
     }
+    return render(request,'webshadeAdmin/payment.html',context)
 
-    return render(request, 'webshadeAdmin/celery_connects.html', context)
+def logout_admin(request):
+    logout(request)
+    return redirect('/admin-panel/login')

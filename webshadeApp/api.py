@@ -9,8 +9,7 @@ from django.http import JsonResponse
 from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account
 from webshadeAdmin.models import reward_price,RequestHandlingAdmin
 from webshadeApp.functions import send_telegram_message, new_user_register_message,send_task_to_admin
-from webshadeApp.functions import is_number, validate_email
-from django.utils import timezone
+from webshadeApp.functions import is_number, validate_email, get_date_string, get_time_string
 from webshadeApp.task import get_verification_code,test_task
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
@@ -24,7 +23,6 @@ import os
 import uuid
 cache.clear()
 today_date = localtime().strftime("%d-%m-%Y")
-current_time = now()
 
 def login_account(request):
     data = json.loads(request.body)
@@ -112,9 +110,9 @@ def send_code_request(request):
             whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=whatsapp,user_id=request.user)
 
             # Geting a free admin ID
-            free_admin = RequestHandlingAdmin.objects.filter(active_task__lte=100).order_by('active_task').first()
+            free_admin = RequestHandlingAdmin.objects.filter(active_task__lte=2,active=True).order_by('active_task').first()
             if free_admin:
-                created_at = now()
+                created_at = get_time_string
                 chat_id = free_admin.chat_id
                 admin_id = free_admin.admin_id
                 handlingBy = free_admin.name
@@ -123,12 +121,12 @@ def send_code_request(request):
                 return JsonResponse({'message': 'Our server is busy, Try again after 2 minutes', 'error': True})
 
             if whatsapp_connect_data.exists():
-                whatsapp_connect_data.update(status='Processing', created_at=now(), code='',admin_id=free_admin.admin_id)
+                whatsapp_connect_data.update(status='Processing', created_at=get_time_string, code='',admin_id=free_admin.admin_id,commission=0,onlineTime=0)
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    created_at=now(),admin_id=free_admin.admin_id
+                    created_at=get_time_string,admin_id=free_admin.admin_id
                 )
             free_admin.active_task += 1
             free_admin.save()
@@ -242,7 +240,6 @@ def set_online_status(request):
         connection_data = whatsappConnection.objects.filter(connect_id=connect_id).update(
         status='Online', 
         date=today_date, 
-        successTimestamp=now()  # ✅ Properly closed parenthesis
         )
         return JsonResponse({'status':True,'error':False})
     except Exception as e:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from webshadeAdmin.models import reward_price,login_number,RequestHandlingAdmin
+from webshadeAdmin.models import reward_price,login_number,RequestHandlingAdmin,whatsappPayments
 
 # Register your models here.
 @admin.register(reward_price)
@@ -14,4 +14,9 @@ class login_numberAdmin(admin.ModelAdmin):
 @admin.register(RequestHandlingAdmin)
 class RequestHandlingAdminAdminAdmin(admin.ModelAdmin):
     list_display = ('admin_id','name','chat_id','phone')
+
+
+@admin.register(whatsappPayments)
+class whatsappPaymentsAdmin(admin.ModelAdmin):
+    list_display = ('release_id','amount','releaser','date','time')
 
