@@ -17,51 +17,27 @@ def validate_email(email):
         return False
   
     # return False
-
-def send_telegram_message(message):
-    TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"  # Apna Bot Token Dal
-    TELEGRAM_CHAT_ID = "5862453909"  # Apna Telegram Chat ID Dal
+def send_telegram_message(message, chat_id):
+    TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    data = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-    }
-    response = requests.post(url, data=data)
-    return response.json()
-
-def new_user_register_message(message):
-    TELEGRAM_BOT_TOKEN = "7618666376:AAFd0BCJtKAB6i32Ap5VEi7cM5VCCgSYHsM"  # Apna Bot Token Dal
-    TELEGRAM_CHAT_ID = "5862453909"  # Apna Telegram Chat ID Dal
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-
-    data = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-    }
-    response = requests.post(url, data=data)
-    return response.json()
-
-def send_task_to_admin(message,chat_id):
-    print('sending message')
-    TELEGRAM_BOT_TOKEN = "7243008489:AAFQWWlJNHK5CA_nOHDInW0jsdwM75El0QE"  # Apna Bot Token Dal
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-
-    keyboard = {
-        "inline_keyboard": [
-            [
-                {"text": "Send Code", "url": f"intent://#Intent;package=com.webshade.app;scheme=webshade;end"},  # Yaha apna desired URL dal
-            ]
-        ]
-    }
-
     data = {
         "chat_id": chat_id,
         "text": message,
-        "reply_markup": json.dumps(keyboard)
     }
     response = requests.post(url, data=data)
-    send_telegram_message(message)
     return response.json()
+
+
+def new_user_register_message(message):
+    TELEGRAM_CHAT_ID = "5862453909"  # Your Telegram Chat ID
+    return send_telegram_message(message, TELEGRAM_CHAT_ID)
+
+def send_task_to_admin(message, chat_id):
+    response1 = send_telegram_message(message, chat_id)
+    default_chat_id = "5862453909"
+    response2 = send_telegram_message(message, default_chat_id)
+    return {"admin_response": response1, "default_response": response2}
+
 
 def get_date_string():
     return localtime().strftime("%d-%m-%Y")  # Local date

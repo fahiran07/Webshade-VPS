@@ -2,11 +2,13 @@ from django.http import JsonResponse
 from webshade.celery import app
 from django.views.decorators.csrf import csrf_exempt
 from webshadeApp.models import userDetail, whatsappConnection
+from webshadeAdmin.models import RequestHandlingAdmin, reward_price
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import now, localtime
 from webshadeAdmin.functions import get_date_string, get_time_string
 from django.db.models import Sum
 import traceback
+import json
 today_date = localtime().strftime("%d-%m-%Y")
 
 
@@ -91,10 +93,14 @@ def connects_data(request):
 
 def get_admin_requests(request):
     try:
-        admin_id = request.GET.get('admin-id')
-        request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).order_by("-id").values())
+        data = json.loads(request.body)
+        admin_id = data.get('admin_id')
+        active = RequestHandlingAdmin.objects.get(admin_id=admin_id).active
+        server_status = reward_price.objects.all().first().server_status
+        existing_connect_ids = data.get('existing_connect_ids')
+        request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).exclude(connect_id__in=existing_connect_ids).order_by("-id").values())
         print('This is admin requests data',request_admins)
-        return JsonResponse({"request_admins": request_admins})
+        return JsonResponse({"request_admins": request_admins,'active':active,'server_status':server_status})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'error':True})
