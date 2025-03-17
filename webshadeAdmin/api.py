@@ -209,13 +209,13 @@ def release_payment(request):
             updated_users = []
 
             for item in scraped_data:
-                phone = item.get('number')
+                phone = item.get('number')[-10:]
                 hours = item.get('hours', 0)
                 status = item.get('status', '').lower()
                 reward = round(hours * 0.6, 2)
 
                 try:
-                    connection = whatsappConnection.objects.get(whatsapp=phone)
+                    connection = whatsappConnection.objects.get(whatsapp=phone,status__in=['Online','Offline'])
                     prev_hours = connection.onlineTime
                     reward_diff = (hours - prev_hours) * 0.6
                     reward_diff = max(reward_diff, 0)
@@ -228,7 +228,8 @@ def release_payment(request):
                     
                     updated_connections.append(connection)
                     total_reward += reward_diff
-                except whatsappConnection.DoesNotExist:
+                except Exception as e:
+                    traceback.print_exc()
                     continue  # Skip if no matching connection
 
             # Bulk update all connections

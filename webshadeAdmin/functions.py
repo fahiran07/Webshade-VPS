@@ -1,4 +1,6 @@
 import random
+from django.utils.timezone import now, localtime
+
 def is_number(value):
     if str(value).isdigit() and len(str(value)) == 10:
         return True

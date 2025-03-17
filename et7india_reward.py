@@ -13,7 +13,6 @@ import json
 # Setup Chrome options
 print("🔧 Setting up Chrome options...")
 options = Options()
-options.add_argument("--headless")  # Headless mode
 options.add_argument("--disable-usb-keyboard-detect")
 options.add_argument("--disable-features=WebML")
 
@@ -36,7 +35,7 @@ print("✅ Login input fields found.")
 
 # Enter login details
 print("📝 Entering login credentials...")
-inputs[0].send_keys('9395982654')
+inputs[0].send_keys('6000694134')
 inputs[1].send_keys('webshade124432')
 print("🔒 Credentials entered.")
 
