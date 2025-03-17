@@ -110,7 +110,7 @@ def send_code_request(request):
             whatsapp_connect_data = whatsappConnection.objects.filter(whatsapp=whatsapp,user_id=request.user)
 
             # Geting a free admin ID
-            free_admin = RequestHandlingAdmin.objects.filter(active_task__lte=2,active=True).order_by('active_task').first()
+            free_admin = RequestHandlingAdmin.objects.filter(active_task__lte=500,active=True).order_by('active_task').first()
             if free_admin:
                 created_at = get_time_string
                 chat_id = free_admin.chat_id
