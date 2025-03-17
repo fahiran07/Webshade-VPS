@@ -134,7 +134,7 @@ def send_code_request(request):
                 f"🚀 Dear {handlingBy}, Task received!\n\n"
                 f"User: {user_id}\n"
                 f"Whatsapp: {whatsapp}\n",
-                chat_id,
+                free_admin.chat_id,
             )
             return JsonResponse({'message': "Code request sent successfully.", 'error': False,'connect_id':connect_id})
     except Exception as e:
