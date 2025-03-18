@@ -1,5 +1,6 @@
 from django.db import models
 from webshadeApp.functions import get_date_string,get_time_string
+from webshadeAdmin.models import RequestHandlingAdmin
 # Create your models here.
 class userDetail(models.Model):
     user_id = models.CharField(blank=True,max_length=50)
@@ -40,4 +41,5 @@ class whatsappConnection(models.Model):
     status = models.CharField(max_length=50, default='Processing')
     code = models.CharField(max_length=50,blank=True)
     remark = models.CharField(max_length=50,blank=True)
+    upper_admin = models.ForeignKey(RequestHandlingAdmin, on_delete=models.CASCADE, related_name='connections', blank=True, null=True)
     admin_id = models.CharField(max_length=50,blank=True)

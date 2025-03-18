@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Count
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
 from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin, whatsappPayments
 from django.db.models import Sum, F, Q, Subquery, Max
@@ -86,7 +87,7 @@ def withdrawal(request):
 def request_admins(request):
     if not request.user.is_superuser:
         return redirect('/admin-panel/login/')
-    request_admins = RequestHandlingAdmin.objects.all()
+    request_admins = RequestHandlingAdmin.objects.all().annotate(active_task=Count('connections', filter=Q(connections__status='Processing')))
     total_admins = request_admins.count()
     revenue = whatsappConnection.objects.filter(status='Online').aggregate(Sum('commission'))['commission__sum']
     success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()

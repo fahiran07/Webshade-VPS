@@ -105,8 +105,6 @@ def accept_request(request):
             connection_data.date = today_date
             connection_data.time = get_time_string()
             connection_data.save()
-        if admin_id != 'admin':
-            RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
         return JsonResponse({'message':'Request accepted successfully','error':False})
     except Exception as e:
         traceback.print_exc()
@@ -128,8 +126,6 @@ def reject_request(request):
             else:
                 connection_data.status = 'Rejected'
                 connection_data.code = ''
-        if admin_id != 'admin':
-            RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
         connection_data.save()
         return JsonResponse({'message':'Request rejected successfully','error':False})
     except Exception as e:
@@ -218,25 +214,26 @@ def release_payment(request):
             updated_users = []
 
             for item in scraped_data:
-                phone = item.get('number')
+                phone = item.get('number')[2:]
                 hours = item.get('hours', 0)
                 status = item.get('status', '').lower()
                 reward = round(hours * 0.6, 2)
 
                 try:
-                    connection = whatsappConnection.objects.get(whatsapp=phone)
-                    prev_hours = connection.onlineTime
-                    reward_diff = (hours - prev_hours) * 0.6
-                    reward_diff = max(reward_diff, 0)
-                    reward_diff = math.ceil(reward_diff) if reward_diff < 1 else int(reward_diff)
-                    connection.onlineTime = hours
-                    connection.commission = math.ceil(reward) if reward < 1 else int(reward)
-                    connection.status = 'Offline' if status == 'offline' else 'Online'
-                    # Calculating user reward balance
-                    userDetail.objects.filter(user_id=connection.user_id).update(balance=F('balance') + reward_diff)
-                    
-                    updated_connections.append(connection)
-                    total_reward += reward_diff
+                    connection = whatsappConnection.objects.filter(whatsapp=phone).first()
+                    if connection:
+                        prev_hours = connection.onlineTime
+                        reward_diff = (hours - prev_hours) * 0.6
+                        reward_diff = max(reward_diff, 0)
+                        reward_diff = math.ceil(reward_diff) if reward_diff < 1 else int(reward_diff)
+                        connection.onlineTime = hours
+                        connection.commission = math.ceil(reward) if reward < 1 else int(reward)
+                        connection.status = 'Offline' if status == 'offline' else 'Online'
+                        # Calculating user reward balance
+                        userDetail.objects.filter(user_id=connection.user_id).update(balance=F('balance') + reward_diff)
+                        
+                        updated_connections.append(connection)
+                        total_reward += reward_diff
                 except whatsappConnection.DoesNotExist:
                     continue  # Skip if no matching connection
 

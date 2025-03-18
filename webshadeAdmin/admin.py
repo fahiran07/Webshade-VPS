@@ -13,7 +13,7 @@ class login_numberAdmin(admin.ModelAdmin):
 
 @admin.register(RequestHandlingAdmin)
 class RequestHandlingAdminAdminAdmin(admin.ModelAdmin):
-    list_display = ('admin_id','name','chat_id','phone','active_task','active')
+    list_display = ('admin_id','name','chat_id','phone','active')
 
 
 @admin.register(whatsappPayments)

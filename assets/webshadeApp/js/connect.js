@@ -53,7 +53,7 @@ function get_code() {
 			if (data.error == false) {
 				show_toast_message(data.message, true);
 				run_timer = true;
-				request_timer = 5;
+				request_timer = 200;
 				get_code_button.classList.add("disabled");
 
 				check_code_request(data.connect_id);
