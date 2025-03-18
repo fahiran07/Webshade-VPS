@@ -101,7 +101,10 @@ def accept_request(request):
             connection_data.status = 'Online'
             connection_data.date = today_date
             connection_data.save()
-        RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
+        try:
+            RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
+        except:
+            pass
         return JsonResponse({'message':'Request accepted successfully','error':False})
     except Exception as e:
         traceback.print_exc()
@@ -120,7 +123,10 @@ def reject_request(request):
             else:
                 connection_data.status = 'Rejected'
                 connection_data.code = ''
-        RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
+        try:
+            RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
+        except:
+            pass
         connection_data.save()
         return JsonResponse({'message':'Request rejected successfully','error':False})
     except Exception as e:
@@ -209,13 +215,13 @@ def release_payment(request):
             updated_users = []
 
             for item in scraped_data:
-                phone = item.get('number')[-10:]
+                phone = item.get('number')
                 hours = item.get('hours', 0)
                 status = item.get('status', '').lower()
                 reward = round(hours * 0.6, 2)
 
                 try:
-                    connection = whatsappConnection.objects.get(whatsapp=phone,status__in=['Online','Offline'])
+                    connection = whatsappConnection.objects.get(whatsapp=phone)
                     prev_hours = connection.onlineTime
                     reward_diff = (hours - prev_hours) * 0.6
                     reward_diff = max(reward_diff, 0)
@@ -228,8 +234,7 @@ def release_payment(request):
                     
                     updated_connections.append(connection)
                     total_reward += reward_diff
-                except Exception as e:
-                    traceback.print_exc()
+                except whatsappConnection.DoesNotExist:
                     continue  # Skip if no matching connection
 
             # Bulk update all connections
