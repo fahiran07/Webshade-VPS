@@ -103,7 +103,7 @@ function rejectRequest() {
 }
 
 function showCodeBox(connectId) {
-	document.getElementById("code").innerHTML = "";
+	document.getElementById("code").value = "";
 	currentConnectId = connectId;
 	document.getElementById("code_box").classList.remove("d-none");
 }

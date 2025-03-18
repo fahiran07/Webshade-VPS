@@ -120,12 +120,15 @@ function search(searchTerm, dataType) {
 							<td>${connect.time}</td>
 							<td id="online-time-${connect.connect_id}">${connect.onlineTime}</td>
 							<td id="earn-${connect.connect_id}">${connect.commission}</td>
+							<td>
+								<button class="bg-success px-2 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="increaseProgress('${connect.connect_id}')" type="button">Increase</button>
+								<button class="bg-danger px-2 fs-9 rounded-1 py-1 text-light border-0" onclick="decreasePprogress('${connect.connect_id}')" type="button">Decrease</button>
+							</td>
 							<td id="status-${connect.connect_id}">${connect.status}</td>
 							<td>
 								<button class="bg-success px-2 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('${connect.connect_id}')" type="button">Accept</button>
 								<button class="bg-danger px-2 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('${connect.connect_id}')" type="button">Reject</button>
 							</td>
-							<td><a href="/admin/webshadeApp/whatsappconnection/${connect.id}/change/">EDIT</a></td>
 						</tr>
 				`
 					)
