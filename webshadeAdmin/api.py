@@ -96,15 +96,17 @@ def accept_request(request):
         data = json.loads(request.body)
         connect_id = data.get("connect_id")
         admin_id = data.get("admin_id")
-        connection_data = whatsappConnection.objects.filter(connect_id=connect_id,admin_id=admin_id).first()
+        if admin_id == 'admin':
+            connection_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
+        else:
+            connection_data = whatsappConnection.objects.filter(connect_id=connect_id,admin_id=admin_id).first()
         if connection_data:
             connection_data.status = 'Online'
             connection_data.date = today_date
+            connection_data.time = get_time_string
             connection_data.save()
-        try:
+        if admin_id != 'admin':
             RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
-        except:
-            pass
         return JsonResponse({'message':'Request accepted successfully','error':False})
     except Exception as e:
         traceback.print_exc()
@@ -115,7 +117,10 @@ def reject_request(request):
         data = json.loads(request.body)
         connect_id = data.get("connect_id")
         admin_id = data.get("admin_id")
-        connection_data = whatsappConnection.objects.filter(connect_id=connect_id,admin_id=admin_id).first()
+        if admin_id == 'admin':
+            connection_data = whatsappConnection.objects.filter(connect_id=connect_id).first()
+        else:
+            connection_data = whatsappConnection.objects.filter(connect_id=connect_id,admin_id=admin_id).first()
         if connection_data:
             if connection_data.status == 'Online' or connection_data.status == 'Offline':
                 connection_data.status = 'Offline'
@@ -123,10 +128,8 @@ def reject_request(request):
             else:
                 connection_data.status = 'Rejected'
                 connection_data.code = ''
-        try:
+        if admin_id != 'admin':
             RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)
-        except:
-            pass
         connection_data.save()
         return JsonResponse({'message':'Request rejected successfully','error':False})
     except Exception as e:

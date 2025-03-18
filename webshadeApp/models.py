@@ -41,5 +41,4 @@ class whatsappConnection(models.Model):
     code = models.CharField(max_length=50,blank=True)
     remark = models.CharField(max_length=50,blank=True)
     successTimestamp = models.CharField(max_length=50, default='0')
-    created_at = models.CharField(max_length=50, default=get_time_string)
     admin_id = models.CharField(max_length=50,blank=True)

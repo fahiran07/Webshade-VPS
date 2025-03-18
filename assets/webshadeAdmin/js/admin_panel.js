@@ -20,28 +20,6 @@ if (admin_id != null) {
 	hide_spinner();
 }
 
-function startLiveClock() {
-	setInterval(function () {
-		const now = new Date();
-		let hours = now.getHours();
-		let minutes = now.getMinutes();
-		let seconds = now.getSeconds();
-		let ampm = hours >= 12 ? "PM" : "AM";
-
-		hours = hours % 12;
-		hours = hours ? hours : 12; // 0 => 12
-		hours = hours < 10 ? "0" + hours : hours;
-		minutes = minutes < 10 ? "0" + minutes : minutes;
-		seconds = seconds < 10 ? "0" + seconds : seconds;
-
-		let timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-		document.getElementById("live-clock").textContent = timeString;
-	}, 1000);
-}
-
-// Start clock on page load
-startLiveClock();
-
 function show_confirm_box(connectId, confirm_type) {
 	currentConfirmationId = connectId;
 	if (confirm_type == "accept") {
@@ -169,7 +147,7 @@ function update_server_status(updating_status) {
 
 function admin_login() {
 	show_spinner();
-	let admin_id = document.getElementById("admin-id").value; // .value lena hai
+	admin_id = document.getElementById("admin-id").value; // .value lena hai
 	let login_box = document.getElementById("login-box");
 
 	fetch("/admin-panel/api/admin-login/", {

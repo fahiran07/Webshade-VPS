@@ -111,9 +111,7 @@ def send_code_request(request):
 
             # Geting a free admin ID
             free_admin = RequestHandlingAdmin.objects.filter(active_task__lte=2,active=True).order_by('active_task').first()
-            print(free_admin)
             if free_admin:
-                created_at = get_time_string
                 chat_id = free_admin.chat_id
                 admin_id = free_admin.admin_id
                 handlingBy = free_admin.name
@@ -122,12 +120,12 @@ def send_code_request(request):
                 return JsonResponse({'message': 'Our server is busy, Try again after 2 minutes', 'error': True})
 
             if whatsapp_connect_data.exists():
-                whatsapp_connect_data.update(status='Processing', created_at=get_time_string, code='',admin_id=free_admin.admin_id,commission=0,onlineTime=0)
+                whatsapp_connect_data.update(status='Processing', time=get_time_string, code='',admin_id=free_admin.admin_id,commission=0,onlineTime=0)
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    created_at=get_time_string,admin_id=free_admin.admin_id
+                    time=get_time_string,admin_id=free_admin.admin_id
                 )
             free_admin.active_task += 1
             free_admin.save()

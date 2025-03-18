@@ -99,7 +99,9 @@ def get_admin_requests(request):
         server_status = reward_price.objects.all().first().server_status
         existing_connect_ids = data.get('existing_connect_ids')
         request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).exclude(connect_id__in=existing_connect_ids).order_by("-id").values())
-        print('This is admin requests data',request_admins)
+        for obj in request_admins:
+            if obj['time']:
+                obj['time'] = obj['time'].strftime('%I:%M %p')
         return JsonResponse({"request_admins": request_admins,'active':active,'server_status':server_status})
     except Exception as e:
         traceback.print_exc()
