@@ -140,6 +140,10 @@
 				{% endif %}
 			</div>
 			{% if request.user.is_superuser %}
+			<div class="w-100 d-flex d-flex-center flex-column">
+				<span>Server Status</span>
+				<span id="server-status" class="{% if server_status == 'DOWN' %}text-danger {% else %}text-success{% endif %} fw-bold text-capitalize">{{server_status}}</span>
+			</div>
 			<div class="w-95 mx-auto d-flex justify-content-between mt-2">
 				<button class="bg-danger border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('DOWN')" style="width: 48%">Close Server</button>
 				<button class="bg-success border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('OPEN')" style="width: 48%">Open Server</button>

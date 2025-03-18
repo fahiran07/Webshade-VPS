@@ -175,6 +175,8 @@
 							<td>CHATID</td>
 							<td>NAME</td>
 							<td>PHONE</td>
+							<td>STATUS</td>
+							<td>TASKS</td>
 							<td></td>
 						</tr>
 					</thead>
@@ -185,6 +187,16 @@
 							<td>{{admin.chat_id}}</td>
 							<td>{{admin.name}}</td>
 							<td>{{admin.phone}}</td>
+							<td>
+								{% if admin.active %}
+								<i class="fas fa-check-circle" style="color: green"></i>
+								<!-- Correct Icon -->
+								{% else %}
+								<i class="fas fa-times-circle" style="color: red"></i>
+								<!-- Optional cross icon -->
+								{% endif %}
+							</td>
+							<td>{{admin.active_task}}</td>
 							<td><a target="_blank" href="/admin/webshadeAdmin/requesthandlingadmin/{{admin.id}}/change/">EDIT</a></td>
 						</tr>
 						{% endfor %}

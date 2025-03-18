@@ -17,7 +17,7 @@ function acceptRequest(connectId) {
 			"Content-Type": "application/json",
 			"X-CSRFToken": csrfToken,
 		},
-		body: JSON.stringify({ connect_id: connectId }),
+		body: JSON.stringify({ connect_id: connectId, admin_id: "admin" }),
 	})
 		.then((response) => response.json())
 		.then((data) => {
@@ -38,7 +38,7 @@ function rejectRequest(connectId) {
 			"Content-Type": "application/json",
 			"X-CSRFToken": csrfToken,
 		},
-		body: JSON.stringify({ connect_id: connectId }),
+		body: JSON.stringify({ connect_id: connectId, admin_id: "admin" }),
 	})
 		.then((response) => response.json())
 		.then((data) => {
@@ -114,10 +114,7 @@ function search(searchTerm, dataType) {
                             <button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" 
                                 onclick="rejectRequest('${connect.connect_id}')">Reject</button>
                         </td>
-                        <td>
-                            <button class="bg-primary px-2 rounded-1 py-1 text-light border-0" 
-                                onclick="showCodeBox('${connect.connect_id}')">Send Code</button>
-                        </td>
+                       <td>${connect.code}</td>
                     </tr>
                 `
 					)

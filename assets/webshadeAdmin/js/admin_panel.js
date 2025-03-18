@@ -199,27 +199,30 @@ function loadRequests(admin_id) {
 	})
 		.then((response) => response.json())
 		.then((data) => {
-			let requests = data.request_admins;
-			if (data.active == true) {
-				be_active_btn.classList.add("d-none");
-				be_inactive_btn.classList.remove("d-none");
-			} else {
-				be_active_btn.classList.remove("d-none");
-				be_inactive_btn.classList.add("d-none");
-			}
-			if (data.server_status == true) {
-				server_status.classList.add("text-success");
-				server_status.classList.remove("text-danger");
-				server_status.innerText = "OPEN";
-			} else {
-				server_status.classList.remove("text-success");
-				server_status.classList.add("text-danger");
-				server_status.innerText = "DOWN";
-			}
-			cardHTML = ``;
-			requests.forEach((connect) => {
-				existing_connect_ids.push(connect.connect_id);
-				let requestsHtml = `
+			if (data.error == false) {
+				let requests = data.request_admins;
+				if (data.active == true) {
+					be_active_btn.classList.add("d-none");
+					be_inactive_btn.classList.remove("d-none");
+				} else {
+					be_active_btn.classList.remove("d-none");
+					be_inactive_btn.classList.add("d-none");
+				}
+				console.log(data.server_status);
+
+				if (data.server_status == true) {
+					server_status.classList.add("text-success");
+					server_status.classList.remove("text-danger");
+					server_status.innerText = "OPEN";
+				} else {
+					server_status.classList.remove("text-success");
+					server_status.classList.add("text-danger");
+					server_status.innerText = "DOWN";
+				}
+				cardHTML = ``;
+				requests.forEach((connect) => {
+					existing_connect_ids.push(connect.connect_id);
+					let requestsHtml = `
                         <div id="whatsapp-${connect.connect_id}" class="card w-100 mb-3 rounded-1 p-2 shadow">
                             <div class="w-100 d-flex justify-content-between">
                                 <p class="mb-1">${connect.whatsapp} <span class="px-2 text-danger fw-bold fs-7" onclick="copyToClipboard(${connect.whatsapp},this)"> COPY</span></p>
@@ -239,9 +242,12 @@ function loadRequests(admin_id) {
                             </div>
                         </div>
                     `;
-				cardHTML += requestsHtml;
-			});
-			admin_data.innerHTML += cardHTML;
+					cardHTML += requestsHtml;
+				});
+				admin_data.innerHTML += cardHTML;
+			} else {
+				show_toast_message(data.message, false);
+			}
 		})
 		.catch((error) => console.error("Error:", error));
 }

@@ -120,12 +120,12 @@ def send_code_request(request):
                 return JsonResponse({'message': 'Our server is busy, Try again after 2 minutes', 'error': True})
 
             if whatsapp_connect_data.exists():
-                whatsapp_connect_data.update(status='Processing', time=get_time_string, code='',admin_id=free_admin.admin_id,commission=0,onlineTime=0)
+                whatsapp_connect_data.update(status='Processing', time=get_time_string(), code='',admin_id=free_admin.admin_id,commission=0,onlineTime=0)
                 connect_id = whatsapp_connect_data.first().connect_id
             else:
                 whatsappConnection.objects.create(
                     whatsapp=whatsapp, user_id=user_id, connect_id=connect_id, 
-                    time=get_time_string,admin_id=free_admin.admin_id
+                    time=get_time_string(),admin_id=free_admin.admin_id
                 )
             free_admin.active_task += 1
             free_admin.save()

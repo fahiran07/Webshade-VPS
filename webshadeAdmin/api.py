@@ -103,7 +103,7 @@ def accept_request(request):
         if connection_data:
             connection_data.status = 'Online'
             connection_data.date = today_date
-            connection_data.time = get_time_string
+            connection_data.time = get_time_string()
             connection_data.save()
         if admin_id != 'admin':
             RequestHandlingAdmin.objects.filter(admin_id=connection_data.admin_id).update(active_task=F('active_task') - 1)

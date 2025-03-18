@@ -8,6 +8,7 @@ from django.utils.timezone import now, localtime
 from webshadeAdmin.functions import get_date_string, get_time_string
 from django.db.models import Sum
 import traceback
+from datetime import datetime
 import json
 today_date = localtime().strftime("%d-%m-%Y")
 
@@ -101,11 +102,14 @@ def get_admin_requests(request):
         request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).exclude(connect_id__in=existing_connect_ids).order_by("-id").values())
         for obj in request_admins:
             if obj['time']:
-                obj['time'] = obj['time'].strftime('%I:%M %p')
-        return JsonResponse({"request_admins": request_admins,'active':active,'server_status':server_status})
+                # Convert string to time object
+                time_obj = datetime.strptime(obj['time'], '%H:%M:%S').time()
+                # Now convert to 12-hour format
+                obj['time'] = time_obj.strftime('%I:%M %p')  # e.g., '04:45 PM'
+        return JsonResponse({"request_admins": request_admins,'active':active,'server_status':server_status,'error':False})
     except Exception as e:
         traceback.print_exc()
-        return JsonResponse({'error':True})
+        return JsonResponse({'error':True,'message':'Error while loading admin requests'})
 
 def get_task_data(request):
     try:

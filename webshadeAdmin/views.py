@@ -58,17 +58,12 @@ def connects(request):
 @never_cache
 def admin_panel(request):
     # # Fetch data with filtering directly on DB
-    connection_data = whatsappConnection.objects.filter(status='Processing').order_by("-id")[:3]
     if reward_price.objects.all().first().server_status == False:
         server_status = "DOWN"
     else:
         server_status = "OPEN"
-    # Convert time to 12-hour format for display
-    for connection in connection_data:
-        connection.time = connection.time.strftime("%I:%M %p")
 
     context = {
-        "connection_data": connection_data,
         "server_status": server_status,
     }
     return render(request, "webshadeAdmin/mobile/admin_panel.html", context)

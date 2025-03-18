@@ -8,7 +8,7 @@ function acceptRequest(connectId) {
 			"Content-Type": "application/json",
 			"X-CSRFToken": csrfToken,
 		},
-		body: JSON.stringify({ connect_id: connectId, admin_id: admin_id }),
+		body: JSON.stringify({ connect_id: connectId, admin_id: "admin" }),
 	})
 		.then((response) => response.json())
 		.then((data) => {
@@ -29,7 +29,7 @@ function rejectRequest(connectId) {
 			"Content-Type": "application/json",
 			"X-CSRFToken": csrfToken,
 		},
-		body: JSON.stringify({ connect_id: connectId, admin_id: admin_id }),
+		body: JSON.stringify({ connect_id: connectId, admin_id: "admin" }),
 	})
 		.then((response) => response.json())
 		.then((data) => {

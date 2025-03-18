@@ -34,11 +34,10 @@ class whatsappConnection(models.Model):
     user_id = models.CharField(max_length=50)
     whatsapp = models.CharField(max_length=50)
     date = models.CharField(max_length=50)
-    time = models.TimeField(default=get_time_string)  # Set default value as current time
+    time = models.CharField(max_length=50,default=get_time_string)  # Set default value as current time
     onlineTime = models.IntegerField(default=0)
     commission = models.IntegerField(default=0)
     status = models.CharField(max_length=50, default='Processing')
     code = models.CharField(max_length=50,blank=True)
     remark = models.CharField(max_length=50,blank=True)
-    successTimestamp = models.CharField(max_length=50, default='0')
     admin_id = models.CharField(max_length=50,blank=True)

@@ -53,7 +53,7 @@ function get_code() {
 			if (data.error == false) {
 				show_toast_message(data.message, true);
 				run_timer = true;
-				request_timer = 150;
+				request_timer = 5;
 				get_code_button.classList.add("disabled");
 
 				check_code_request(data.connect_id);
@@ -94,7 +94,10 @@ function check_code_request(connect_id) {
 					check_code_acceptence(connect_id);
 				}, 1000);
 			} else if (data.error === false && data.code === "") {
-				if (request_timer < 1) {
+				console.log("This is executed");
+				console.log(request_timer);
+
+				if (request_timer <= 1) {
 					request_timer = 0;
 					button_text.innerHTML = "Get Code";
 					get_code_button.classList.remove("disabled");
