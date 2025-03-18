@@ -30,7 +30,14 @@ def send_telegram_message(message, chat_id):
 
 def new_user_register_message(message):
     TELEGRAM_CHAT_ID = "5862453909"  # Your Telegram Chat ID
-    return send_telegram_message(message, TELEGRAM_CHAT_ID)
+    TELEGRAM_BOT_TOKEN = "7618666376:AAFd0BCJtKAB6i32Ap5VEi7cM5VCCgSYHsM"
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": message,
+    }
+    response = requests.post(url, data=data)
+    return response.json()
 
 def send_task_to_admin(message, chat_id):
     response1 = send_telegram_message(message, chat_id)
