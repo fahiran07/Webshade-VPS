@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
+from django.db.models.functions import Coalesce
+from django.db.models import Value
 from django.db.models import Count
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
 from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin, whatsappPayments
-from django.db.models import Sum, F, Q, Subquery, Max
+from django.db.models import Sum, F, Q, Subquery, Max, ExpressionWrapper, IntegerField
 from django.views.decorators.cache import never_cache
 from webshadeAdmin.functions import get_date_string, get_time_string
 from django.db.models import Sum
@@ -87,9 +89,19 @@ def withdrawal(request):
 def request_admins(request):
     if not request.user.is_superuser:
         return redirect('/admin-panel/login/')
-    request_admins = RequestHandlingAdmin.objects.all().annotate(active_task=Count('connections', filter=Q(connections__status='Processing')))
+    # First: annotate only counts
+    request_admins = RequestHandlingAdmin.objects.annotate(
+        active_task=Count('connections', filter=Q(connections__status='Processing'), distinct=True),
+        success_task=Count('connections', filter=Q(connections__status__in=['Offline', 'Online']), distinct=True),
+        failed_task=Count('connections', filter=Q(connections__status='Rejected'), distinct=True),
+    )
+    
+    # Then annotate revenue separately (optional)
+    request_admins = request_admins.annotate(
+    total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.6,output_field=IntegerField()
+    ))
     total_admins = request_admins.count()
-    revenue = whatsappConnection.objects.filter(status='Online').aggregate(Sum('commission'))['commission__sum']
+    revenue = sum(admin.total_revenue or 0 for admin in request_admins)
     success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
     failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id='').count()
     context = {

@@ -59,7 +59,7 @@ def dashboard_data(request):
             "total_users": total_users,
             "today_users": today_users,
             "total_balance": total_balance,
-            "total_commision": total_commision
+            "total_commision": total_commision,
         })
     except Exception as e:
         traceback.print_exc()
@@ -87,6 +87,7 @@ def connects_data(request):
             "today_connects": connection_data.filter(date=today_date).count(),
             "online_connects": connection_data.filter(status="Online").count(),
             "offline_connects": connection_data.filter(status="Offline").count(),
+            "total_revenue": (whatsappConnection.objects.aggregate(Sum('onlineTime'))['onlineTime__sum'] or 0) * 1,
         })
     except Exception as e:
         traceback.print_exc()
@@ -114,7 +115,7 @@ def get_admin_requests(request):
 def get_task_data(request):
     try:
         admin_id = request.GET.get('admin-id')
-        success_connects = whatsappConnection.objects.filter(admin_id=admin_id,status__in=['Online','Offline']).exclude(status='Processing').count()
+        success_connects = whatsappConnection.objects.filter(admin_id=admin_id,status__in=['Online','Offline']).count()
         failed_connects = whatsappConnection.objects.filter(admin_id=admin_id).exclude(status__in=['Online','Offline','Processing']).count()
         return JsonResponse({"success_connects": success_connects,'failed_connects':failed_connects,'total_connects':success_connects+failed_connects})
     except Exception as e:

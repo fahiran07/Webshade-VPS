@@ -153,6 +153,7 @@ function fetchConnectionData() {
 			document.getElementById("today-connects").innerText = data.today_connects;
 			document.getElementById("online-connects").innerText = data.online_connects;
 			document.getElementById("offline-connects").innerText = data.offline_connects;
+			document.getElementById("total-revenue").innerText = data.total_revenue;
 		})
 		.catch((error) => console.error("Error fetching dashboard data:", error));
 }

@@ -16,4 +16,4 @@ class bank_accountAdmin(admin.ModelAdmin):
 
 @admin.register(whatsappConnection)
 class whatsappConnectionAdmin(admin.ModelAdmin):
-    list_display = ('connect_id', 'user_id','whatsapp', 'date', 'time', 'onlineTime', 'code','status')
+    list_display = ('connect_id', 'user_id','admin_id','whatsapp', 'date', 'time', 'onlineTime', 'code','status')

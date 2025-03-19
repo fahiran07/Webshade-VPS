@@ -151,10 +151,10 @@
 							<td>PHONE</td>
 							<td>EMAIL</td>
 							<td>PASSWORD</td>
-							<td class="text-nowrap">REFERRER</td>
-							<td>ACTIVE</td>
+							<td class="text-nowrap">REFER BY</td>
 							<td>BALANCE</td>
 							<td>COMMISSION</td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody id="data-table">
@@ -176,20 +176,12 @@
 								<p class="mb-0">{% if user.refer_by %}{{ user.refer_by }}{% else %}-{% endif %}</p>
 							</td>
 							<td>
-								<div id="user-status-{{user.user_id}}" class="hr-4 wr-4" onclick="toggleActiveStatus('{{ user.user_id }}','{{ user.active }}')">
-									{% if user.active %}
-									<i class="fas fa-check" style="color: green"></i>
-									{% else %}
-									<i class="fas fa-times" style="color: red"></i>
-									{% endif %}
-								</div>
-							</td>
-							<td>
 								<p>₹{{ user.balance }}.00</p>
 							</td>
 							<td>
 								<p>₹{{ user.commision }}.00</p>
 							</td>
+							<td><a href="/admin/webshadeApp/userdetail/{{user.id}}/change/" target="_blank">EDIT</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>

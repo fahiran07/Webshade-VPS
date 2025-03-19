@@ -25,6 +25,8 @@ class RequestHandlingAdmin(models.Model):
     phone = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
+    def __str__(self):
+        return str(self.admin_id)
 
 class whatsappPayments(models.Model):
     release_id = models.CharField(max_length=50)

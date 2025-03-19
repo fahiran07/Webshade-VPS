@@ -103,6 +103,14 @@
 			.show-toast {
 				opacity: 1 !important;
 			}
+			.val-box {
+				width: 19% !important;
+			}
+			.val-box i {
+				font-size: 15px !important;
+				width: 40px !important;
+				height: 40px !important;
+			}
 		</style>
 	</head>
 
@@ -165,6 +173,14 @@
 						<span>Offline</span>
 					</div>
 				</div>
+				<div class="val-box shadow">
+					<i class="fas fa-money-bill-wave"></i>
+					<!-- Updated Icon -->
+					<div>
+						<h3 id="total-revenue">{{total_revenue}}</h3>
+						<span>Revenue</span>
+					</div>
+				</div>
 			</div>
 			<div class="board fs-8 shadow">
 				<table class="home mainPage" width="100%">
@@ -195,7 +211,7 @@
 								<button class="bg-success px-2 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('{{connect.connect_id}}')" type="button">Accept</button>
 								<button class="bg-danger px-2 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>
-							<td><a href="/admin/webshadeApp/whatsappconnection/{{connect.id}}/change/">EDIT</a></td>
+							<td><a href="/admin/webshadeApp/whatsappconnection/{{connect.id}}/change/" target="_blank">EDIT</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>

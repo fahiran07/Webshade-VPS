@@ -26,7 +26,7 @@ print(f"🌐 Opening URL: {url}")
 driver.get(url)
 
 # Wait setup
-wait = WebDriverWait(driver, 25)
+wait = WebDriverWait(driver, 50)
 
 # Login inputs
 print("⌛ Waiting for login inputs...")
@@ -35,8 +35,8 @@ print("✅ Login input fields found.")
 
 # Enter login details
 print("📝 Entering login credentials...")
-inputs[0].send_keys('9864301450')
-inputs[1].send_keys('webshade124432')
+inputs[0].send_keys('6000694134')
+inputs[1].send_keys('Fahad788712')
 print("🔒 Credentials entered.")
 
 # Click login
@@ -51,9 +51,10 @@ button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div//span
 button.click()
 print("❌ Popup closed.")
 
+time.sleep(10)
 # Start task
 print("🎯 Starting task...")
-button = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "startTaskBtn")))
+button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "startTaskBtn")))
 driver.execute_script("arguments[0].scrollIntoView();", button)
 button.click()
 driver.implicitly_wait(5)

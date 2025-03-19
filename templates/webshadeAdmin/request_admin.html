@@ -176,6 +176,9 @@
 							<td>NAME</td>
 							<td>PHONE</td>
 							<td>STATUS</td>
+							<td>REVENUE</td>
+							<td>SUCCESS</td>
+							<td>FAILED</td>
 							<td>TASKS</td>
 							<td></td>
 						</tr>
@@ -196,6 +199,9 @@
 								<!-- Optional cross icon -->
 								{% endif %}
 							</td>
+							<td>{{admin.total_revenue}}</td>
+							<td>{{admin.success_task}}</td>
+							<td>{{admin.failed_task}}</td>
 							<td>{{admin.active_task}}</td>
 							<td><a target="_blank" href="/admin/webshadeAdmin/requesthandlingadmin/{{admin.id}}/change/">EDIT</a></td>
 						</tr>

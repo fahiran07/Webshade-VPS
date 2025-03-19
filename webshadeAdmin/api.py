@@ -247,6 +247,8 @@ def release_payment(request):
                 release_id=release_id,
                 amount=round(total_reward, 2),
                 releaser=releaser_phone,
+                time=get_time_string,
+                date=get_date_string,
             )
 
             return JsonResponse({ 'message': 'Payments successfully released', 'error': False})
