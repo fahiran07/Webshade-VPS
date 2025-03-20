@@ -98,9 +98,8 @@ def request_admins(request):
     
     # Then annotate revenue separately (optional)
     request_admins = request_admins.annotate(
-        total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 1,output_field=IntegerField()),
-        profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField())
-        )
+    total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.6,output_field=IntegerField()
+    ))
     total_admins = request_admins.count()
     revenue = sum(admin.total_revenue or 0 for admin in request_admins)
     success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
