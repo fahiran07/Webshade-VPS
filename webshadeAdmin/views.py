@@ -30,7 +30,7 @@ def login_admin(request):
 def users(request):
     if not request.user.is_superuser:
         return redirect('/admin-panel/login/')
-    users = userDetail.objects.all()
+    users = userDetail.objects.all().order_by("-id")[0:100]
     context = {
         "users_data": users,
     }
@@ -52,7 +52,7 @@ def connect_request(request):
 def connects(request):
     if not request.user.is_superuser:
         return redirect('/admin-panel/login/')
-    connection_data = whatsappConnection.objects.filter(status__in=['Offline','Online']).order_by("-id")
+    connection_data = whatsappConnection.objects.filter(status__in=['Offline','Online']).order_by("-id")[:100]
     context = {
         "connection_data": connection_data,
     }

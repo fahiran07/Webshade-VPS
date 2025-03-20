@@ -1,6 +1,10 @@
 from django.http import JsonResponse
 from webshade.celery import app
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum, F, Q, Subquery, Max, ExpressionWrapper, IntegerField
+from django.db.models.functions import Coalesce
+from django.db.models import Value
+from django.db.models import Count
 from webshadeApp.models import userDetail, whatsappConnection
 from webshadeAdmin.models import RequestHandlingAdmin, reward_price
 from django.views.decorators.csrf import csrf_exempt
@@ -49,7 +53,6 @@ def get_running_tasks(request):
 @csrf_exempt
 def dashboard_data(request):
     try:
-        print(today_date)
         users = userDetail.objects.all()
         total_users = users.count()
         today_users = users.filter(last_login=today_date).count()
@@ -111,6 +114,37 @@ def get_admin_requests(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'error':True,'message':'Error while loading admin requests'})
+
+def request_admin_data(request):
+    try:
+        request_admins = RequestHandlingAdmin.objects.annotate(
+            active_task=Count('connections', filter=Q(connections__status='Processing'), distinct=True),
+            success_task=Count('connections', filter=Q(connections__status__in=['Offline', 'Online']), distinct=True),
+            failed_task=Count('connections', filter=Q(connections__status='Rejected'), distinct=True),
+        )
+
+        # Then annotate revenue separately (optional)
+        request_admins = request_admins.annotate(
+        total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 1,output_field=IntegerField()),
+        profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField())
+        )
+        total_admins = request_admins.count()
+        revenue = sum(admin.total_revenue or 0 for admin in request_admins)
+        success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
+        failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id='').count()
+        context = {
+            'request_admins':list(request_admins.values()),
+            'total_admins':total_admins,
+            'revenue':revenue,
+            'success_connects':success_connects,
+            'failed_connects':failed_connects,
+            'error':False,
+            'message':'Admin data loaded successfully'
+        }
+        return JsonResponse(context)
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'error':True,'message':'Error while loading admin data'})
 
 def get_task_data(request):
     try:

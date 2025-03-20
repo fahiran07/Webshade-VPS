@@ -34,4 +34,5 @@ urlpatterns = [
     path("api/connects-data/", get_api.connects_data),
     path("api/get-admin-whatsapp-request/", get_api.get_admin_requests),
     path("api/get-task-data/", get_api.get_task_data),
+    path("api/get-admin-data/", get_api.request_admin_data),
 ]

@@ -189,7 +189,7 @@
 							<td>{{admin.admin_id}}</td>
 							<td>{{admin.name}}</td>
 							<td>{{admin.phone}}</td>
-							<td>
+							<td id="admin-status-{{admin.admin_id}}">
 								{% if admin.active %}
 								<i class="fas fa-check-circle" style="color: green"></i>
 								<!-- Correct Icon -->
@@ -198,11 +198,11 @@
 								<!-- Optional cross icon -->
 								{% endif %}
 							</td>
-							<td>{{admin.total_revenue}}</td>
-							<td>{{admin.profit}}</td>
-							<td>{{admin.success_task}}</td>
-							<td>{{admin.failed_task}}</td>
-							<td>{{admin.active_task}}</td>
+							<td id="admin-revenue-{{admin.admin_id}}">{{admin.total_revenue}}</td>
+							<td id="admin-profit-{{admin.admin_id}}">{{admin.profit}}</td>
+							<td id="admin-success-{{admin.admin_id}}">{{admin.success_task}}</td>
+							<td id="admin-failed-{{admin.admin_id}}">{{admin.failed_task}}</td>
+							<td id="admin-active-{{admin.admin_id}}">{{admin.active_task}}</td>
 							<td><a target="_blank" href="/admin/webshadeAdmin/requesthandlingadmin/{{admin.id}}/change/">EDIT</a></td>
 						</tr>
 						{% endfor %}
@@ -229,8 +229,7 @@
 			</div>
 		</section>
 
-		<script src="/assets/webshadeAdmin/js/menu.js"></script>
-		<script src="/assets/webshadeAdmin/js/connects.js"></script>
+		<script src="/assets/webshadeAdmin/js/request_admin.js"></script>
 		<script src="/assets/webshadeAdmin/js/script.js"></script>
 	</body>
 </html>
