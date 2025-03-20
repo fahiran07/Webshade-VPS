@@ -172,11 +172,11 @@
 					<thead>
 						<tr>
 							<td>ID</td>
-							<td>CHATID</td>
 							<td>NAME</td>
 							<td>PHONE</td>
 							<td>STATUS</td>
 							<td>REVENUE</td>
+							<td>PROFIT</td>
 							<td>SUCCESS</td>
 							<td>FAILED</td>
 							<td>TASKS</td>
@@ -187,7 +187,6 @@
 						{% for admin in request_admins %}
 						<tr>
 							<td>{{admin.admin_id}}</td>
-							<td>{{admin.chat_id}}</td>
 							<td>{{admin.name}}</td>
 							<td>{{admin.phone}}</td>
 							<td>
@@ -200,6 +199,7 @@
 								{% endif %}
 							</td>
 							<td>{{admin.total_revenue}}</td>
+							<td>{{admin.profit}}</td>
 							<td>{{admin.success_task}}</td>
 							<td>{{admin.failed_task}}</td>
 							<td>{{admin.active_task}}</td>
