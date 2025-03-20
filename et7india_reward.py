@@ -14,6 +14,7 @@ import json
 print("🔧 Setting up Chrome options...")
 options = Options()
 options.add_argument("--disable-usb-keyboard-detect")
+# options.add_argument('--headless')
 options.add_argument("--disable-features=WebML")
 
 # Initialize the driver
@@ -35,7 +36,7 @@ print("✅ Login input fields found.")
 
 # Enter login details
 print("📝 Entering login credentials...")
-inputs[0].send_keys('6000694134')
+inputs[0].send_keys('9365282819')
 inputs[1].send_keys('Fahad788712')
 print("🔒 Credentials entered.")
 
