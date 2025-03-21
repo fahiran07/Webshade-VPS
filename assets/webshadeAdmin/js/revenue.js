@@ -39,7 +39,7 @@ function submit_revenue_record() {
 					<td>${record.last_balance}</td>
 					<td>${record.withdraw_amount}</td>
 					<td>${record.date}</td>
-					<td><a href="admin/webshadeAdmin/revenuerecord/${revenue.id}/change/" target="_blank">EDIT</a></td>
+					<td><a href="admin/webshadeAdmin/revenuerecord/${record.id}/change/" target="_blank">EDIT</a></td>
 				</tr>
 			`;
 
