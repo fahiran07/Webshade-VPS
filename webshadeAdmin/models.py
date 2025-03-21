@@ -26,6 +26,7 @@ class RequestHandlingAdmin(models.Model):
     workon = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
+    special_staff = models.BooleanField(default=False)
     def __str__(self):
         return str(self.admin_id)
 
@@ -35,3 +36,11 @@ class whatsappPayments(models.Model):
     releaser = models.CharField(max_length=50)
     date = models.CharField(max_length=50, default=get_date_string)
     time = models.CharField(max_length=50, default=get_time_string)
+
+class revenueRecord(models.Model):
+    revenue_id = models.CharField(max_length=50)
+    admin_id = models.CharField(max_length=50)
+    admin_name = models.CharField(max_length=50)
+    last_balance = models.IntegerField(default=0)
+    withdrawal_amount = models.IntegerField(default=0)
+    date = models.CharField(max_length=50, default=get_date_string)

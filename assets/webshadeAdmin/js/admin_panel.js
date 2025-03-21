@@ -201,6 +201,10 @@ function loadRequests(admin_id) {
 		.then((data) => {
 			if (data.error == false) {
 				let requests = data.request_admins;
+				if (data.special_staff) {
+					document.getElementById("server-status-btn").classList.remove("d-none");
+					document.getElementById("server-status-box").classList.add("d-none");
+				}
 				if (data.active == true) {
 					be_active_btn.classList.add("d-none");
 					be_inactive_btn.classList.remove("d-none");

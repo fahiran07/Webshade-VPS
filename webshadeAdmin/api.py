@@ -4,7 +4,7 @@ from django.db.models import Func, Value as V
 from django.db.models.functions import Substr
 from django.contrib.auth.models import User
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price, RequestHandlingAdmin,whatsappPayments
+from webshadeAdmin.models import reward_price, RequestHandlingAdmin,whatsappPayments, revenueRecord
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from webshadeAdmin.functions import get_date_string, get_time_string
@@ -264,5 +264,48 @@ def release_payment(request):
         except Exception as e:
             traceback.print_exc()
             return JsonResponse({'error': True, 'message': 'Error while releasing payment'})
+
+    return JsonResponse({'error': True, 'message': 'Invalid request method'})
+
+def submit_revenue_record(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            admin_id = data.get('admin_id')
+            withdraw_amount = data.get('amount')
+            last_balance = data.get('balance')
+            if not admin_id or not withdraw_amount or not last_balance:
+                return JsonResponse({'error': True, 'message': 'Invalid data provided'})
+            while True:
+                revenue_id = str(uuid.uuid4())[:8]
+                if not revenueRecord.objects.filter(revenue_id=revenue_id).exists():
+                    break
+            admin_data = RequestHandlingAdmin.objects.get(admin_id=admin_id)
+            revenue_data = revenueRecord.objects.create(
+                revenue_id=admin_data.workon,
+                admin_id=admin_id,
+                admin_name=admin_data.name,
+                withdrawal_amount=withdraw_amount,
+                last_balance=last_balance,
+                date=get_date_string(),
+            ) 
+            context = {
+                'message': 'Revenue record submitted successfully',
+                'error': False,
+                'data': {
+                    'revenue_id': revenue_data.revenue_id,
+                    'admin_id': revenue_data.admin_id,
+                    'admin_name': revenue_data.admin_name,
+                    'withdraw_amount': revenue_data.withdrawal_amount,
+                    'last_balance': revenue_data.last_balance,
+                    'date': revenue_data.date,
+                    'id':revenue_data.id
+                }
+            }
+            return JsonResponse(context)
+
+        except Exception as e:
+            traceback.print_exc()
+            return JsonResponse({'error': True, 'message': 'Error while submitting revenue record'})
 
     return JsonResponse({'error': True, 'message': 'Invalid request method'})

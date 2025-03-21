@@ -3,35 +3,35 @@
         "serial": 1,
         "number": "919031711639",
         "status": "online",
-        "hours": 4,
+        "hours": 7,
         "host_phone": "8822919998"
     },
     {
         "serial": 2,
         "number": "919161072040",
         "status": "online",
-        "hours": 4,
+        "hours": 7,
         "host_phone": "8822919998"
     },
     {
         "serial": 3,
         "number": "917379328038",
         "status": "online",
-        "hours": 4,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
         "serial": 4,
         "number": "916267154590",
         "status": "online",
-        "hours": 4,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
         "serial": 5,
         "number": "918918329035",
         "status": "online",
-        "hours": 4,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
@@ -45,7 +45,7 @@
         "serial": 7,
         "number": "918103414363",
         "status": "online",
-        "hours": 4,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
@@ -66,14 +66,14 @@
         "serial": 10,
         "number": "918780847242",
         "status": "online",
-        "hours": 4,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
         "serial": 11,
         "number": "916002792627",
-        "status": "online",
-        "hours": 4,
+        "status": "Offline",
+        "hours": 7,
         "host_phone": "8822919998"
     },
     {
@@ -87,21 +87,21 @@
         "serial": 13,
         "number": "916267085046",
         "status": "online",
-        "hours": 5,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
         "serial": 14,
         "number": "917067824769",
         "status": "online",
-        "hours": 5,
+        "hours": 8,
         "host_phone": "8822919998"
     },
     {
         "serial": 15,
         "number": "919302632159",
         "status": "online",
-        "hours": 5,
+        "hours": 9,
         "host_phone": "8822919998"
     },
     {
@@ -115,14 +115,14 @@
         "serial": 17,
         "number": "918409358156",
         "status": "online",
-        "hours": 5,
+        "hours": 9,
         "host_phone": "8822919998"
     },
     {
         "serial": 18,
         "number": "919306125317",
         "status": "online",
-        "hours": 5,
+        "hours": 9,
         "host_phone": "8822919998"
     },
     {
@@ -178,7 +178,7 @@
         "serial": 26,
         "number": "916203260295",
         "status": "online",
-        "hours": 20,
+        "hours": 23,
         "host_phone": "8822919998"
     },
     {

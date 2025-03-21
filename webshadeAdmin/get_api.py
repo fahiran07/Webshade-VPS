@@ -6,10 +6,11 @@ from django.db.models.functions import Coalesce
 from django.db.models import Value
 from django.db.models import Count
 from webshadeApp.models import userDetail, whatsappConnection
-from webshadeAdmin.models import RequestHandlingAdmin, reward_price
+from webshadeAdmin.models import RequestHandlingAdmin, reward_price, revenueRecord
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import now, localtime
 from webshadeAdmin.functions import get_date_string, get_time_string
+from datetime import timedelta
 from django.db.models import Sum
 import traceback
 from datetime import datetime
@@ -100,7 +101,7 @@ def get_admin_requests(request):
     try:
         data = json.loads(request.body)
         admin_id = data.get('admin_id')
-        active = RequestHandlingAdmin.objects.get(admin_id=admin_id).active
+        admin_data = RequestHandlingAdmin.objects.get(admin_id=admin_id)
         server_status = reward_price.objects.all().first().server_status
         existing_connect_ids = data.get('existing_connect_ids')
         request_admins = list(whatsappConnection.objects.filter(status='Processing',admin_id=admin_id).exclude(connect_id__in=existing_connect_ids).order_by("-id").values())
@@ -110,7 +111,7 @@ def get_admin_requests(request):
                 time_obj = datetime.strptime(obj['time'], '%H:%M:%S').time()
                 # Now convert to 12-hour format
                 obj['time'] = time_obj.strftime('%I:%M %p')  # e.g., '04:45 PM'
-        return JsonResponse({"request_admins": request_admins,'active':active,'server_status':server_status,'error':False})
+        return JsonResponse({"request_admins": request_admins,'active':admin_data.active,'server_status':server_status,'error':False,'special_staff':admin_data.special_staff})
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'error':True,'message':'Error while loading admin requests'})
@@ -124,28 +125,41 @@ def request_admin_data(request):
             online_task=Count('connections', filter=Q(connections__status='Online'), distinct=True),
         )
 
-        # Then annotate revenue separately (optional)
-        request_admins = request_admins.annotate(
-        total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 1,output_field=IntegerField()),
-        profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField()),
-        )
-        total_admins = request_admins.count()
-        revenue = sum(admin.total_revenue or 0 for admin in request_admins)
+        admin_list = list(request_admins.values())
+        total_revenue = 0
+
+        for admin_dict in admin_list:
+            admin_id = admin_dict['admin_id']
+            revenue_sum = revenueRecord.objects.filter(admin_id=admin_id).aggregate(total=Sum('withdrawal_amount'))['total'] or 0
+            online_time_sum = whatsappConnection.objects.filter(admin_id=admin_id).aggregate(total=Sum('onlineTime'))['total'] or 0
+            # Geting Last balance
+            last_record = revenueRecord.objects.filter(admin_id=admin_id).order_by('-id').first()
+            last_balance = last_record.last_balance if last_record else 0
+
+            profit = int(revenue_sum - (online_time_sum * 0.6)) + last_balance
+            admin_dict['total_revenue'] = revenue_sum + last_balance
+            admin_dict['profit'] = profit
+            total_revenue += revenue_sum + last_balance
+
+        total_admins = len(admin_list)
+
         success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
         failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id='').count()
+
         context = {
-            'request_admins':list(request_admins.values()),
-            'total_admins':total_admins,
-            'revenue':revenue,
-            'success_connects':success_connects,
-            'failed_connects':failed_connects,
-            'error':False,
-            'message':'Admin data loaded successfully'
+            'request_admins': admin_list,
+            'total_admins': total_admins,
+            'revenue': total_revenue,
+            'success_connects': success_connects,
+            'failed_connects': failed_connects,
+            'error': False,
+            'message': 'Admin data loaded successfully'
         }
         return JsonResponse(context)
+
     except Exception as e:
         traceback.print_exc()
-        return JsonResponse({'error':True,'message':'Error while loading admin data'})
+        return JsonResponse({'error': True, 'message': 'Error while loading admin data'})
 
 def get_task_data(request):
     try:
@@ -157,3 +171,32 @@ def get_task_data(request):
         traceback.print_exc()
         return JsonResponse({'error':True})
 
+@csrf_exempt
+def get_revenue_data(request):
+    try:
+        today = localtime().strftime("%d-%m-%Y")
+        yesterday = (localtime() - timedelta(days=1)).strftime("%d-%m-%Y")
+        total = revenueRecord.objects.aggregate(total=Sum('withdrawal_amount'))['total'] or 0
+        today_total = revenueRecord.objects.filter(date=today).aggregate(total=Sum('withdrawal_amount'))['total'] or 0
+        yest_total = revenueRecord.objects.filter(date=yesterday).aggregate(total=Sum('withdrawal_amount'))['total'] or 0
+        # Getting latest balance
+        records = revenueRecord.objects.only('revenue_id', 'last_balance').order_by('-id')
+        seen_ids = set()
+        latest_balance = 0
+
+        for record in records:
+            if record.revenue_id not in seen_ids:
+                latest_balance += record.last_balance
+                seen_ids.add(record.revenue_id)
+        print(latest_balance)
+        return JsonResponse({
+            'total_revenue': total + latest_balance,
+            'today_revenue': today_total,
+            'yesterday_revenue': yest_total,
+            'profit': (total+latest_balance)-(whatsappConnection.objects.aggregate(Sum('onlineTime'))['onlineTime__sum'] * 0.6),
+            'error': False,
+        })
+
+    except Exception as e:
+        traceback.print_exc()
+        return JsonResponse({'message': str(e), 'error': True})

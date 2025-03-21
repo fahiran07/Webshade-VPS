@@ -139,16 +139,17 @@
 				</div>
 				{% endif %}
 			</div>
-			{% if request.user.is_superuser %}
-			<div class="w-100 d-flex d-flex-center flex-column">
-				<span>Server Status</span>
-				<span id="server-status" class="{% if server_status == 'DOWN' %}text-danger {% else %}text-success{% endif %} fw-bold text-capitalize">{{server_status}}</span>
+
+			<div id="server-status-btn" class="{% if request.user.is_superuser %}d-block {% else %}d-none{% endif %}">
+				<div class="w-100 d-flex d-flex-center flex-column" id="server-status-box">
+					<span>Server Status</span>
+					<span id="server-status" class="{% if server_status == 'DOWN' %}text-danger {% else %}text-success{% endif %} fw-bold text-capitalize">{{server_status}}</span>
+				</div>
+				<div class="w-95 mx-auto d-flex justify-content-between mt-2">
+					<button class="bg-danger border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('DOWN')" style="width: 48%">Close Server</button>
+					<button class="bg-success border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('OPEN')" style="width: 48%">Open Server</button>
+				</div>
 			</div>
-			<div class="w-95 mx-auto d-flex justify-content-between mt-2">
-				<button class="bg-danger border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('DOWN')" style="width: 48%">Close Server</button>
-				<button class="bg-success border-0 hr-6 rounded-1 text-light shadow" onclick="update_server_status('OPEN')" style="width: 48%">Open Server</button>
-			</div>
-			{% endif %}
 			<div id="data-box" class="d-flex justify-content-between w-95 mx-auto mt-2">
 				<div class="card rounded-1 d-flex-center py-2" style="width: 32%">
 					<p class="mb-0 fs-7">TOTAL</p>
@@ -221,7 +222,6 @@
 				</div>
 			</div>
 		</section>
-		<script src="/assets/webshadeAdmin/js/menu.js"></script>
 		<script src="/assets/webshadeAdmin/js/script.js"></script>
 		<script src="/assets/webshadeAdmin/js/admin_panel.js"></script>
 	</body>

@@ -5,7 +5,7 @@ from django.db.models.functions import Coalesce
 from django.db.models import Value
 from django.db.models import Count
 from webshadeApp.models import userDetail, whatsappConnection, withdrawal_request
-from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin, whatsappPayments
+from webshadeAdmin.models import reward_price, login_number, RequestHandlingAdmin, whatsappPayments, revenueRecord
 from django.db.models import Sum, F, Q, Subquery, Max, ExpressionWrapper, IntegerField
 from django.views.decorators.cache import never_cache
 from webshadeAdmin.functions import get_date_string, get_time_string
@@ -89,31 +89,39 @@ def withdrawal(request):
 def request_admins(request):
     if not request.user.is_superuser:
         return redirect('/admin-panel/login/')
-    # First: annotate only counts
+    # Annotate task counts only
     request_admins = RequestHandlingAdmin.objects.annotate(
         active_task=Count('connections', filter=Q(connections__status='Processing'), distinct=True),
         success_task=Count('connections', filter=Q(connections__status__in=['Offline', 'Online']), distinct=True),
         failed_task=Count('connections', filter=Q(connections__status='Rejected'), distinct=True),
         online_task=Count('connections', filter=Q(connections__status='Online'), distinct=True),
     )
-    
-    # Then annotate revenue separately (optional)
-    request_admins = request_admins.annotate(
-    total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 1,output_field=IntegerField()),
-    profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField())
-    )
-    total_admins = request_admins.count()
-    revenue = sum(admin.total_revenue or 0 for admin in request_admins)
+    admin_list = list(request_admins)
+    total_revenue_all = 0
+
+    for admin in admin_list:
+        admin_id = admin.admin_id
+        revenue_sum = revenueRecord.objects.filter(admin_id=admin_id).aggregate(total=Sum('withdrawal_amount'))['total'] or 0
+        online_time_sum = whatsappConnection.objects.filter(admin_id=admin_id).aggregate(total=Sum('onlineTime'))['total'] or 0
+        last_record = revenueRecord.objects.filter(admin_id=admin_id).order_by('-id').first()
+        last_balance = last_record.last_balance if last_record else 0
+        profit = int(revenue_sum - (online_time_sum * 0.6)) + last_balance
+        admin.total_revenue = revenue_sum + last_balance
+        admin.profit = profit
+        total_revenue_all += revenue_sum + last_balance
+
+    total_admins = len(admin_list)
     success_connects = whatsappConnection.objects.filter(status='Online').exclude(admin_id='').count()
     failed_connects = whatsappConnection.objects.filter(status='Rejected').exclude(admin_id='').count()
+
     context = {
-        'request_admins':request_admins,
-        'total_admins':total_admins,
-        'revenue':revenue,
-        'success_connects':success_connects,
-        'failed_connects':failed_connects,
+        'request_admins': admin_list,
+        'total_admins': total_admins,
+        'revenue': total_revenue_all,
+        'success_connects': success_connects,
+        'failed_connects': failed_connects,
     }
-    return render(request,'webshadeAdmin/request_admin.html',context)
+    return render(request, 'webshadeAdmin/request_admin.html', context)
 
 @never_cache
 def payment(request):
@@ -131,6 +139,18 @@ def payment(request):
         'total_withdraw_amount':total_withdraw_amount,
     }
     return render(request,'webshadeAdmin/payment.html',context)
+
+@never_cache
+def revenue(request):
+    if not request.user.is_superuser:
+        return redirect('/admin-panel/login/')
+    revenue_data = revenueRecord.objects.all().order_by('-id')
+    admins = RequestHandlingAdmin.objects.all().values('admin_id','name')
+    context = {
+        'revenue_data':revenue_data,
+        'admins':admins,
+    }
+    return render(request,'webshadeAdmin/revenue.html',context)
 
 def logout_admin(request):
     logout(request)

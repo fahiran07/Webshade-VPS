@@ -19,6 +19,9 @@
 		<li class="{% if request.path == '/admin-panel/payment/' %}active-tab{% endif %}">
 			<a href="/admin-panel/payments/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Payments </a>
 		</li>
+		<li class="{% if request.path == '/admin-panel/revenue/' %}active-tab{% endif %}">
+			<a href="/admin-panel/revenue/" onclick="show_spinner()"> <i class="fas fa-dollar-sign"></i> Revenue </a>
+		</li>
 
 		<li class="{% if request.path == '/admin-panel/withdrawal/' %}active-tab{% endif %}">
 			<a href="/admin-panel/withdrawal/" onclick="show_spinner()"> <i class="fas fa-wallet"></i> Withdrawal </a>

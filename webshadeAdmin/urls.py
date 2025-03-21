@@ -12,6 +12,7 @@ urlpatterns = [
     path("withdrawal/", views.withdrawal),
     path("admins/", views.request_admins),
     path("payments/", views.payment),
+    path("revenue/", views.revenue),
     path("login/", views.login_admin),
     path("logout/", views.logout_admin),
     # API Routes
@@ -26,6 +27,7 @@ urlpatterns = [
     path("api/login/", api.superuser_login),
     path("api/release-payment/", api.release_payment),
     path('api/update-active-status', api.update_active_status),
+    path('api/submit-revenue-record/', api.submit_revenue_record),
 
     # Get Data API
     path("api/get-celery-data/", get_api.get_running_tasks),
@@ -35,4 +37,5 @@ urlpatterns = [
     path("api/get-admin-whatsapp-request/", get_api.get_admin_requests),
     path("api/get-task-data/", get_api.get_task_data),
     path("api/get-admin-data/", get_api.request_admin_data),
+    path("api/revenue-data/", get_api.get_revenue_data),
 ]
