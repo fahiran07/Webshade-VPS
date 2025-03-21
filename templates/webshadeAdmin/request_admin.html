@@ -179,6 +179,7 @@
 							<td>PROFIT</td>
 							<td>SUCCESS</td>
 							<td>FAILED</td>
+							<td>ONLINE</td>
 							<td>TASKS</td>
 							<td></td>
 						</tr>
@@ -202,8 +203,9 @@
 							<td id="admin-profit-{{admin.admin_id}}">{{admin.profit}}</td>
 							<td id="admin-success-{{admin.admin_id}}">{{admin.success_task}}</td>
 							<td id="admin-failed-{{admin.admin_id}}">{{admin.failed_task}}</td>
+							<td id="admin-failed-{{admin.admin_id}}">{{admin.online_task}}</td>
 							<td id="admin-active-{{admin.admin_id}}">{{admin.active_task}}</td>
-							<td><a target="_blank" href="/admin/webshadeAdmin/whatsapppayments/{{admin.admin_id}}/change/">EDIT</a></td>
+							<td><a target="_blank" href="/admin/webshadeAdmin/whatsapppayments/{{admin.id}}/change/">EDIT</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>

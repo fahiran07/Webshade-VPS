@@ -26,27 +26,15 @@ function search(query) {
 
 				data_table.innerHTML = `
                 <tr>
-                    <td>
-                        <p class="mb-0">${user.user_id}</p>
-                    </td>
-                    <td>
-                        <p class="mb-0">${user.phone}</p>
-                        <p class="mb-0">${user.email}</p>
-                        <p class="mb-0">${user.password}</p>
-                    </td>
-                    <td>
-                        <div class="hr-4 wr-4">
-                            <p class="mb-0">${user.refer_by || "-"}</p>
-                            ${user.active ? '<i class="fas fa-check" style="color: green"></i>' : '<i class="fas fa-times" style="color: red"></i>'}
-                        </div>
-                    </td>
-                    <td>
-                        <p>₹${user.balance}.00</p>
-                    </td>
-                    <td>
-                        <p>₹${user.commision}.00</p>
-                    </td>
-                </tr>
+                <td><p class="mb-0">${user.user_id}</p></td>
+                <td><p class="mb-0">${user.phone}</p></td>
+                <td><p class="mb-0">${user.email}</p></td>
+                <td><p class="mb-0">${user.password}</p></td>
+                <td><p class="mb-0">${user.refer_by ? user.refer_by : "-"}</p></td>
+                <td><p>₹${user.balance}.00</p></td>
+                <td><p>₹${user.commision}.00</p></td>
+                <td><a href="/admin/webshadeApp/userdetail/${user.id}/change/" target="_blank">EDIT</a></td>
+            </tr>
             `;
 			} else {
 				show_toast_message(data.message, false);

@@ -94,6 +94,7 @@ def request_admins(request):
         active_task=Count('connections', filter=Q(connections__status='Processing'), distinct=True),
         success_task=Count('connections', filter=Q(connections__status__in=['Offline', 'Online']), distinct=True),
         failed_task=Count('connections', filter=Q(connections__status='Rejected'), distinct=True),
+        online_task=Count('connections', filter=Q(connections__status='Online'), distinct=True),
     )
     
     # Then annotate revenue separately (optional)

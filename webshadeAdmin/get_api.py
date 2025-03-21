@@ -121,12 +121,13 @@ def request_admin_data(request):
             active_task=Count('connections', filter=Q(connections__status='Processing'), distinct=True),
             success_task=Count('connections', filter=Q(connections__status__in=['Offline', 'Online']), distinct=True),
             failed_task=Count('connections', filter=Q(connections__status='Rejected'), distinct=True),
+            online_task=Count('connections', filter=Q(connections__status='Online'), distinct=True),
         )
 
         # Then annotate revenue separately (optional)
         request_admins = request_admins.annotate(
         total_revenue=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 1,output_field=IntegerField()),
-        profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField())
+        profit=ExpressionWrapper(Coalesce(Sum('connections__onlineTime'), Value(0)) * 0.4,output_field=IntegerField()),
         )
         total_admins = request_admins.count()
         revenue = sum(admin.total_revenue or 0 for admin in request_admins)
