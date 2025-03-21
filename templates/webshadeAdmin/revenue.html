@@ -177,18 +177,20 @@
 							<td>BALANCE</td>
 							<td>WITHDRAW</td>
 							<td>DATE</td>
+							<td>ACTION</td>
 							<td></td>
 						</tr>
 					</thead>
 					<tbody id="data-table">
 						{% for revenue in revenue_data %}
-						<tr>
+						<tr id="record-{{revenue.record_id}}">
 							<td>{{revenue.revenue_id}}</td>
 							<td>{{revenue.admin_id}}</td>
 							<td>{{revenue.admin_name}}</td>
 							<td>{{revenue.last_balance}}</td>
 							<td>{{revenue.withdrawal_amount}}</td>
 							<td>{{revenue.date}}</td>
+							<td class="text-danger" onclick="delete_revenue_record('{{revenue.record_id}}')">Delete</td>
 							<td><a href="/admin/webshadeAdmin/revenuerecord/{{revenue.id}}/change/" target="_blank">EDIT</a></td>
 						</tr>
 						{% endfor %}

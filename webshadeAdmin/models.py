@@ -38,6 +38,7 @@ class whatsappPayments(models.Model):
     time = models.CharField(max_length=50, default=get_time_string)
 
 class revenueRecord(models.Model):
+    record_id = models.CharField(max_length=50, blank=True)
     revenue_id = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
     admin_name = models.CharField(max_length=50)

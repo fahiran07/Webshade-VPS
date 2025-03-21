@@ -276,12 +276,15 @@ def submit_revenue_record(request):
             last_balance = data.get('balance')
             if not admin_id or not withdraw_amount or not last_balance:
                 return JsonResponse({'error': True, 'message': 'Invalid data provided'})
+            if revenueRecord.objects.filter(admin_id=admin_id,withdrawal_amount=withdraw_amount,last_balance=last_balance).exists():
+                return JsonResponse({'error': True, 'message': 'Revenue record already exists'})
             while True:
-                revenue_id = str(uuid.uuid4())[:8]
-                if not revenueRecord.objects.filter(revenue_id=revenue_id).exists():
+                record_id = int(str(uuid.uuid4().int)[:8])
+                if not revenueRecord.objects.filter(record_id=record_id).exists():
                     break
             admin_data = RequestHandlingAdmin.objects.get(admin_id=admin_id)
             revenue_data = revenueRecord.objects.create(
+                record_id=record_id,
                 revenue_id=admin_data.workon,
                 admin_id=admin_id,
                 admin_name=admin_data.name,
@@ -293,6 +296,7 @@ def submit_revenue_record(request):
                 'message': 'Revenue record submitted successfully',
                 'error': False,
                 'data': {
+                    'record_id': revenue_data.record_id,
                     'revenue_id': revenue_data.revenue_id,
                     'admin_id': revenue_data.admin_id,
                     'admin_name': revenue_data.admin_name,
@@ -307,5 +311,24 @@ def submit_revenue_record(request):
         except Exception as e:
             traceback.print_exc()
             return JsonResponse({'error': True, 'message': 'Error while submitting revenue record'})
+
+    return JsonResponse({'error': True, 'message': 'Invalid request method'})
+
+def delete_revenue_record(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            record_id = data.get('record_id')
+            if not record_id:
+                return JsonResponse({'error': True, 'message': 'Invalid data provided'})
+            revenue_data = revenueRecord.objects.filter(record_id=record_id).first()
+            if not revenue_data:
+                return JsonResponse({'error': True, 'message': 'Revenue record not found'})
+            revenue_data.delete()
+            return JsonResponse({'error': False, 'message': 'Revenue record deleted successfully'})
+
+        except Exception as e:
+            traceback.print_exc()
+            return JsonResponse({'error': True, 'message': 'Error while deleting revenue record'})
 
     return JsonResponse({'error': True, 'message': 'Invalid request method'})

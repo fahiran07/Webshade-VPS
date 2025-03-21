@@ -32,14 +32,15 @@ function submit_revenue_record() {
 
 				// ✅ Create a new row
 				let newRow = `
-				<tr>
+				<tr id="record-${record.record_id}" >
 					<td>${record.revenue_id}</td>
 					<td>${record.admin_id}</td>
 					<td>${record.admin_name}</td>
 					<td>${record.last_balance}</td>
 					<td>${record.withdraw_amount}</td>
 					<td>${record.date}</td>
-					<td><a href="admin/webshadeAdmin/revenuerecord/${record.id}/change/" target="_blank">EDIT</a></td>
+                    <td class="text-danger" onclick="delete_revenue_record('${record.record_id}')">Delete</td>
+					<td><a href="/admin/webshadeAdmin/revenuerecord/${record.id}/change/" target="_blank">EDIT</a></td>
 				</tr>
 			`;
 
@@ -71,6 +72,28 @@ function FetchRevenueData() {
 				document.getElementById("today-revenue").innerText = data.today_revenue;
 				document.getElementById("yesterday-revenue").innerText = data.yesterday_revenue;
 				document.getElementById("profit").innerText = data.profit;
+			} else {
+				show_toast_message(data.message, false);
+			}
+		});
+}
+
+function delete_revenue_record(record_id) {
+	fetch("/admin-panel/api/delete-revenue-record/", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"X-CSRFToken": csrfToken,
+		},
+		body: JSON.stringify({
+			record_id: record_id,
+		}), // Empty body agar kuch send nahi karna
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			if (data.error == false) {
+				document.getElementById("record-" + record_id).remove();
+				show_toast_message("Revenue Record Deleted Successfully", true);
 			} else {
 				show_toast_message(data.message, false);
 			}

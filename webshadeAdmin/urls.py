@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/release-payment/", api.release_payment),
     path('api/update-active-status', api.update_active_status),
     path('api/submit-revenue-record/', api.submit_revenue_record),
+    path('api/delete-revenue-record/', api.delete_revenue_record),
 
     # Get Data API
     path("api/get-celery-data/", get_api.get_running_tasks),
