@@ -187,6 +187,7 @@
 					<thead>
 						<tr>
 							<td>ID</td>
+							<td>ADMINID</td>
 							<td>WHATSAPP</td>
 							<td>DATE</td>
 							<td>TIME</td>
@@ -201,6 +202,7 @@
 						{% for connect in connection_data %}
 						<tr>
 							<td>{{connect.connect_id}}</td>
+							<td>{{connect.admin_id}}</td>
 							<td>{{connect.whatsapp}}</td>
 							<td>{{connect.date}}</td>
 							<td>{{connect.time}}</td>
@@ -237,7 +239,6 @@
 			</div>
 		</section>
 
-		<script src="/assets/webshadeAdmin/js/menu.js"></script>
 		<script src="/assets/webshadeAdmin/js/connects.js"></script>
 		<script src="/assets/webshadeAdmin/js/script.js"></script>
 	</body>

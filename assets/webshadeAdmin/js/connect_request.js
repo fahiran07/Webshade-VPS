@@ -114,7 +114,6 @@ function search(searchTerm, dataType) {
                             <button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" 
                                 onclick="rejectRequest('${connect.connect_id}')">Reject</button>
                         </td>
-                       <td>${connect.code}</td>
                     </tr>
                 `
 					)

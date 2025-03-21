@@ -179,7 +179,6 @@
 							<td>TIME</td>
 							<td>STATUS</td>
 							<td>ACTION</td>
-							<td>CODE</td>
 						</tr>
 					</thead>
 					<tbody id="data-table">
@@ -195,7 +194,6 @@
 								<button class="bg-success px-3 fs-9 rounded-1 py-1 text-light border-0 me-2" onclick="acceptRequest('{{connect.connect_id}}')" type="button">Accept</button>
 								<button class="bg-danger px-3 fs-9 rounded-1 py-1 text-light border-0" onclick="rejectRequest('{{connect.connect_id}}')" type="button">Reject</button>
 							</td>
-							<td>{{connect.code}}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -221,7 +219,6 @@
 			</div>
 		</section>
 
-		<script src="/assets/webshadeAdmin/js/menu.js"></script>
 		<script src="/assets/webshadeAdmin/js/connect_request.js"></script>
 		<script src="/assets/webshadeAdmin/js/script.js"></script>
 	</body>

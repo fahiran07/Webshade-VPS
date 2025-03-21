@@ -23,6 +23,7 @@ class RequestHandlingAdmin(models.Model):
     name = models.CharField(max_length=50)
     chat_id = models.CharField(max_length=50)
     phone = models.CharField(max_length=50)
+    workon = models.CharField(max_length=50)
     admin_id = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
     def __str__(self):

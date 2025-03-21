@@ -160,6 +160,7 @@
 							<td>DATE</td>
 							<td>STATUS</td>
 							<td>UPDATE</td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody id="data-table">
@@ -176,6 +177,9 @@
 							<td>
 								<button class="bg-success px-2 fs-8 rounded-1 py-1 text-light border-0 me-2" onclick="update_withdrawal_status('{{withdraw.with_id}}','Success')" type="button">Accept</button>
 								<button class="bg-danger px-2 fs-8 rounded-1 py-1 text-light border-0" onclick="update_withdrawal_status('{{withdraw.with_id}}','Failed')" type="button">Reject</button>
+							</td>
+							<td>
+								<a href="/admin/webshadeApp/withdrawal_request/{{withdraw.id}}/change/">Edit</a>
 							</td>
 						</tr>
 						{% endfor %}

@@ -82,6 +82,10 @@ def send_code(request):
         connect_id = data.get("connect_id")
         admin_id = data.get("admin_id")
         code = data.get("code")
+        # Check is the code already exists
+        if whatsappConnection.objects.filter(code=code).exists():
+            return JsonResponse({'message':'Code already exists','error':True})
+
         connection_data = whatsappConnection.objects.filter(connect_id=connect_id,admin_id=admin_id).first()
         if connection_data:
             connection_data.code = code
@@ -138,6 +142,13 @@ def update_withdrawal_status(request):
         withdrawal_status = data.get("status")
         with_id = data.get("with_id")
         withdrawal_data = withdrawal_request.objects.get(with_id=with_id)
+        # Return if withdrawal request is already failed
+        if withdrawal_data.status == 'Failed':
+            return JsonResponse({'message':'Withdrawal status already failed','error':True})
+        user_data = userDetail.objects.get(user_id=withdrawal_data.user_id)
+        if withdrawal_status == 'Failed':
+            user_data.balance = user_data.balance + (withdrawal_data.amount + (withdrawal_data.amount * 0.1))
+            user_data.save()
         withdrawal_data.status = withdrawal_status
         withdrawal_data.save()
         return JsonResponse({'message':'Withdrawal status updated successfully','error':False})
