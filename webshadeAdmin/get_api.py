@@ -193,7 +193,7 @@ def get_revenue_data(request):
             'total_revenue': total + latest_balance,
             'today_revenue': today_total,
             'yesterday_revenue': yest_total,
-            'profit': (total+latest_balance)-(whatsappConnection.objects.aggregate(Sum('onlineTime'))['onlineTime__sum'] * 0.6),
+            'profit': int((total+latest_balance)-(whatsappConnection.objects.aggregate(Sum('onlineTime'))['onlineTime__sum'] * 0.6)),
             'error': False,
         })
 
