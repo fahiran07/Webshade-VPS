@@ -207,12 +207,6 @@ def search(request):
 def release_payment(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            releaser_phone = data.get('phone')
-
-            if not releaser_phone:
-                return JsonResponse({'status': 'fail', 'message': 'Phone number not provided'}, status=400)
-
             json_path = os.path.join('data', 'scraped_data.json')
             if not os.path.exists(json_path):
                 return JsonResponse({'status': 'fail', 'message': 'Scraped data file not found'}, status=404)
@@ -228,6 +222,9 @@ def release_payment(request):
                 phone = item.get('number')[2:]
                 hours = item.get('hours', 0)
                 status = item.get('status', '').lower()
+                host_phone = item.get('host_phone')
+                if host_phone == '':
+                    return JsonResponse({'error': True, 'message': 'Host phone number not provided'})
                 reward = round(hours * 0.6, 2)
 
                 try:
@@ -257,7 +254,7 @@ def release_payment(request):
             whatsappPayments.objects.create(
                 release_id=release_id,
                 amount=round(total_reward, 2),
-                releaser=releaser_phone,
+                releaser=host_phone,
                 time=get_time_string(),
                 date=get_date_string(),
             )

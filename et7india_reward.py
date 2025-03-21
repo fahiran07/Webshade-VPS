@@ -18,6 +18,7 @@ options.add_argument("--disable-features=WebML")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Define URL
+host_phone = '8822919998'
 url = 'https://et7india.com/#/login'
 driver.get(url)
 
@@ -28,8 +29,8 @@ wait = WebDriverWait(driver, 50)
 inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')))
 
 # Enter login details
-inputs[0].send_keys('6000694134')
-inputs[1].send_keys('Fahad788712')
+inputs[0].send_keys(host_phone)
+inputs[1].send_keys('Taniya124432')
 
 # Click login
 login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
@@ -74,7 +75,8 @@ def extract_cards(index):
             'serial': index,
             'number': number,
             'status': status,
-            'hours': total_hours
+            'hours': total_hours,
+            'host_phone':host_phone
         })
         index += 1
     return len(account_cards)
