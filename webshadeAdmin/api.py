@@ -16,7 +16,7 @@ import json
 import uuid
 import os
 
-today_date = localtime().date().strftime("%d-%m-%Y")
+today_date = localtime().strftime("%d-%m-%Y")
 
 def admin_login(request):
     try:
