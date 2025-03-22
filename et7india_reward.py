@@ -18,7 +18,7 @@ options.add_argument("--disable-features=WebML")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Define URL
-host_phone = '8822919998'
+host_phone = '9365282819'
 url = 'https://et7india.com/#/login'
 driver.get(url)
 
@@ -30,7 +30,7 @@ inputs = wait.until(EC.visibility_of_all_elements_located((By.TAG_NAME, 'input')
 
 # Enter login details
 inputs[0].send_keys(host_phone)
-inputs[1].send_keys('Taniya124432')
+inputs[1].send_keys('Fahad788712')
 
 # Click login
 login_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'login_btn')))
