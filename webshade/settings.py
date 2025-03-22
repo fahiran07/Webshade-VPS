@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-mkj9=-7bgc5k)p893j)l6hl^kp#1h804#^)=*ppk)v#=ejkirm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 APPEND_SLASH = True
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh','.site','127.0.0.1','147.93.27.98']
+ALLOWED_HOSTS = ['webshade.site', 'www.webshade.site','127.0.0.1','147.93.27.98']
 
 
 # Application definition
@@ -101,12 +101,6 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 import dj_database_url
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgresql://postgres.xiccqowyowzvxxqllhun:124432@aws-0-ap-south-1.pooler.supabase.com:6543/postgres',
-#         conn_max_age=0  # This ensures no persistent connections, for PgBouncer to manage connections
-#     )
-# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',  # Use PostgreSQL
