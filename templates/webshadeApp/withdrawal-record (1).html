@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="csrf-token" content="{{ csrf_token }}" />
+		<title>Document</title>
+		<link rel="stylesheet" href="/assets/webshadeApp/css/utils.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/style.css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+	</head>
+	<body class="main-bg-back">
+		<header class="main-background-color hr-7 w-100 d-flex-center-y justify-content-between border-bottom px-2">
+			<a href="/account" onclick="show_spinner()">
+				<i class="fas fa-arrow-left text-light" style="font-size: 1.5rem"></i>
+			</a>
+			<div class="w-90 text-center">
+				<span class="text-light fs-4" style="margin-left: -20px">Withdrawal</span>
+			</div>
+		</header>
+		{% for item in withdrawal_record %}
+		<div class="w-95 mx-auto main-sub-back-white px-3 py-2 mb-3">
+			<span class="main-color fs-7">Withdrawal Request</span>
+			<div class="d-flex justify-content-between mt-2">
+				<span class="fs-7">Amount</span>
+				<span class="main-color">₹<span>{{item.amount}}.00</span></span>
+			</div>
+			<div class="d-flex justify-content-between mt-2">
+				<span class="fs-7">Status</span>
+				<span class="main-color fs-7">{{item.status}}</span>
+			</div>
+			<span class="fs-8 fw-light">{{item.account}}</span>
+			<br />
+			<span class="fs-7 fw-light">{{item.date}}</span>
+		</div>
+		{% endfor %}
+		<section id="main-spinner" class="vh-100 vw-100 top-0 position-fixed d-flex-center">
+			<div style="background-color: rgba(0, 0, 0, 0.597)" class="px-5 py-3 rounded-2">
+				<div class="main-spinner"></div>
+			</div>
+		</section>
+		<script>
+			window.onload = function () {
+				document.getElementById("main-spinner").classList.add("d-none");
+			};
+		</script>
+	</body>
+</html>

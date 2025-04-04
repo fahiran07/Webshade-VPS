@@ -19,6 +19,7 @@ function loadAdminData() {
 					// Update numeric/text values
 					document.getElementById(`admin-revenue-${admin.admin_id}`).innerText = admin.total_revenue;
 					document.getElementById(`admin-profit-${admin.admin_id}`).innerText = admin.profit;
+					document.getElementById(`admin-payment-${admin.admin_id}`).innerText = admin.payment;
 					document.getElementById(`admin-success-${admin.admin_id}`).innerText = admin.success_task;
 					document.getElementById(`admin-failed-${admin.admin_id}`).innerText = admin.failed_task;
 					document.getElementById(`admin-active-${admin.admin_id}`).innerText = admin.active_task;

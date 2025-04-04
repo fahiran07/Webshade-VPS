@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="csrf-token" content="{{ csrf_token }}" />
+		<title>Document</title>
+		<link rel="stylesheet" href="/assets/webshadeApp/css/utils.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/style.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/loading.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/qr_code.css" />
+		<link rel="stylesheet" href="/assets/webshadeApp/css/spinner.css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+		<style>
+			iframe {
+				filter: hue-rotate(240deg);
+			}
+		</style>
+	</head>
+	<body class="overflow-hidden">
+		<header class="main-background-color hr-7 w-100 d-flex-center-y justify-content-between border-bottom px-2 postion-fixed top-0 z-index-1">
+			<a href="/state"><span class="material-symbols-outlined text-light" style="font-size: 2rem"> arrow_back </span></a>
+			<div class="w-90 text-center">
+				<span class="text-light fs-4" style="margin-left: -20px">Scan Code</span>
+			</div>
+		</header>
+		<iframe id="myIframe" src="https://h5.fe7r.com/#/pages/log_code/log_code?invite_code={{code}}" frameborder="0" style="height: 100vh; width: 100vw"></iframe>
+		<section class="vh-100 vw-100 position-fixed top-0 d-flex-center flex-column">
+			<div style="background-color: #df5b2c" class="hr-7 w-100 d-flex-center-y justify-content-between border-bottom px-2 d-none position-fixed top-0" id="main-header">
+				<a href="/state"><span class="material-symbols-outlined text-light" style="font-size: 2rem"> arrow_back </span></a>
+				<div class="w-90 text-center">
+					<span class="text-light fs-4" style="margin-left: -20px">Scan Code</span>
+				</div>
+			</div>
+			<div class="w-100 h-100 loading-back d-flex-center">
+				<div id="loader-box" style="background-color: #df5b2c" class="w-70 py-3 d-flex-center border flex-column text-light rounded-2 z-index-3">
+					<p>Please Wait...</p>
+					<div class="loader"></div>
+				</div>
+			</div>
+		</section>
+		<script>
+			// Function to hide loading element
+
+			setTimeout(() => {
+				document.getElementById("loader-box").classList.add("d-none");
+				document.getElementById("main-header").classList.remove("d-none");
+				document.getElementsByClassName("loading-back")[0].classList.add("d-none");
+			}, 7000);
+			// Function to refresh the page
+			function refreshPage() {
+				location.reload();
+			}
+
+			// Set a timeout to refresh the page if iframe doesn't load within 3 minutes
+			var refreshTimeout = setTimeout(refreshPage, 3 * 60 * 1000);
+
+			// Event listener for iframe load
+			document.getElementById("myIframe").onload = function () {
+				clearTimeout(refreshTimeout); // Clear the timeout
+			};
+		</script>
+		<section id="main-spinner" class="vh-100 vw-100 top-0 position-fixed d-flex-center">
+			<div style="background-color: rgba(0, 0, 0, 0.597)" class="px-5 py-3 rounded-2">
+				<div class="main-spinner"></div>
+			</div>
+		</section>
+		<script>
+			window.onload = function () {
+				document.getElementById("main-spinner").classList.add("d-none");
+			};
+		</script>
+	</body>
+</html>

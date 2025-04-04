@@ -173,11 +173,11 @@
 						<tr>
 							<td>ID</td>
 							<td>NAME</td>
-							<td>PHONE</td>
 							<td>WORKON</td>
 							<td>STATUS</td>
 							<td>REVENUE</td>
 							<td>PROFIT</td>
+							<td>PAYMENT</td>
 							<td>SUCCESS</td>
 							<td>FAILED</td>
 							<td>ONLINE</td>
@@ -190,7 +190,6 @@
 						<tr>
 							<td>{{admin.admin_id}}</td>
 							<td>{{admin.name}}</td>
-							<td>{{admin.phone}}</td>
 							<td>{{admin.workon}}</td>
 							<td id="admin-status-{{admin.admin_id}}">
 								{% if admin.active %}
@@ -203,6 +202,7 @@
 							</td>
 							<td id="admin-revenue-{{admin.admin_id}}">{{admin.total_revenue}}</td>
 							<td id="admin-profit-{{admin.admin_id}}">{{admin.profit}}</td>
+							<td id="admin-payment-{{admin.admin_id}}">{{admin.payment}}</td>
 							<td id="admin-success-{{admin.admin_id}}">{{admin.success_task}}</td>
 							<td id="admin-failed-{{admin.admin_id}}">{{admin.failed_task}}</td>
 							<td id="admin-failed-{{admin.admin_id}}">{{admin.online_task}}</td>

@@ -106,8 +106,10 @@ def request_admins(request):
         last_record = revenueRecord.objects.filter(admin_id=admin_id).order_by('-id').first()
         last_balance = last_record.last_balance if last_record else 0
         profit = int(revenue_sum - (online_time_sum * 0.6)) + last_balance
+        payment = ((revenue_sum * 0.4) + last_balance) / 3
         admin.total_revenue = revenue_sum + last_balance
         admin.profit = profit
+        admin.payment = int(payment)
         total_revenue_all += revenue_sum + last_balance
 
     total_admins = len(admin_list)
