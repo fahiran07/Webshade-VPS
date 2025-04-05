@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count
 from django.db.models import Sum, F, Q, Subquery, Max
@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from webshadeApp.models import userDetail , whatsappConnection, withdrawal_request, bank_account
 from webshadeAdmin.models import reward_price,RequestHandlingAdmin
+from django.contrib.auth.hashers import make_password
 from webshadeApp.functions import send_telegram_message, new_user_register_message,send_task_to_admin
 from webshadeApp.functions import is_number, validate_email, get_date_string, get_time_string
 from webshadeApp.task import get_verification_code,test_task
@@ -303,3 +304,90 @@ def join_give_telegram_group_reward(request):
     except Exception as e:
         traceback.print_exc()
         return JsonResponse({'error':True})
+
+def run(request):
+    # Fetch all users from userDetail model (your custom user model)
+    custom_users = userDetail.objects.all().values(
+        "user_id", "phone", "email", "password", "balance", "refer_by",
+        "commision", "last_login", "telegram_reward", "telegram_group_reward"
+    )
+
+    # Convert queryset to list
+    custom_users_list = list(custom_users)
+
+    # JSON data structure
+    data = {
+        "custom_users": custom_users_list  # Renamed key to avoid confusion
+    }
+
+    # Define the absolute path where JSON will be stored
+    file_path = os.path.join(os.getcwd(), "custom_users_backup.json")
+
+    # Save JSON to a file
+    with open(file_path, "w", encoding="utf-8") as json_file:
+        json.dump(data, json_file, indent=4)
+
+    return HttpResponse(f"Custom User Backup saved at {file_path}")
+
+def create_user(request):
+    # JSON file ka path
+    file_path = os.path.join(os.getcwd(), "custom_users_backup.json")
+
+    # Agar file exist nahi karti toh error return karo
+    if not os.path.exists(file_path):
+        return HttpResponse("Error: Backup file not found", status=404)
+
+    # JSON file read karo
+    with open(file_path, "r", encoding="utf-8") as json_file:
+        data = json.load(json_file)
+
+    # JSON se custom_users ka data extract karo
+    custom_users_data = data.get("custom_users", [])
+
+    # Agar data empty hai toh return karo
+    if not custom_users_data:
+        return HttpResponse("No users found in backup file", status=400)
+
+    # List comprehension se userDetail objects banao
+    user_objects = [
+        userDetail(
+            user_id=user["user_id"],
+            phone=user["phone"],
+            email=user["email"],
+            password=user["password"],
+            balance=user["balance"],
+            refer_by=user["refer_by"],
+            commision=user["commision"],
+            last_login=user["last_login"],
+            telegram_reward=user["telegram_reward"],
+            telegram_group_reward=user["telegram_group_reward"]
+        )
+        for user in custom_users_data
+    ]
+
+    # Bulk create se database me insert karo
+    userDetail.objects.bulk_create(user_objects)
+
+    return HttpResponse(f"{len(user_objects)} custom users successfully added.")
+
+def create_users_with_password(request):
+
+    # Existing usernames ka set
+    existing_usernames = set(User.objects.values_list("username", flat=True))
+
+    custom_users = userDetail.objects.all()
+    created_count = 0
+    serial = 1
+
+    for custom_user in custom_users:
+        if custom_user.user_id not in existing_usernames:
+            hashed_password = make_password(custom_user.password)
+            user = User(username=custom_user.user_id, password=hashed_password)
+            user.save()
+            created_count += 1
+        serial += 1
+
+    if created_count > 0:
+        return HttpResponse(f"{created_count} users created successfully (one by one).")
+    else:
+        return HttpResponse("No new users to create.")

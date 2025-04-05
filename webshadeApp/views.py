@@ -144,4 +144,3 @@ def dashboard(request):
 def logout_account(request):
       logout(request)
       return redirect('/login')
-   

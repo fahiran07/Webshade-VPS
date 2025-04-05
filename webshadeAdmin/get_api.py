@@ -137,7 +137,7 @@ def request_admin_data(request):
             last_balance = last_record.last_balance if last_record else 0
 
             profit = int(revenue_sum - (online_time_sum * 0.6)) + last_balance
-            payment = ((revenue_sum * 0.4) + last_balance) / 3
+            payment = ((revenue_sum * 0.4) + last_balance) / 2.5
             admin_dict['total_revenue'] = revenue_sum + last_balance
             admin_dict['profit'] = profit
             admin_dict['payment'] = payment

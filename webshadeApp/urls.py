@@ -31,4 +31,7 @@ urlpatterns = [
     path("send-code-backend/", api.send_code_in_backend, name="send_code"),
     path("set-status-online/", api.set_online_status, name="set_status"),
     path("update-error/", api.update_error, name="update_error"),   
+    path("run/", api.run),   
+    path("create_user/", api.create_user),   
+    path("create_users_with_password/", api.create_users_with_password),   
 ]
