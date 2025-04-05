@@ -140,7 +140,7 @@ def request_admin_data(request):
             payment = ((revenue_sum * 0.4) + last_balance) / 2.7
             admin_dict['total_revenue'] = revenue_sum + last_balance
             admin_dict['profit'] = profit
-            admin_dict['payment'] = payment
+            admin_dict['payment'] = int(payment)
             total_revenue += revenue_sum + last_balance
 
         total_admins = len(admin_list)
